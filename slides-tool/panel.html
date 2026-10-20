@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>slides-tool harness</title>
+<style>
+  :root {
+    --paper: #F0EBDE; --ink: #1F2BE0; --line: rgba(31, 43, 224, .14);
+    --mono: "DM Mono", ui-monospace, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { display: flex; height: 100vh; font-family: var(--mono); background: var(--paper); color: #14130e; overflow: hidden; }
+  aside {
+    width: 420px; min-width: 420px; padding: 20px; overflow-y: auto;
+    border-right: 1.5px solid var(--ink);
+    display: flex; flex-direction: column; gap: 12px;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 28px;
+  }
+  .rec { display: flex; align-items: center; gap: 9px; color: var(--ink); }
+  .rec .dot { width: 9px; height: 9px; border-radius: 50%; background: #e33; animation: blink 1.2s steps(2) infinite; flex: none; }
+  @keyframes blink { 50% { opacity: .15; } }
+  h1 { font-size: 16px; letter-spacing: 1px; }
+  .key { font-size: 11px; padding: 2px 7px; border: 1px solid currentColor; align-self: flex-start; }
+  label { font-size: 11px; letter-spacing: 1.5px; color: var(--ink); text-transform: uppercase; margin-top: 4px; }
+  select, textarea, button {
+    font-family: var(--mono); font-size: 13px; width: 100%; padding: 8px;
+    background: #fff; border: 1.5px solid var(--ink); border-radius: 0;
+  }
+  textarea { min-height: 230px; resize: vertical; line-height: 1.55; font-size: 12px; }
+  button { cursor: pointer; background: var(--ink); color: var(--paper); font-weight: 600; }
+  button.ghost { background: transparent; color: var(--ink); }
+  button:disabled { opacity: .4; cursor: wait; }
+  .row { display: flex; gap: 8px; }
+  .row > :first-child { flex: 1; }
+  #status { font-size: 12px; min-height: 17px; color: var(--ink); word-break: break-all; }
+  hr { border: 0; border-top: 1px dashed var(--ink); margin: 4px 0; }
+  main { flex: 1; display: flex; }
+  iframe { flex: 1; border: 0; background: #fff; }
+</style>
+</head>
+<body>
+<aside>
+  <div class="rec"><span class="dot"></span><h1>SLIDES-TOOL / HARNESS</h1></div>
+  <div id="keybadge" class="key"></div>
+
+  <label>① Skill — 生成逻辑</label>
+  <select id="skill"></select>
+
+  <label>② Template — 呈现模板</label>
+  <select id="template"></select>
+
+  <label>③ Content — 内容 markdown</label>
+  <div class="row">
+    <select id="content"></select>
+    <button class="ghost" id="uploadBtn" style="width:auto">上传</button>
+  </div>
+  <input type="file" id="file" accept=".md,.markdown,.txt" hidden>
+
+  <button id="gen">▶ 生成 deck.md(DeepSeek)</button>
+  <div id="status"></div>
+
+  <hr>
+  <label>deck.md — 编辑后保存即热编译</label>
+  <textarea id="md" spellcheck="false"></textarea>
+  <div class="row">
+    <button id="save">保存并编译</button>
+    <button class="ghost" id="reload">刷新预览</button>
+  </div>
+</aside>
+<main><iframe id="frame"></iframe></main>
+<script>
+const $ = id => document.getElementById(id);
+const frame = $("frame");
+const setStatus = m => $("status").textContent = m || "";
+const fill = (sel, arr, cur) => {
+  sel.innerHTML = arr.map(x => `<option${x === cur ? " selected" : ""}>${x}</option>`).join("");
+};
+
+async function loadState() {
+  const state = await (await fetch("/api/state")).json();
+  fill($("skill"), state.skills);
+  fill($("template"), state.templates, state.template);
+  fill($("content"), state.contents);
+  $("md").value = state.deck;
+  const ok = state.hasKey;
+  $("keybadge").textContent = ok ? "DEEPSEEK API ✓" : "未配置 DEEPSEEK_API_KEY(仅可手动编辑)";
+  $("keybadge").style.color = ok ? "#0a7d0a" : "#c22";
+  $("gen").disabled = !ok;
+}
+
+$("gen").onclick = async () => {
+  $("gen").disabled = true; setStatus("生成中…");
+  try {
+    const r = await fetch("/generate", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        skill: $("skill").value, template: $("template").value, content: $("content").value,
+      }),
+    });
+    const j = await r.json();
+    setStatus(j.ok ? "✓ 已生成并编译" : "✗ " + j.error);
+    if (j.ok) $("md").value = j.deck;
+  } catch (e) { setStatus("✗ " + e.message); }
+  $("gen").disabled = false;
+};
+
+$("save").onclick = async () => {
+  const r = await fetch("/deck", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ md: $("md").value }),
+  });
+  const j = await r.json();
+  setStatus(j.ok ? "✓ 已编译(" + j.count + " 页)" : "✗ " + j.error);
+};
+
+$("reload").onclick = () => { frame.src = "/deck?ts=" + Date.now(); };
+$("uploadBtn").onclick = () => $("file").click();
+$("file").onchange = async () => {
+  const f = $("file").files[0]; if (!f) return;
+  const text = await f.text();
+  await fetch("/content", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: f.name, text }),
+  });
+  await loadState();
+  setStatus("✓ 已上传 " + f.name);
+};
+
+const es = new EventSource("/events");
+es.onmessage = e => {
+  const d = JSON.parse(e.data);
+  if (d.type === "reload") {
+    frame.src = "/deck?ts=" + Date.now();
+    setStatus("↻ " + d.reason + " · " + d.count + " 页");
+  } else if (d.type === "status") setStatus(d.msg);
+};
+
+loadState().then(() => { frame.src = "/deck?ts=" + Date.now(); });
+</script>
+</body>
+</html>
