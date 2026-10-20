@@ -57,7 +57,7 @@
   </div>
   <input type="file" id="file" accept=".md,.markdown,.txt" hidden>
 
-  <button id="gen">▶ 生成 deck.md(DeepSeek)</button>
+  <button id="gen">▶ 生成 deck.md</button>
   <div id="status"></div>
 
   <hr>
@@ -84,7 +84,8 @@ async function loadState() {
   fill($("content"), state.contents);
   $("md").value = state.deck;
   const ok = state.hasKey;
-  $("keybadge").textContent = ok ? "DEEPSEEK API ✓" : "未配置 DEEPSEEK_API_KEY(仅可手动编辑)";
+  const llm = state.llm || { label: "LLM", model: "" };
+  $("keybadge").textContent = ok ? `${llm.label} · ${llm.model} ✓` : `${llm.label} · ${llm.model} — 未配置 key`;
   $("keybadge").style.color = ok ? "#0a7d0a" : "#c22";
   $("gen").disabled = !ok;
 }
@@ -99,7 +100,7 @@ $("gen").onclick = async () => {
       }),
     });
     const j = await r.json();
-    setStatus(j.ok ? "✓ 已生成并编译" : "✗ " + j.error);
+    setStatus(j.ok ? `✓ 已生成并编译${j.rounds > 1 ? `(自我修正 ${j.rounds} 轮后成功)` : ""}` : "✗ " + j.error);
     if (j.ok) $("md").value = j.deck;
   } catch (e) { setStatus("✗ " + e.message); }
   $("gen").disabled = false;

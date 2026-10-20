@@ -122,7 +122,8 @@ export function compile(md, tpl) {
   /* ---------- 6. 组装页面 ---------- */
   let prevSeg = 0;
   const pages = slides.map((s, i) => {
-    if (!RENDER[s.type]) console.warn(`⚠ slide ${i + 1}: 未知类型 "${s.type}",已跳过`);
+    if (!RENDER[s.type])
+      throw new Error(`slide ${i + 1}: 未知类型 "${s.type}"(可用:title / steps / index / quote / pipe / roadmap)`);
     const seg = s.attrs.seg !== undefined ? +s.attrs.seg : prevSeg;
     prevSeg = seg;
     const top = s.attrs.top || s.fields.top ||

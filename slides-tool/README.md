@@ -24,11 +24,15 @@ content.md ──(skill prompt + DeepSeek)──▶ deck.md ──(build.mjs + t
 ## 用法
 
 ```bash
-export DEEPSEEK_API_KEY=sk-...   # 可选;不配置则只能手动编辑 deck.md
+export LLM_PROVIDER=kimi         # 可选:deepseek(默认)| kimi | qwen | glm | openrouter | ollama
+export LLM_API_KEY=sk-...        # 不配置则只能手动编辑 deck.md
 node serve.mjs                   # → http://localhost:4173
 ```
 
+任意 OpenAI 兼容端点皆可:`LLM_BASE_URL` / `LLM_MODEL` 可覆盖预设;Ollama 本地无需 key。
+
 面板:①选 skill ②选 template ③选(或上传)content → **生成 deck.md** → 右侧实时预览;
+生成是 **agent 式循环**:LLM 产出 → 本地编译验证 → 失败把报错回传 → 自我修正(最多 3 轮),编译错误不会到达预览。
 下方编辑器改 deck.md,保存即热编译(SSE 推送刷新);外部编辑器改 `work/deck.md` 也会被 watch 自动重编译。
 
 ## 设计原则
