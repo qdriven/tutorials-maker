@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{DECK_TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,500;0,6..72,700;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;700&family=DM+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   TEMPLATE: Cobalt Bulletin × Storyboard
+   视觉 = Cobalt Grid(双色铅印)· 布局 = REC Timeline
+   本文件是纯展示层:版式、样式、交互全部在这里。
+   内容来自 deck.md,由 build.mjs 注入 <!--SLIDES-->。
+   =========================================== */
+:root {
+    --paper: #F0EBDE;
+    --paper-2: #E6E0CE;
+    --ink: #1F2BE0;
+    --ink-soft: #5560E5;
+    --ink-faint: rgba(31, 43, 224, 0.25);
+    --ink-row: rgba(31, 43, 224, 0.18);
+    --text: #2b2b33;
+    --stage-bg: var(--paper);
+    --slide-bg: var(--paper);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --serif: 'Newsreader', 'Noto Serif SC', serif;
+    --sans: 'Hanken Grotesk', 'Noto Sans SC', sans-serif;
+    --mono: 'DM Mono', monospace;
+}
+
+/* === BASE: viewport-base.css (mandatory, full contents) === */
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--stage-bg, #000); }
+.deck-viewport { position: fixed; inset: 0; overflow: hidden; background: var(--stage-bg, #000); }
+.deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: var(--slide-bg, #fff); }
+.slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; background: var(--slide-bg, #fff); }
+.slide.active, .slide.visible { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; }
+img, video, canvas, svg { max-width: 100%; max-height: 100%; }
+.deck-controls { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 1000; }
+@media print {
+  html, body { width: 1920px; height: auto; overflow: visible; background: #fff; }
+  .deck-viewport { position: static; overflow: visible; background: #fff; }
+  .deck-stage { position: static; width: auto; height: auto; transform: none !important; background: none; }
+  .slide { position: relative; display: block !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; width: 1920px; height: 1080px; break-after: page; page-break-after: always; }
+  .slide:last-child { break-after: auto; page-break-after: auto; }
+  .deck-controls { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+}
+
+/* === 铅印网格:每页永久方格纸 === */
+.slide.active::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(31,43,224,0.10) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31,43,224,0.10) 1px, transparent 1px);
+  background-size: 96px 96px;
+}
+
+/* === 页面骨架:细线框 + 顶栏 + 内容 + 底部 storyboard === */
+.frame { position: absolute; left: 64px; right: 64px; top: 64px; bottom: 64px; z-index: 1; pointer-events: none;
+  border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); }
+.topbar { position: absolute; left: 64px; right: 64px; top: 64px; z-index: 3;
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 26px 32px 18px; border-bottom: 1.5px solid var(--ink);
+  font-family: var(--mono); font-size: 20px; letter-spacing: 0.24em; color: var(--ink); }
+.rec { display: flex; align-items: center; gap: 12px; }
+.rec-dot { width: 13px; height: 13px; border-radius: 50%; background: var(--ink); animation: recblink 1.2s steps(1) infinite; }
+@keyframes recblink { 50% { opacity: 0.12; } }
+.rec .tc { letter-spacing: 0.1em; color: var(--ink-soft); }
+.content { position: absolute; left: 64px; right: 64px; top: 145px; bottom: 210px; z-index: 2;
+  padding: 60px 96px; box-sizing: border-box; display: flex; flex-direction: column; }
+.storyboard { position: absolute; left: 64px; right: 64px; bottom: 64px; z-index: 3; padding: 0 32px; }
+.sb-head { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 17px;
+  letter-spacing: 0.18em; color: var(--ink-soft); margin-bottom: 12px; }
+.track { position: relative; display: flex; gap: 6px; height: 52px; }
+.seg { flex: 1; border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 16px; letter-spacing: 0.14em; color: var(--ink);
+  background: transparent; transition: background 0.35s var(--ease), color 0.35s var(--ease); }
+.seg.on { background: var(--ink); color: var(--paper); }
+.seg.passed { background: var(--ink-faint); }
+.playhead { position: absolute; top: -10px; bottom: -10px; width: 2px; background: var(--ink); transition: left 0.5s var(--ease); }
+
+/* === 排版原语 === */
+.kicker { font-family: var(--mono); font-size: 21px; letter-spacing: 0.26em; color: var(--ink); margin: 0 0 26px; }
+.kicker .dim { color: var(--ink-soft); }
+h2.hero { font-family: var(--serif); font-weight: 500; font-size: 104px; line-height: 1.12; color: var(--ink);
+  margin: 10px 0 0; letter-spacing: 0; }
+h2.hero .roman { font-style: italic; font-weight: 700; }
+h2.hero .w { font-family: var(--sans); font-weight: 700; color: var(--text); font-size: 0.62em; }
+.sub { font-family: var(--sans); font-size: 34px; line-height: 1.65; color: var(--text); margin: 40px 0 0; max-width: 1300px; }
+.sub b, .quote b { color: var(--ink); font-weight: 700; }
+.note-line { font-family: var(--mono); font-size: 22px; color: var(--ink-soft); margin-top: 34px; }
+
+/* === 索引行 === */
+.index { margin-top: auto; }
+.index-row { display: flex; align-items: baseline; gap: 30px; padding: 22px 6px;
+  border-bottom: 1px solid var(--ink-row); font-family: var(--sans); font-size: 30px; color: var(--text); }
+.index-row .no { font-family: var(--mono); font-size: 22px; color: var(--ink); min-width: 52px; }
+.index-row .grow { flex: 1; font-weight: 500; line-height: 1.45; }
+.index-row .tag { font-family: var(--mono); font-size: 18px; letter-spacing: 0.16em; color: var(--ink-soft); white-space: nowrap; }
+.index-row b { color: var(--ink); font-weight: 700; }
+
+/* === 装饰 === */
+.glitch { position: absolute; right: 110px; top: 200px; z-index: 2; display: flex; flex-direction: column; gap: 7px; }
+.glitch i { display: block; width: 9px; height: 9px; background: var(--ink); opacity: 0.85; }
+.glitch i:nth-child(2) { margin-left: 16px; } .glitch i:nth-child(3) { margin-left: 32px; }
+.glitch i:nth-child(4) { margin-left: 8px; }  .glitch i:nth-child(5) { margin-left: 40px; }
+.glitch i:nth-child(6) { margin-left: 24px; } .glitch i:nth-child(7) { margin-left: 48px; opacity: 0.45; }
+.qr { position: absolute; right: 110px; bottom: 240px; z-index: 2;
+  display: grid; grid-template-columns: repeat(8, 10px); grid-auto-rows: 10px; gap: 3px; }
+.qr i { background: var(--ink); opacity: 0.8; } .qr i.o { opacity: 0; }
+
+/* === 金句 === */
+.quote { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 82px;
+  line-height: 1.35; color: var(--text); margin: 70px 0 0; letter-spacing: 0; max-width: 1500px; }
+.quote .g { color: var(--ink); }
+.quote-note { font-family: var(--mono); font-size: 26px; color: var(--ink-soft); margin-top: 54px; line-height: 1.8; }
+
+/* === 三步卡片 === */
+.steps { display: flex; gap: 0; margin-top: 60px; border-top: 1.5px solid var(--ink); }
+.step { flex: 1; padding: 44px 40px 0; border-right: 1px solid var(--ink-row); }
+.step:last-child { border-right: none; }
+.step .no { font-family: var(--serif); font-style: italic; font-size: 56px; color: var(--ink); margin-bottom: 20px; }
+.step h3 { font-family: var(--sans); font-weight: 700; font-size: 42px; color: var(--text); margin: 0 0 16px; letter-spacing: 0; }
+.step p { font-family: var(--sans); font-size: 25px; line-height: 1.7; color: var(--text); margin: 0; }
+
+/* === 管道页 === */
+.pipe-track { margin-top: 70px; position: relative; }
+.pipe-clips { display: flex; gap: 10px; height: 120px; }
+.clip { border: 1.5px solid var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  font-family: var(--mono); letter-spacing: 0.1em; color: var(--ink); }
+.clip .t { font-size: 26px; } .clip .s { font-size: 16px; color: var(--ink-soft); letter-spacing: 0.06em; }
+.clip.c1, .clip.c4 { flex: 0 0 22%; background: var(--ink); color: var(--paper); }
+.clip.c1 .s, .clip.c4 .s { color: var(--paper-2); }
+.clip.c2 { flex: 0 0 18%; }
+.clip.c3 { flex: 0 0 22%; background: var(--ink-faint); }
+.clip.c5 { flex: 1; background: repeating-linear-gradient(-45deg, rgba(31,43,224,0.14) 0 8px, transparent 8px 16px); }
+.pipe-ph { position: absolute; top: -18px; bottom: -18px; width: 2.5px; background: var(--ink); animation: sweep 7s linear infinite; }
+@keyframes sweep { from { left: 3%; } to { left: 97%; } }
+
+/* === 路线图 === */
+.phases { margin-top: 56px; }
+.phase { display: flex; align-items: baseline; gap: 40px; padding: 26px 0; border-bottom: 1px solid var(--ink-row); }
+.phase.p0 { border-left: 4px solid var(--ink); padding-left: 30px; margin-left: -34px; }
+.phase .pn { font-family: var(--mono); font-size: 24px; letter-spacing: 0.2em; color: var(--ink); min-width: 200px; }
+.phase .pt { font-family: var(--sans); font-size: 31px; font-weight: 500; color: var(--text); }
+.end-big { font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 120px; color: var(--ink); margin: 80px 0 0; }
+.end-big .u { animation: recblink 1.2s steps(1) infinite; }
+
+/* === 进场动画 === */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.slide.visible .d1 { transition-delay: 0.08s; } .slide.visible .d2 { transition-delay: 0.28s; }
+.slide.visible .d3 { transition-delay: 0.48s; } .slide.visible .d4 { transition-delay: 0.68s; }
+.slide.visible .d5 { transition-delay: 0.88s; }
+
+/* === 行内编辑 === */
+.edit-hotzone { position: fixed; top: 0; left: 0; width: 80px; height: 80px; z-index: 10000; cursor: pointer; }
+.edit-toggle { position: fixed; top: 22px; left: 22px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 10001;
+  font-family: var(--mono); font-size: 15px; color: var(--ink); background: var(--paper); border: 1px solid var(--ink); border-radius: 4px; padding: 8px 14px; }
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+[contenteditable="true"] { outline: 1.5px dashed var(--ink-soft); outline-offset: 6px; }
+</style>
+</head>
+<body>
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage">
+<!--SLIDES-->
+</main>
+</div>
+
+<!-- ============================================================
+     版式模板:每类 slide 的内容结构(展示层的一部分)
+     ============================================================ -->
+
+<!-- 通用页面骨架:细线框 + 顶栏 + 内容 + storyboard 进度条 -->
+<template id="tpl-slide">
+  <section class="slide" data-seg="{{seg}}">
+    <div class="frame"></div>
+    {{deco}}
+    <div class="topbar"><span>{{top}}</span><span class="rec"><span class="rec-dot"></span>REC&nbsp;<span class="tc">{{tc}}</span></span></div>
+    <div class="content reveal d2">{{inner}}</div>
+    {{storyboard}}
+  </section>
+</template>
+
+<!-- 标题页 -->
+<template id="tpl-title">
+  <div><p class="kicker reveal">{{kicker}}</p>
+  <h2 class="hero reveal d1">{{hero}}</h2>
+  <p class="sub reveal d2">{{sub}}</p>
+  <p class="sub note-line reveal d3">{{note}}</p></div>
+</template>
+
+<!-- 三步卡片页 -->
+<template id="tpl-steps">
+  <div><p class="kicker reveal">{{kicker}}</p>
+  <h2 class="hero reveal d1">{{hero}}</h2>
+  <div class="steps">{{steps}}</div></div>
+</template>
+<template id="tpl-step">
+  <div class="step reveal {{dl}}"><div class="no">{{no}}</div><h3>{{t}}</h3><p>{{d}}</p></div>
+</template>
+
+<!-- 索引页 -->
+<template id="tpl-index">
+  <div><p class="kicker reveal">{{kicker}}</p>
+  <h2 class="hero reveal d1">{{hero}}</h2>
+  <div class="index">{{rows}}</div></div>
+</template>
+<template id="tpl-row">
+  <div class="index-row reveal {{dl}}"><span class="no">{{no}}</span><span class="grow">{{grow}}</span><span class="tag">{{tag}}</span></div>
+</template>
+
+<!-- 金句页 -->
+<template id="tpl-quote">
+  <div><p class="quote reveal d1">{{quote}}</p>{{notes}}</div>
+</template>
+<template id="tpl-quote-note">
+  <p class="quote-note reveal d3">{{line}}</p>
+</template>
+
+<!-- 管道页 -->
+<template id="tpl-pipe">
+  <div><p class="kicker reveal">{{kicker}}</p>
+  <h2 class="hero reveal d1">{{hero}}</h2>
+  <div class="pipe-track reveal d2"><div class="pipe-clips">{{clips}}</div><span class="pipe-ph"></span></div>
+  <p class="sub reveal d3">{{sub}}</p></div>
+</template>
+<template id="tpl-clip">
+  <div class="clip {{cls}}"><span class="t">{{t}}</span><span class="s">{{s}}</span></div>
+</template>
+
+<!-- 路线图页 -->
+<template id="tpl-roadmap">
+  <div><div class="phases">{{phases}}</div><p class="end-big reveal d5">{{end}}</p></div>
+</template>
+<template id="tpl-phase">
+  <div class="phase {{p0}} reveal d1"><span class="pn">{{pn}}</span><span class="pt">{{pt}}</span></div>
+</template>
+
+<!-- 装饰:像素故障列 / QR 块 -->
+<template id="deco-glitch">
+  <div class="glitch reveal d3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+</template>
+<template id="deco-qr">
+  <div class="qr reveal d4">
+    <i></i><i class="o"></i><i></i><i></i><i class="o"></i><i></i><i class="o"></i><i></i>
+    <i class="o"></i><i></i><i class="o"></i><i></i><i></i><i class="o"></i><i></i><i class="o"></i>
+    <i></i><i class="o"></i><i></i><i class="o"></i><i></i><i></i><i class="o"></i><i></i>
+    <i class="o"></i><i></i><i></i><i class="o"></i><i class="o"></i><i></i><i></i><i class="o"></i>
+    <i></i><i class="o"></i><i class="o"></i><i></i><i></i><i class="o"></i><i></i><i></i>
+    <i class="o"></i><i></i><i></i><i class="o"></i><i></i><i></i><i class="o"></i><i class="o"></i>
+    <i></i><i class="o"></i><i></i><i></i><i class="o"></i><i></i><i></i><i class="o"></i>
+    <i class="o"></i><i></i><i class="o"></i><i></i><i></i><i class="o"></i><i class="o"></i><i></i>
+  </div>
+</template>
+
+<!-- 行内编辑开关(热区悬停 400ms 显示,勿改成 CSS 兄弟选择器) -->
+<div class="edit-hotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)">✏ EDIT</button>
+
+<script>
+/* === 演示控制器:缩放 / 键盘 / 触摸 / 滚轮 / storyboard 进度 === */
+class SlidePresentation {
+  constructor() {
+    this.slides = document.querySelectorAll('.slide');
+    this.current = 0;
+    this.stage = document.getElementById('deckStage');
+    this.fit(); addEventListener('resize', () => this.fit());
+    this.keys(); this.wheel(); this.touch();
+    this.show(0);
+  }
+  fit() {
+    const f = Math.min(innerWidth / 1920, innerHeight / 1080);
+    this.stage.style.transform = `translate(${(innerWidth - 1920 * f) / 2}px, ${(innerHeight - 1080 * f) / 2}px) scale(${f})`;
+  }
+  keys() {
+    addEventListener('keydown', e => {
+      if (e.target.getAttribute('contenteditable')) return;
+      if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); this.show(this.current + 1); }
+      if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); this.show(this.current - 1); }
+    });
+  }
+  wheel() { let lock = false; addEventListener('wheel', e => { if (lock) return; lock = true; setTimeout(() => lock = false, 600); this.show(this.current + (e.deltaY > 0 ? 1 : -1)); }, { passive: true }); }
+  touch() { let x0 = null; addEventListener('touchstart', e => x0 = e.touches[0].clientX); addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) this.show(this.current + (dx < 0 ? 1 : -1)); x0 = null; }); }
+  /* storyboard:当前段实心、走过的浅填充、播放头扫到当前段 */
+  show(i) {
+    this.current = Math.max(0, Math.min(i, this.slides.length - 1));
+    this.slides.forEach((s, n) => { s.classList.toggle('active', n === this.current); s.classList.toggle('visible', n === this.current); });
+    const s = this.slides[this.current];
+    const seg = +s.dataset.seg;
+    const segs = s.querySelectorAll('.seg');
+    segs.forEach((el, n) => { el.classList.toggle('on', n === seg); el.classList.toggle('passed', n < seg); });
+    const ph = s.querySelector('.playhead');
+    if (ph && segs.length) ph.style.left = `${((seg + 0.5) / segs.length * 100)}%`;
+  }
+}
+new SlidePresentation();
+
+/* === 行内编辑:开关 + contenteditable + Ctrl+S 导出 === */
+const editor = {
+  isActive: false,
+  toggle() {
+    this.isActive = !this.isActive;
+    document.getElementById('editToggle').classList.toggle('active', this.isActive);
+    document.querySelectorAll('.slide p, .slide h2, .slide h3, .slide span.grow, .slide span.tag, .slide .pt')
+      .forEach(el => el.setAttribute('contenteditable', this.isActive));
+  },
+  save() {
+    localStorage.setItem('deck-html', document.getElementById('deckStage').innerHTML);
+    const blob = new Blob(['<!DOCTYPE html>\n' + document.documentElement.outerHTML], { type: 'text/html' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'deck-edited.html'; a.click();
+  }
+};
+document.getElementById('editToggle').addEventListener('click', () => editor.toggle());
+const hotzone = document.querySelector('.edit-hotzone'), toggle = document.getElementById('editToggle');
+let hideT = null;
+hotzone.addEventListener('mouseenter', () => { clearTimeout(hideT); toggle.classList.add('show'); });
+hotzone.addEventListener('mouseleave', () => { hideT = setTimeout(() => { if (!editor.isActive) toggle.classList.remove('show'); }, 400); });
+toggle.addEventListener('mouseenter', () => clearTimeout(hideT));
+toggle.addEventListener('mouseleave', () => { hideT = setTimeout(() => { if (!editor.isActive) toggle.classList.remove('show'); }, 400); });
+hotzone.addEventListener('click', () => editor.toggle());
+document.addEventListener('keydown', e => {
+  if ((e.key === 'e' || e.key === 'E') && !e.target.getAttribute('contenteditable')) editor.toggle();
+  if (e.ctrlKey && e.key === 's' && editor.isActive) { e.preventDefault(); editor.save(); }
+});
+</script>
+</body>
+</html>
