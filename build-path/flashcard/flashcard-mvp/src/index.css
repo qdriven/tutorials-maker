@@ -1,0 +1,676 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * 主题：shadcn 槽位变量 × vivid-dsh 色板（见 dogic/docs/flashcard-platform/tech-stack-research.md）。
+ * 所有 shadcn 组件吃 shadcn 槽位；自绘 UI 直接用 vivid 词汇（--teal-wash / --hot / --shadow-soft …）。
+ * tw4 起 CSS 变量存完整颜色值，不再存 HSL 三元组。
+ */
+:root {
+  /* shadcn 槽位 ← vivid 色板 */
+  --background: #e9f1f2; /* vivid --paper */
+  --foreground: #014e60; /* --ink */
+  --card: rgb(255 255 255 / 0.86); /* --surface-card */
+  --card-foreground: #014e60;
+  --popover: #ffffff; /* --panel */
+  --popover-foreground: #014e60;
+  --primary: #019b98; /* --teal */
+  --primary-foreground: #ffffff;
+  --secondary: #dcebec; /* --surface-progress */
+  --secondary-foreground: #014e60;
+  --muted: #dcebec;
+  --muted-foreground: #436e7d; /* --ink-3 */
+  --accent: #d5f7f5; /* --teal-soft：激活/悬停底色 */
+  --accent-foreground: #017a78; /* --teal-deep */
+  --destructive: #dd0025; /* --hot */
+  --destructive-foreground: #ffffff;
+  --border: #d6e7e9; /* --line */
+  --input: #d6e7e9;
+  --ring: #019b98;
+  --radius: 0.75rem;
+  --sidebar-background: rgb(249 253 253 / 0.72); /* --surface-sidebar */
+  --sidebar-foreground: #376f81; /* --ink-2 */
+  --sidebar-primary: #019b98;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgb(255 255 255 / 0.9); /* --surface-active */
+  --sidebar-accent-foreground: #014e60;
+  --sidebar-border: #d6e7e9;
+  --sidebar-ring: #019b98;
+
+  /* vivid 扩展词汇（自绘 UI 用，@theme inline 会映射成 utility） */
+  --paper: #e9f1f2;
+  --ink: #014e60;
+  --ink-2: #376f81;
+  --ink-3: #436e7d;
+  --ink-4: #4b707e;
+  --teal: #019b98;
+  --teal-deep: #017a78;
+  --teal-light: #55ccc9;
+  --teal-soft: #d5f7f5;
+  --teal-wash: #eefbfa;
+  --hot: #dd0025;
+  --hot-soft: #ffe3e7;
+  --hot-wash: #fff2f4;
+  --amber: #a8622a;
+  --amber-soft: #fdefe2;
+  --line: #d6e7e9;
+  --line-soft: rgb(1 78 96 / 0.07);
+  --surface-inset: #f7fcfc;
+  --surface-hover: rgb(255 255 255 / 0.52);
+  --surface-active: rgb(255 255 255 / 0.9);
+  --surface-progress: #dcebec;
+  --border-glass: rgb(255 255 255 / 0.8);
+  --border-strong: rgb(255 255 255 / 0.95);
+  --focus-ring: rgb(1 155 152 / 0.42);
+  --selection: #c1ffff;
+  --scrollbar: #c2dcdf;
+  --shadow-soft: 9px 10px 22px rgb(1 78 96 / 0.055), -7px -7px 18px rgb(255 255 255 / 0.86),
+    inset 0 1px 0 rgb(255 255 255 / 0.95);
+  --shadow-inset: inset 7px 7px 18px rgb(1 78 96 / 0.055), inset -7px -7px 18px rgb(255 255 255 / 0.9);
+  --shadow-button: 7px 7px 16px rgb(1 78 96 / 0.07), -6px -6px 14px rgb(255 255 255 / 0.88),
+    inset 0 1px 0 rgb(255 255 255 / 0.95);
+  --transition-fast: 180ms ease;
+  --transition-normal: 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* 分步演示工作台（值逐字来自 vivid styles.css light 段） */
+  --surface-step-rail: rgb(240 249 249 / 0.72);
+  --step-title: #4d8394;
+  --step-title-past: #2f6f82;
+
+  --node-core-fill: #cdf4f2;
+  --node-core-stroke: #019b98;
+  --node-core-text: #014e60;
+  --node-core-sub: #1d6b69;
+  --node-plugin-fill: #e2f7f6;
+  --node-plugin-stroke: #33b0ad;
+  --node-plugin-text: #014e60;
+  --node-plugin-sub: #23606c;
+  --node-external-fill: #e4eef1;
+  --node-external-stroke: #7aa6b3;
+  --node-external-text: #014e60;
+  --node-external-sub: #2b5f70;
+  --node-data-fill: #fbf1de;
+  --node-data-stroke: #c99a4e;
+  --node-data-text: #7a5a26;
+  --node-data-sub: #765a2c;
+  --node-idle-fill: #ffffff;
+  --node-idle-stroke: #b5cdd4;
+  /* 这三个色会再乘一层 0.78 的组透明度，所以要比目标对比度更深一档 */
+  --node-idle-text: #17495a;
+  --node-idle-sub: #1b4553;
+  --node-idle-kind: #1b4553;
+  --edge-idle: #a9c4cb;
+  --diagram-lane-fill: rgb(255 255 255 / 0.3);
+  --diagram-lane-stroke: rgb(1 78 96 / 0.1);
+
+  --log-event-text: #017a78;
+  --log-event-bg: #e0f6f6;
+  --log-call-text: #4a6fa8;
+  --log-call-bg: #e6ecf7;
+  --log-state-text: #6a7a9e;
+  --log-state-bg: #ecf0f7;
+  --log-io-text: #a8622a;
+  --log-io-bg: #fdefe2;
+  --log-warn-text: #c01432;
+
+  --code-highlight: rgb(193 255 255 / 0.5);
+  --code-key: #7a6aa8;
+  --code-string: #017a78;
+  --code-comment: #7195a2;
+  --code-function: #3f7fb8;
+  --code-number: #b57b3d;
+  --surface-code-start: #fbfefe;
+  --surface-code-end: #f2fafa;
+}
+
+.dark {
+  --background: #06171d;
+  --foreground: #e7fbfa;
+  --card: rgb(17 47 56 / 0.84);
+  --card-foreground: #e7fbfa;
+  --popover: #0d2c35;
+  --popover-foreground: #e7fbfa;
+  --primary: #3ad2cd;
+  --primary-foreground: #06171d;
+  --secondary: #183a43;
+  --secondary-foreground: #e7fbfa;
+  --muted: #183a43;
+  --muted-foreground: #91b8bf;
+  --accent: #153f45;
+  --accent-foreground: #75e8e3;
+  --destructive: #ff526d;
+  --destructive-foreground: #ffffff;
+  --border: #21444d;
+  --input: #21444d;
+  --ring: #3ad2cd;
+  --sidebar-background: rgb(8 29 37 / 0.86);
+  --sidebar-foreground: #bddbdd;
+  --sidebar-primary: #3ad2cd;
+  --sidebar-primary-foreground: #06171d;
+  --sidebar-accent: rgb(24 59 68 / 0.95);
+  --sidebar-accent-foreground: #e7fbfa;
+  --sidebar-border: #21444d;
+  --sidebar-ring: #3ad2cd;
+
+  --paper: #06171d;
+  --ink: #e7fbfa;
+  --ink-2: #bddbdd;
+  --ink-3: #91b8bf;
+  --ink-4: #759ea7;
+  --teal: #3ad2cd;
+  --teal-deep: #75e8e3;
+  --teal-light: #5dddd8;
+  --teal-soft: #153f45;
+  --teal-wash: #0e343b;
+  --hot: #ff526d;
+  --hot-soft: #49212c;
+  --hot-wash: #321a23;
+  --amber: #e0aa6a;
+  --amber-soft: #3b2b20;
+  --line: #21444d;
+  --line-soft: rgb(157 216 221 / 0.1);
+  --surface-inset: #071f27;
+  --surface-hover: rgb(56 107 116 / 0.22);
+  --surface-active: rgb(24 59 68 / 0.95);
+  --surface-progress: #183a43;
+  --border-glass: rgb(134 216 217 / 0.14);
+  --border-strong: rgb(134 216 217 / 0.22);
+  --focus-ring: rgb(93 221 216 / 0.62);
+  --selection: #174e53;
+  --scrollbar: #28535c;
+  --shadow-soft: 9px 10px 22px rgb(0 0 0 / 0.2), -6px -6px 18px rgb(36 84 93 / 0.1),
+    inset 0 1px 0 rgb(255 255 255 / 0.055);
+  --shadow-inset: inset 7px 7px 18px rgb(0 0 0 / 0.2), inset -7px -7px 18px rgb(35 81 89 / 0.08);
+  --shadow-button: 7px 7px 16px rgb(0 0 0 / 0.2), -5px -5px 14px rgb(42 91 99 / 0.08),
+    inset 0 1px 0 rgb(255 255 255 / 0.07);
+  --transition-fast: 180ms ease;
+  --transition-normal: 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* 分步演示工作台（值逐字来自 vivid styles.css dark 段） */
+  --surface-step-rail: rgb(10 37 45 / 0.82);
+  --step-title: #8db8c0;
+  --step-title-past: #9bd3d3;
+
+  --node-core-fill: #103f43;
+  --node-core-stroke: #3ad2cd;
+  --node-core-text: #e7fbfa;
+  --node-core-sub: #83d8d4;
+  --node-plugin-fill: #0f353d;
+  --node-plugin-stroke: #45bbb8;
+  --node-plugin-text: #e1f6f5;
+  --node-plugin-sub: #80c3c4;
+  --node-external-fill: #142f39;
+  --node-external-stroke: #6b95a2;
+  --node-external-text: #d7ecf0;
+  --node-external-sub: #91b3bc;
+  --node-data-fill: #392f22;
+  --node-data-stroke: #d0a25e;
+  --node-data-text: #f2d6a7;
+  --node-data-sub: #c9aa75;
+  --node-idle-fill: #0c2831;
+  --node-idle-stroke: #31535c;
+  --node-idle-text: #d3e6ea;
+  --node-idle-sub: #a8c6cd;
+  --node-idle-kind: #9bbcc4;
+  --edge-idle: #3b6069;
+  --diagram-lane-fill: rgb(30 73 82 / 0.08);
+  --diagram-lane-stroke: rgb(134 216 217 / 0.1);
+
+  --log-event-text: #7de2de;
+  --log-event-bg: #123b42;
+  --log-call-text: #a9c7ff;
+  --log-call-bg: #1c3148;
+  --log-state-text: #c0c8ec;
+  --log-state-bg: #292e45;
+  --log-io-text: #efbd85;
+  --log-io-bg: #3d2b20;
+  --log-warn-text: #ff91a1;
+
+  --code-highlight: rgb(58 210 205 / 0.14);
+  --code-key: #c6a7ef;
+  --code-string: #82ded9;
+  --code-comment: #769da5;
+  --code-function: #8abbe8;
+  --code-number: #e4b77d;
+  --surface-code-start: #0a2730;
+  --surface-code-end: #071f27;
+}
+
+@theme inline {
+  /* shadcn 槽位 → utility（bg-background / text-foreground / …） */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* vivid 词汇 → utility（bg-teal-wash / text-ink-3 / …） */
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+  --color-teal: var(--teal);
+  --color-teal-deep: var(--teal-deep);
+  --color-teal-light: var(--teal-light);
+  --color-teal-soft: var(--teal-soft);
+  --color-teal-wash: var(--teal-wash);
+  --color-hot: var(--hot);
+  --color-hot-soft: var(--hot-soft);
+  --color-hot-wash: var(--hot-wash);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-line-soft: var(--line-soft);
+  --color-surface-inset: var(--surface-inset);
+  --color-surface-active: var(--surface-active);
+
+  /* radius 斜坡（原 tailwind.config borderRadius） */
+  --radius-xs: calc(var(--radius) - 6px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* 字体（fontsource 变量字体，中文回退） */
+  --font-sans: "Geist Variable", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, monospace;
+
+  /* 原 tailwind.config 里的自定义动画，不声明则 accordion / input-otp 静默失动画 */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-caret-blink: caret-blink 1.25s ease-out infinite;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@keyframes caret-blink {
+  0%,
+  70%,
+  100% {
+    opacity: 1;
+  }
+  20%,
+  50% {
+    opacity: 0;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--selection);
+    color: var(--ink);
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  html {
+    background: var(--paper);
+  }
+}
+
+/*
+ * vivid 移植的软表面语言（token 驱动，双主题自适应）
+ */
+.soft-card {
+  border: 1px solid var(--border-glass);
+  background: var(--card);
+  box-shadow: var(--shadow-soft);
+}
+
+.soft-inset {
+  background: var(--surface-inset);
+  box-shadow: var(--shadow-inset);
+}
+
+.control-kbd {
+  border-radius: 0.45rem;
+  padding: 0.15rem 0.42rem;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  background: var(--surface-active);
+  box-shadow: inset 0 0 0 1px var(--line-soft);
+}
+
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar) transparent;
+}
+
+.thin-scroll::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.thin-scroll::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  background: var(--scrollbar);
+}
+
+.thin-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 软表面的全局缓动（vivid 260ms 同款） */
+.soft-card,
+.soft-inset,
+.control-kbd,
+.step-rail,
+.step-rail-item,
+.step-rail-number,
+.code-surface {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+  transition-duration: 260ms;
+  transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .flow-dot,
+  .node-pulse-ring {
+    display: none;
+  }
+}
+
+/*
+ * :::stage 分步演示工作台（规则逐字来自 vivid styles.css，
+ * 仅 --surface-button→--surface-active、字体 token 名随本项目约定）
+ */
+
+/* 步进条：横向滚动为基础形态，[data-orientation="vertical"] 时竖排（≥xl 由组件设置） */
+.step-rail {
+  display: flex;
+  min-width: 0;
+  gap: 0.25rem;
+  overflow-x: auto;
+  border-radius: 1.25rem;
+  padding: 0.5rem;
+  background: var(--surface-step-rail);
+}
+
+.step-rail[data-orientation="vertical"] {
+  height: min(430px, 48vh);
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* 步骤多时这里会溢出，渐隐是唯一的「下面还有」信号 */
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 22px), transparent);
+}
+
+.step-rail-label {
+  display: none;
+  padding: 0.25rem 0.375rem 0.5rem 0.625rem;
+  color: var(--ink-3);
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.step-rail[data-orientation="vertical"] .step-rail-label {
+  display: block;
+}
+
+.step-rail-item {
+  display: grid;
+  min-height: 46px;
+  min-width: 172px;
+  grid-template-columns: 28px 1fr;
+  align-items: center;
+  gap: 0.625rem;
+  border: 1px solid transparent;
+  border-radius: 0.875rem;
+  padding: 0.55rem 0.7rem;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+  transition: color var(--transition-fast), background-color var(--transition-fast),
+    box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.step-rail[data-orientation="vertical"] .step-rail-item {
+  min-width: 0;
+  width: 100%;
+}
+
+.step-rail-item:hover:not(.step-rail-item--current) {
+  background: var(--surface-hover);
+}
+
+.step-rail-item:active {
+  transform: scale(0.985);
+}
+
+.step-rail-item--current {
+  border-color: var(--border-strong);
+  background: var(--surface-active);
+  box-shadow: var(--shadow-button);
+}
+
+.step-rail-number {
+  display: grid;
+  min-height: 24px;
+  place-items: center;
+  border-radius: 0.5rem;
+  color: var(--ink-3);
+  background: var(--surface-active);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+.step-rail-number.is-current {
+  color: #fff;
+  background: var(--hot);
+}
+
+.step-rail-number.is-past {
+  color: var(--teal-deep);
+  background: var(--teal-soft);
+}
+
+.step-rail-title {
+  color: var(--step-title);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.step-rail-title.is-current {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.step-rail-title.is-past {
+  color: var(--step-title-past);
+}
+
+/* 节点脉冲环（StageDiagram live 节点） */
+@keyframes node-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}
+
+.node-pulse-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: node-ring 0.9s ease-out 1;
+}
+
+/* 当前动作 pill（图区顶部居中） */
+.current-flow {
+  position: absolute;
+  z-index: 2;
+  top: 0.75rem;
+  left: 50%;
+  display: flex;
+  max-width: calc(100% - 2rem);
+  min-height: 34px;
+  align-items: center;
+  gap: 0.65rem;
+  transform: translateX(-50%);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--surface-active) 92%, transparent);
+  box-shadow: var(--shadow-button);
+  backdrop-filter: blur(14px);
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  pointer-events: none;
+}
+
+.current-flow strong {
+  overflow: hidden;
+  color: var(--teal-deep);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 650;
+  text-overflow: ellipsis;
+}
+
+/* 累积运行日志 */
+.log-line {
+  display: grid;
+  grid-template-columns: 3.625rem 1fr;
+  gap: 0.625rem;
+  align-items: start;
+  padding: 0.2rem 0.75rem;
+  border-radius: 0.65rem;
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.log-tag {
+  display: block;
+  border-radius: 0.45rem;
+  padding: 0.1rem 0;
+  text-align: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.log-line[data-kind="event"] .log-tag { color: var(--log-event-text); background: var(--log-event-bg); }
+.log-line[data-kind="call"] .log-tag { color: var(--log-call-text); background: var(--log-call-bg); }
+.log-line[data-kind="state"] .log-tag { color: var(--log-state-text); background: var(--log-state-bg); }
+.log-line[data-kind="io"] .log-tag { color: var(--log-io-text); background: var(--log-io-bg); }
+.log-line[data-kind="ok"] .log-tag { color: var(--teal-deep); background: var(--teal-soft); }
+.log-line[data-kind="warn"] .log-tag { color: var(--log-warn-text); background: var(--hot-soft); }
+
+@media (max-width: 639px) {
+  .log-line {
+    grid-template-columns: 3.25rem 1fr;
+    gap: 0.5rem;
+    padding-inline: 0.55rem;
+  }
+}
+
+/* 代码面（与图同屏的内联面板） */
+.code-surface {
+  border: 1px solid var(--line-soft);
+  background: linear-gradient(168deg, var(--surface-code-start) 0%, var(--surface-code-end) 100%);
+}
+
+.code-line {
+  display: grid;
+  grid-template-columns: 2.125rem 1fr;
+  gap: 0.75rem;
+  border-radius: 0.5rem;
+  padding: 0.05rem 1rem 0.05rem 0;
+}
+
+.code-line[data-hl="true"] {
+  background: var(--code-highlight);
+  box-shadow: inset 3px 0 0 var(--teal);
+}
+
+/* 长行要横滚，行号得留在原地，否则滚出去之后没有定位锚点 */
+.code-line > span:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: inherit;
+}
+
+.tok-key { color: var(--code-key); }
+.tok-str { color: var(--code-string); }
+.tok-com { color: var(--code-comment); font-style: italic; }
+.tok-fn { color: var(--code-function); }
+.tok-num { color: var(--code-number); }

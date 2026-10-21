@@ -1,0 +1,42 @@
+@import "@innate/ui/globals.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --primary: oklch(0.511 0.096 186.391);
+  --primary-foreground: oklch(0.984 0.014 180.72);
+  --radius: 0.45rem;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* ── 三区播放器 ─────────────────────────────────────────────── */
+
+/* 课件画布保持浅色：Slidev 默认主题是浅底，避免暗色模式下出现黑边 */
+.slides-frame {
+  background: #fff;
+  color-scheme: light;
+}
+
+/* AI 助教（CopilotKit ChatPopup 样式变量对齐 @innate/ui token） */
+.lwb-chat {
+  --copilot-kit-primary-color: var(--primary);
+  --copilot-kit-secondary-color: var(--background);
+  --copilot-kit-background-color: var(--background);
+  --copilot-kit-foreground-color: var(--foreground);
+  --copilot-kit-muted-color: var(--muted-foreground);
+  --copilot-kit-border-color: var(--border);
+  --copilot-kit-border-radius: 10px;
+}
+
+.lwb-chat [data-copilot-chat-panel] {
+  height: 100%;
+}

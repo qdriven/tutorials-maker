@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.next/
+.env
+.env.local
+*.tsbuildinfo
+# Slidev 构建产物（由 scripts/build-slides.mjs 生成）
+public/slides/
