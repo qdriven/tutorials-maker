@@ -27,7 +27,7 @@ body {
 }
 
 /* AI 助教（CopilotKit ChatPopup 样式变量对齐 @innate/ui token） */
-.lwb-chat {
+.slides-chat {
   --copilot-kit-primary-color: var(--primary);
   --copilot-kit-secondary-color: var(--background);
   --copilot-kit-background-color: var(--background);
@@ -37,6 +37,6 @@ body {
   --copilot-kit-border-radius: 10px;
 }
 
-.lwb-chat [data-copilot-chat-panel] {
+.slides-chat [data-copilot-chat-panel] {
   height: 100%;
 }

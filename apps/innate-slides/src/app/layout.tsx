@@ -4,7 +4,7 @@ import "@copilotkit/react-ui/styles.css"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "learn-workbuddy · 互动课件",
+  title: "Innate Slides · 课件与静态 slides 播放器",
   description:
     "从 0 手搓桌面 AI 助手 24 课的交互式播放器：中央课件 + 右侧要点 + 底部 AI 助教。",
 }

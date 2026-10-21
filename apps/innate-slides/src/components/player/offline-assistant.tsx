@@ -93,7 +93,7 @@ function offlineGreeting(lesson: LessonContent): string {
     "当前没有配置 ANTHROPIC_API_KEY，我在本地对本课内容做关键词检索。",
     "你可以试试：本课机制 / 常见误区 / stop_reason 等关键词。",
     "",
-    "启用完整 AI 助教：复制 apps/lwb-player/.env.example 为 .env，填入任意",
+    "启用完整 AI 助教：复制 apps/innate-slides/.env.example 为 .env，填入任意",
     "Anthropic 兼容 Provider（Anthropic / GLM / DeepSeek / Kimi / MiniMax）的 key。",
   ].join("\n")
 }

@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <main className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-8 bg-background px-6 py-12 text-foreground">
       <header>
-        <h1 className="text-2xl font-semibold tracking-tight">lwb-player</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">innate-slides</h1>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
           课件播放器 · 两种形态：Slidev 互动课件（要点 + AI 助教联动）与静态 HTML deck 直出预览。
         </p>

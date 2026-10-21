@@ -1,6 +1,6 @@
-# LWB Player · learn-workbuddy 互动课件播放器
+# Innate Slides · 课件与静态 slides 播放器
 
-把 learn-workbuddy（《从 0 手搓桌面 AI 助手》24 课，MIT，源仓库在 `tutorials/learn-workbuddy`）
+（原名 lwb-player）把 learn-workbuddy（《从 0 手搓桌面 AI 助手》24 课，MIT，源仓库在 `tutorials/learn-workbuddy`）
 变成**交互式教学模式**：中央 Slidev 课件 + 右侧本课要点 + 底部 AI 助教，三区联动；
 同时内置**静态 Deck 预览**：任意自包含 HTML slides 文件（如 frontend-slides skill 的产物）放进来即可播放。
 
@@ -64,7 +64,7 @@ UI 基座 `@innate/ui` 通过 `file:` 指向 innate-fe monorepo：
 file:../../../framework/innate-fe/packages/ui
 ```
 
-即 `<repo>/../../framework/innate-fe/packages/ui`（本应用位于 `apps/lwb-player` 时成立，
+即 `<repo>/../../framework/innate-fe/packages/ui`（本应用位于 `apps/innate-slides` 时成立，
 如 `D:\innate-workspace\framework\innate-fe\packages\ui`；源码直出，
 `next.config.js` 里 `transpilePackages` 负责转译）。monorepo 位置变动时只需
 改 `package.json` 里这一行；git worktree 等相对路径不达的场景，可在仓库上级目录建
@@ -103,7 +103,7 @@ cp .env.example .env
 ## 结构
 
 ```
-lwb-player/
+innate-slides/
 ├── slides/               # Slidev 课件源（每课一份，文件名 = 课程 id）
 ├── decks/                # 静态 deck 源（自包含 HTML，文件名 = deck id）
 ├── scripts/
@@ -131,6 +131,38 @@ lwb-player/
 2. **占位**：没有课件的课仍可打开 —— 右侧要点与底部助教照常工作，中央显示构建指引。
 
 第三种：**静态 HTML deck** 直接丢进 `decks/`（见上文「静态 Deck 预览」），不用写 Slidev。
+
+## 部署到 GitHub Pages
+
+静态导出模式：`STATIC_EXPORT=1` 时 `next.config.js` 切换为 `output: export` + `trailingSlash`
++ `basePath`（自动取自仓库名，如 `/tutorials-maker`）；`src/app/api`（CopilotKit 路由，
+不兼容静态导出）构建期间自动移走、构建后恢复；AI 助教在静态站上自动走离线模式。
+产物直接输出在 `dist/`。
+
+两条部署路线：
+
+### A. 本地一键（无需任何 secret，推荐先用这条）
+
+```bash
+pnpm pages:deploy          # 构建 + force push 产物到 origin 的 gh-pages 分支
+pnpm pages:build           # 只构建不推送（产物在 dist/，可本地起服务检查）
+# 可选：--dry-run（走到 push 前停）、--base /前缀（覆盖自动推导的 basePath）
+```
+
+推完在 GitHub 仓库 **Settings → Pages → Deploy from a branch → `gh-pages` / `(root)`** 打开一次即可。
+
+### B. GitHub Actions 自动部署（`.github/workflows/pages.yml`）
+
+push 到 `main`（改动 `apps/innate-slides/**` 时）自动构建并用 actions/deploy-pages 发布。
+前提：`@innate/ui` 的源仓库 [variableway/innate-fe](https://github.com/variableway/innate-fe)
+是私有的 —— 需要在仓库 **Settings → Secrets and variables → Actions** 添加
+`INNATE_FE_TOKEN`（可读该仓库的 PAT）。没配 secret 时工作流会明确报错并提示改用方式 A。
+
+### 已知边界
+
+- 静态站上 AI 助教是离线模式（无 `/api/copilotkit`），课件与静态 deck 预览不受影响
+- `/lessons` 页面的课件 iframe、`/decks` 的 iframe/fetch 都已带 basePath 前缀，
+  在 `/<repo>/` 子路径下正常工作（已用本地静态服务器模拟 Pages 验证）
 
 ## 归属
 

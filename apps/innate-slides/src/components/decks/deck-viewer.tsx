@@ -14,6 +14,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import { Button } from "@innate/ui"
 
+import { withBasePath } from "@/lib/base-path"
 import type { DeckEntry } from "@/lib/decks-manifest"
 
 const DECK_ASPECT = 16 / 9
@@ -122,7 +123,7 @@ export function DeckViewer({ deck }: { deck: DeckEntry }) {
           <iframe
             ref={frameRef}
             key={deck.id}
-            src={deck.href}
+            src={withBasePath(deck.href)}
             title={`${deck.title} · 静态 deck`}
             className="h-full w-full border-0"
             allow="fullscreen"
@@ -159,7 +160,7 @@ export function DeckViewer({ deck }: { deck: DeckEntry }) {
           variant="ghost"
           size="icon-sm"
           aria-label="新标签页打开 deck"
-          onClick={() => window.open(deck.href, "_blank")}
+          onClick={() => window.open(withBasePath(deck.href), "_blank")}
         >
           <ExternalLink className="size-4" aria-hidden="true" />
         </Button>

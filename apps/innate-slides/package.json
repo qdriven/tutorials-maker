@@ -1,5 +1,5 @@
 {
-  "name": "lwb-player",
+  "name": "innate-slides",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@12.11.2",
@@ -13,7 +13,9 @@
     "test": "vitest run",
     "content:build": "tsx scripts/build-content.ts",
     "slides:build": "node scripts/build-slides.mjs",
-    "decks:build": "node scripts/build-decks.mjs"
+    "decks:build": "node scripts/build-decks.mjs",
+    "pages:build": "node scripts/deploy-pages.mjs --build-only",
+    "pages:deploy": "node scripts/deploy-pages.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.134.0",
@@ -32,6 +34,7 @@
     "@slidev/cli": "^53.0.0",
     "@slidev/theme-default": "^0.25.0",
     "@tailwindcss/postcss": "^4.2.4",
+    "@types/node": "26.6.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "oxlint": "^1.88.0",

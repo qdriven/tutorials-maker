@@ -134,7 +134,7 @@ function ChatWiring({
   })
 
   return (
-    <div className="lwb-chat min-h-0 flex-1 px-3 pb-3">
+    <div className="slides-chat min-h-0 flex-1 px-3 pb-3">
       <CopilotChat
         className="h-full"
         instructions={TUTOR_INSTRUCTIONS}

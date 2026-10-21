@@ -1,0 +1,96 @@
+# innate-slides → GitHub Pages
+#
+# 两种部署方式（详见 apps/innate-slides/README.md「部署到 GitHub Pages」）：
+#   A. 本地一键：pnpm pages:deploy（无需任何 secret，force push gh-pages 分支）
+#   B. 本工作流：push 到 main 自动构建部署（Actions 方式）
+#      前提：innate-fe 是私有仓库，需在仓库 Settings → Secrets and variables → Actions
+#      添加 INNATE_FE_TOKEN = 可读 variableway/innate-fe 的 PAT（repo 权限）。
+#      没配 secret 时工作流会明确报错提示改用方式 A。
+
+name: Deploy innate-slides to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/innate-slides/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/innate-slides
+    steps:
+      - name: 检查 INNATE_FE_TOKEN
+        if: ${{ secrets.INNATE_FE_TOKEN == '' }}
+        run: |
+          echo "::error::缺少 INNATE_FE_TOKEN secret（@innate/ui 的源仓库 variableway/innate-fe 是私有的）。请在 Settings → Secrets and variables → Actions 添加一个可读该仓库的 PAT；或改用本地部署：pnpm pages:deploy"
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - name: Checkout innate-fe 到 file: 依赖期望的位置
+        uses: actions/checkout@v4
+        with:
+          repository: variableway/innate-fe
+          token: ${{ secrets.INNATE_FE_TOKEN }}
+          path: innate-fe-tmp
+
+      - name: 摆放到 apps/innate-slides/../../../framework/innate-fe
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/../framework"
+          mv "$GITHUB_WORKSPACE/apps/innate-slides/innate-fe-tmp" "$GITHUB_WORKSPACE/../framework/innate-fe"
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: apps/innate-slides/pnpm-lock.yaml
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 构建内容产物（课件 + 静态 deck）
+        run: |
+          node scripts/build-slides.mjs
+          node scripts/build-decks.mjs
+
+      - name: 移除 API 路由（不兼容静态导出）
+        run: rm -rf src/app/api
+
+      - name: 静态导出（basePath = /${{ github.event.repository.name }}）
+        env:
+          STATIC_EXPORT: "1"
+          PAGES_BASE_PATH: /${{ github.event.repository.name }}
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+        run: pnpm exec next build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/innate-slides/dist/export
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

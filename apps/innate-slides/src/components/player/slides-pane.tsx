@@ -14,6 +14,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 import { Button } from "@innate/ui"
 
+import { withBasePath } from "@/lib/base-path"
 import { deckTitles } from "@/lib/slides-manifest"
 
 /** Slidev 默认画布 980×552 ≈ 16:9；课件源如改 canvasWidth 需同步这里 */
@@ -61,7 +62,7 @@ export function SlidesPane({
   // 课件产物是否存在（dev 下 --if-missing 可能尚未构建）
   useEffect(() => {
     let cancelled = false
-    fetch(`/slides/${lessonId}/index.html`, { method: "HEAD" })
+    fetch(withBasePath(`/slides/${lessonId}/index.html`), { method: "HEAD" })
       .then((response) => {
         if (!cancelled) {
           setDeckReady(response.ok)
@@ -81,11 +82,11 @@ export function SlidesPane({
   const handleFrameLoad = useCallback(() => {
     try {
       const doc = frameRef.current?.contentDocument
-      if (!doc || doc.getElementById("lwb-embed-style")) {
+      if (!doc || doc.getElementById("innate-slides-embed-style")) {
         return
       }
       const style = doc.createElement("style")
-      style.id = "lwb-embed-style"
+      style.id = "innate-slides-embed-style"
       style.textContent =
         "#page-root nav, #app nav, body > nav { display: none !important; }"
       doc.head.appendChild(style)
@@ -155,7 +156,7 @@ export function SlidesPane({
             可以直接使用右侧与底部区域。
           </p>
           <p className="mt-3 rounded-lg bg-muted/60 px-3 py-2 font-mono text-xs">
-            pnpm --filter @innate/lwb-player slides:build
+            pnpm slides:build（apps/innate-slides 下）
           </p>
         </div>
       </div>
@@ -169,7 +170,7 @@ export function SlidesPane({
           <iframe
             ref={frameRef}
             key={lessonId}
-            src={`/slides/${lessonId}/index.html`}
+            src={withBasePath(`/slides/${lessonId}/index.html`)}
             title={`${lessonId} 课件`}
             className="slides-frame h-full w-full border-0"
             allow="fullscreen"
@@ -205,7 +206,7 @@ export function SlidesPane({
           variant="ghost"
           size="icon-sm"
           aria-label="新标签页打开课件"
-          onClick={() => window.open(`/slides/${lessonId}/index.html`, "_blank")}
+          onClick={() => window.open(withBasePath(`/slides/${lessonId}/index.html`), "_blank")}
         >
           <ExternalLink className="size-4" aria-hidden="true" />
         </Button>

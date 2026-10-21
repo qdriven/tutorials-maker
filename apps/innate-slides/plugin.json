@@ -1,16 +1,18 @@
 {
   "protocol": "innate.plugin.v1",
-  "id": "lwb-player",
+  "id": "innate-slides",
   "kind": "iframe",
   "category": "apps",
   "version": "0.1.0",
-  "name": "LWB Interactive Lessons",
+  "name": "Innate Slides",
   "runtime": "iframe",
   "iframeSrc": "http://localhost:4013/",
-  "origins": ["http://localhost:4013"],
+  "origins": [
+    "http://localhost:4013"
+  ],
   "ui": {
     "nav": {
-      "label": "互动课件",
+      "label": "Slides 播放",
       "icon": "Presentation",
       "order": 40
     }
