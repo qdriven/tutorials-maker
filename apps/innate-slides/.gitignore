@@ -10,3 +10,5 @@ public/slides/
 public/decks/
 # Next 16 dev 自动生成的 agent 说明文件
 AGENTS.md
+# deploy-pages.mjs 构建期间移走 api 路由的备份位置(异常残留时不应入库)
+.api-pages-backup/
