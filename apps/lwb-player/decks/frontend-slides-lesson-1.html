@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>把文档变成网页幻灯片 — frontend-slides 入门</title>
+
+<!-- === FONTS: Google Fonts only (skill rule: never system fonts) ===
+     Broadside CJK pairing (design.md CJK section):
+       display/body -> 思源宋体 Noto Serif SC (900 display / 400-500 body)
+       chrome       -> 思源黑体 Noto Sans SC 500 (no tracking, no uppercase)
+       Latin display/mono chrome -> Barlow 900 / IBM Plex Mono (uppercase, 0.14em) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================
+   THEME: BROADSIDE (bold-template-pack)
+   火焰橙 × 墨黑 双寄存器编辑海报系统
+   深色页 = 内容页;橙色页 = 封面 / 章节 / 宣言 / 结尾
+   1920×1080 固定舞台,整体缩放,不按设备重排
+   =========================================== */
+:root {
+    /* --- Broadside palette (from design.md) --- */
+    --ink: #111111;            /* 深色寄存器画布 / 橙页上的文字 */
+    --ink-alt: #1A1A18;        /* 深色寄存器次级表面 */
+    --fire: #E85D26;           /* 火焰橙:深色页唯一强调色,橙色页即环境 */
+    --cream: #F0ECE5;          /* 深色页主文字(暖白,非纯白) */
+    --cream-muted: #888880;    /* 深色页次级文字 */
+    --cream-hint: #505048;     /* 深色页三级文字 / 图表轴 */
+    --border-dark: #282826;    /* 深色页 1px 发丝线 */
+    --ink-75: rgba(17, 17, 17, 0.75);   /* 橙页正文 */
+    --ink-55: rgba(17, 17, 17, 0.55);   /* 橙页次级 */
+    --ink-45: rgba(17, 17, 17, 0.45);   /* 橙页目录号 */
+    --ink-40: rgba(17, 17, 17, 0.40);
+    --ink-20: rgba(17, 17, 17, 0.20);   /* 橙页发丝线 */
+
+    /* --- Typography: authored at 1920×1080 stage size ---
+       vw tokens translated to stage px (13vw=250px, 4.5vw=86px …) then
+       CJK-adjusted: line-height +20%, letter-spacing 0, no uppercase */
+    --font-display: 'Noto Serif SC', serif;          /* 中文大字:重宋 = 印刷海报 */
+    --font-latin-display: 'Barlow', 'Noto Serif SC', sans-serif;  /* 纯拉丁/数字 */
+    --font-body: 'Noto Serif SC', serif;             /* 正文(机构化选择) */
+    --font-chrome: 'Noto Sans SC', sans-serif;       /* 中文 chrome:无字距无大写 */
+    --font-mono: 'IBM Plex Mono', 'Noto Sans SC', monospace; /* 拉丁 mono chrome */
+
+    --size-display: 220px;    /* 封面级大字(两行) */
+    --size-display-lg: 240px; /* 章节大字(短词) */
+    --size-h1: 144px;
+    --size-h2: 84px;
+    --size-h3: 52px;
+    --size-stat: 104px;
+    --size-lead: 31px;
+    --size-body: 23px;
+    --size-caption: 17px;
+    --size-label: 15px;       /* chrome 标签(中文略大于拉丁 0.72vw) */
+
+    /* --- Spacing (5.5vw/5.5vh at stage size) --- */
+    --pad-x: 106px;
+    --pad-y: 64px;
+    --gap-lg: 38px;
+    --gap-md: 22px;
+    --gap-sm: 11px;
+
+    /* --- Motion --- */
+    --ease-slide: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur-enter: 0.55s;
+
+    /* viewport-base.css hooks: letterbox matches dark register */
+    --stage-bg: #111111;
+    --slide-bg: #111111;
+}
+
+/* === BASE: reset === */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* === BASE: viewport-base.css (mandatory, full contents) === */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+
+.deck-viewport {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    background: var(--stage-bg, #000);
+}
+
+.deck-stage {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    transform-origin: 0 0;
+    background: var(--slide-bg, #fff);
+}
+
+.slide {
+    position: absolute;
+    inset: 0;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    background: var(--slide-bg, #fff);
+}
+
+.slide.active,
+.slide.visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
+img,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.deck-controls {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+@media print {
+    html,
+    body {
+        width: 1920px;
+        height: auto;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-viewport {
+        position: static;
+        overflow: visible;
+        background: #fff;
+    }
+
+    .deck-stage {
+        position: static;
+        width: auto;
+        height: auto;
+        transform: none !important;
+        background: none;
+    }
+
+    .slide {
+        position: relative;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        width: 1920px;
+        height: 1080px;
+        break-after: page;
+        page-break-after: always;
+    }
+
+    .slide:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+
+    .deck-controls {
+        display: none !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.2s !important;
+    }
+}
+/* === end viewport-base.css === */
+
+/* ===========================================
+   REGISTERS: 深色页(默认)与橙色页
+   橙色页永远墨字("ink on fire"),不存在乳白页
+   =========================================== */
+.slide-dark { background: var(--ink); }
+.slide-orange { background: var(--fire); }
+
+/* ===========================================
+   SLIDE INNER FRAME: 统一页边距(声明页取消 chrome,但保留内边距)
+   =========================================== */
+.frame {
+    position: absolute;
+    inset: 0;
+    padding: var(--pad-y) var(--pad-x);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===========================================
+   CHROME: 内容页顶栏 / 底栏(1px 发丝线)
+   封面 / 章节 / 宣言 / 结尾页不使用
+   =========================================== */
+.slide-chrome {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: var(--gap-sm);
+    border-bottom: 1px solid var(--border-dark);
+    margin-bottom: var(--gap-md);
+    font-family: var(--font-chrome);
+    font-size: var(--size-label);
+    color: var(--cream-muted);
+    letter-spacing: 0.1em;
+}
+.slide-orange .slide-chrome,
+.slide-orange .slide-foot {
+    border-color: var(--ink-20);
+    color: var(--ink-55);
+}
+.slide-foot {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: var(--gap-sm);
+    border-top: 1px solid var(--border-dark);
+    font-family: var(--font-chrome);
+    font-size: var(--size-label);
+    color: var(--cream-hint);
+    letter-spacing: 0.1em;
+}
+.slide-orange .slide-foot { color: var(--ink-55); }
+
+/* 声明页(封面/结尾)的底栏:置于绝对底部,不依赖 flex 推挤 */
+.slide-foot--abs {
+    position: absolute;
+    left: var(--pad-x);
+    right: var(--pad-x);
+    bottom: var(--pad-y);
+    margin-top: 0;
+    border-color: var(--ink-20);
+}
+
+/* ===========================================
+   KICKER / TAG / RULE: mono 铅橙眉题、边框标签、短橙杠
+   =========================================== */
+.kicker {
+    font-family: var(--font-mono);
+    font-size: var(--size-label);
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;      /* 仅拉丁 chrome;中文运行时不加 */
+    color: var(--fire);
+}
+.kicker-cn {
+    font-family: var(--font-chrome);
+    text-transform: none;
+    letter-spacing: 0.22em;
+    color: var(--fire);
+    font-size: var(--size-label);
+    font-weight: 500;
+}
+.slide-orange .kicker { color: var(--ink-55); }
+.slide-orange .kicker-cn { color: var(--ink-55); }
+
+.rule {
+    width: 36px;
+    height: 2px;
+    background: var(--fire);
+    margin: var(--gap-sm) 0 var(--gap-md);
+}
+.slide-orange .rule { background: var(--ink); }
+
+.tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--size-label);
+    letter-spacing: 0.14em;
+    color: var(--fire);
+    border: 1px solid var(--fire);
+    padding: 0.3em 0.8em;
+}
+.slide-orange .tag { color: var(--ink-40); border-color: var(--ink-40); }
+
+/* ===========================================
+   TYPE SCALE: 大字(CJK 调整:行高放开、字距归零)
+   =========================================== */
+.display {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: var(--size-display);
+    line-height: 1.18;        /* CJK:0.88 → 1.18 */
+    letter-spacing: 0;        /* CJK:负字距会叠笔锋 */
+    color: var(--cream);
+}
+.display-lg {
+    font-size: var(--size-display-lg);
+    line-height: 1.12;
+}
+.slide-orange .display { color: var(--ink); }
+
+.h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--size-h2);
+    line-height: 1.28;
+    letter-spacing: 0;
+    color: var(--cream);
+}
+.slide-orange .h2 { color: var(--ink); }
+
+.h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--size-h3);
+    line-height: 1.35;
+    color: var(--cream);
+}
+
+.lead {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: var(--size-lead);
+    line-height: 1.8;         /* CJK:1.5 → 1.8 */
+    color: var(--cream-muted);
+}
+.slide-orange .lead { color: var(--ink-75); }
+
+.body-text {
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    line-height: 1.8;
+    color: var(--cream-muted);
+}
+.slide-orange .body-text { color: var(--ink-75); }
+
+.caption {
+    font-family: var(--font-chrome);
+    font-size: var(--size-caption);
+    line-height: 1.6;
+    color: var(--cream-hint);
+    letter-spacing: 0.04em;
+}
+.slide-orange .caption { color: var(--ink-55); }
+
+/* 橙页目录号(出版物目录标记,锚在左上) */
+.broadside-num {
+    position: absolute;
+    top: var(--pad-y);
+    left: var(--pad-x);
+    font-family: var(--font-mono);
+    font-size: 21px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--ink-45);
+}
+
+/* ===========================================
+   STAT CARD: 仅顶边框的数据卡
+   =========================================== */
+.stat-card {
+    border-top: 1px solid var(--border-dark);
+    padding: var(--gap-md) var(--gap-md) var(--gap-md) 0;
+}
+.stat-value {
+    font-family: var(--font-latin-display);  /* 纯数字走 Barlow 900 */
+    font-weight: 900;
+    font-size: var(--size-stat);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--fire);
+}
+.stat-label {
+    font-family: var(--font-body);
+    font-size: var(--size-body);
+    line-height: 1.6;
+    color: var(--cream);
+    margin-top: var(--gap-sm);
+}
+.stat-note {
+    font-family: var(--font-chrome);
+    font-size: var(--size-caption);
+    color: var(--cream-hint);
+    margin-top: 6px;
+    letter-spacing: 0.04em;
+}
+
+/* ===========================================
+   BULLET LIST: 橙色 mono「/」标记,每页至多三条
+   =========================================== */
+.blist { list-style: none; }
+.blist li {
+    position: relative;
+    font-family: var(--font-body);
+    font-size: var(--size-lead);
+    line-height: 1.75;
+    color: var(--cream);
+    padding-left: 56px;
+    margin-bottom: var(--gap-md);
+}
+.blist li::before {
+    content: "/";
+    position: absolute;
+    left: 0;
+    top: 0.12em;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: var(--size-lead);
+    color: var(--fire);
+}
+.slide-orange .blist li { color: var(--ink-75); }
+.slide-orange .blist li::before { color: var(--ink-45); }
+
+/* ===========================================
+   COMPARE PANELS: 1px 中缝;右板可整块填橙(「之后」侧)
+   =========================================== */
+.compare {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+.compare-left {
+    flex: 1;
+    padding-right: 58px;
+    border-right: 1px solid var(--border-dark);
+}
+.compare-right {
+    flex: 1;
+    padding-left: 58px;
+}
+/* 橙色右侧板:背景填满火焰橙,并向右出血到页缘(frame 内边距处对齐文字) */
+.compare-right.compare-orange {
+    background: var(--fire);
+    margin-right: calc(-1 * var(--pad-x));
+    padding-right: var(--pad-x);
+}
+.slide-orange .compare-left { border-color: var(--ink-20); }
+
+/* 三栏比较的中栏:左右各留缝,右侧发丝线 */
+.compare-mid {
+    flex: 1;
+    padding: 0 58px;
+    border-right: 1px solid var(--border-dark);
+}
+
+/* 橙色 compare 面板内部的文字规则("ink on fire") */
+.compare-orange .h3,
+.compare-orange .body-text,
+.compare-orange .caption { color: var(--ink-75); }
+.compare-orange .stat-note,
+.compare-orange .kicker { color: var(--ink-55); }
+.compare-orange .blist li::before { color: var(--ink-45); }
+
+/* ===========================================
+   CODE BLOCK: ink-alt 表面上的 mono 命令卡
+   =========================================== */
+.codeblock {
+    background: var(--ink-alt);
+    border-left: 2px solid var(--fire);
+    padding: 20px 24px;
+    font-family: var(--font-mono);
+    font-size: 19px;
+    line-height: 1.75;
+    color: var(--cream);
+    letter-spacing: 0.01em;
+    word-break: break-all;
+}
+.codeblock .prompt { color: var(--fire); }
+.codeblock .comment { color: var(--cream-hint); }
+.slide-orange .codeblock { background: rgba(17,17,17,0.08); border-left-color: var(--ink); color: var(--ink-75); }
+
+/* ===========================================
+   STEP FLOW / PHASE GRID: 顶边框小卡组成的流程
+   =========================================== */
+.phase-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: var(--gap-md);
+    row-gap: var(--gap-lg);
+}
+.phase-card {
+    border-top: 1px solid var(--border-dark);
+    padding-top: var(--gap-sm);
+}
+.phase-num {
+    font-family: var(--font-mono);
+    font-size: var(--size-caption);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--fire);
+}
+.phase-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 38px;
+    line-height: 1.35;
+    color: var(--cream);
+    margin: 8px 0 10px;
+}
+.phase-desc {
+    font-family: var(--font-body);
+    font-size: var(--size-caption);
+    line-height: 1.7;
+    color: var(--cream-muted);
+}
+
+/* 风格预览的三张小卡(第 10 页):纯 CSS 色块示意 */
+.preview-card {
+    border: 1px solid var(--border-dark);
+    padding: 26px 28px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.preview-card .swatch {
+    height: 120px;
+    display: flex;
+}
+.pc-a .swatch { background: linear-gradient(135deg, #1a1a1a 0%, #1a1a1a 55%, #E85D26 55%, #E85D26 100%); }
+.pc-b .swatch { background: linear-gradient(135deg, #F5F4EF 0%, #F5F4EF 55%, #E6FF3D 55%, #E6FF3D 100%); border: 1px solid var(--border-dark); }
+.pc-c .swatch { background: linear-gradient(135deg, #0f2f22 0%, #0f2f22 55%, #d4a574 55%, #d4a574 100%); }
+.preview-card .pc-tag {
+    font-family: var(--font-mono);
+    font-size: var(--size-caption);
+    letter-spacing: 0.12em;
+    color: var(--fire);
+}
+.preview-card .pc-desc {
+    font-family: var(--font-body);
+    font-size: var(--size-caption);
+    line-height: 1.7;
+    color: var(--cream-muted);
+}
+
+/* ===========================================
+   ANIMATIONS: 编辑杂志式分层入场(staggered reveals)
+   由 .slide.visible 触发,每次进入该页都会重放
+   =========================================== */
+.reveal {
+    opacity: 0;
+    transform: translateY(34px);
+    transition: opacity var(--dur-enter) var(--ease-enter),
+                transform var(--dur-enter) var(--ease-enter);
+}
+.reveal-blur {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(20px);
+    transition: opacity 0.8s var(--ease-enter),
+                filter 0.8s var(--ease-enter),
+                transform 0.8s var(--ease-enter);
+}
+.reveal-scale {
+    opacity: 0;
+    transform: scale(0.92) translateY(18px);
+    transition: opacity 0.6s var(--ease-enter),
+                transform 0.6s var(--ease-enter);
+}
+.visible .reveal,
+.visible .reveal-blur,
+.visible .reveal-scale {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+}
+/* stagger:按出场顺序递增延迟 */
+.d1 { transition-delay: 0.08s; }
+.d2 { transition-delay: 0.18s; }
+.d3 { transition-delay: 0.28s; }
+.d4 { transition-delay: 0.38s; }
+.d5 { transition-delay: 0.48s; }
+.d6 { transition-delay: 0.58s; }
+
+/* ===========================================
+   DECK CHROME(outside the stage):导航圆点 + mono 页码
+   =========================================== */
+.deck-controls {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.nav-dots {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 16px;
+    background: rgba(17, 17, 17, 0.55);
+    border: 1px solid var(--border-dark);
+}
+.nav-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;          /* 全系统唯一的圆形 */
+    background: var(--cream-hint);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.25s ease;
+}
+.nav-dot.on { background: var(--fire); }
+.page-counter {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    color: var(--cream-hint);
+}
+
+/* 打印时隐藏舞台外的交互 chrome */
+@media print {
+    .page-counter,
+    .edit-toggle,
+    .edit-hotzone,
+    .toast { display: none !important; }
+}
+
+/* ===========================================
+   INLINE EDITING: JS 控制 hotzone + 400ms 缓冲
+   (不用 CSS ~ 兄弟选择器:pointer-events 会打断 hover 链)
+   =========================================== */
+.edit-hotzone {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 80px;
+    z-index: 10000;
+    cursor: pointer;
+}
+.edit-toggle {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 10001;
+    width: 46px;
+    height: 46px;
+    font-size: 20px;
+    border: 1px solid var(--border-dark);
+    background: rgba(17, 17, 17, 0.75);
+    color: var(--cream);
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.edit-toggle.show,
+.edit-toggle.active { opacity: 1; pointer-events: auto; }
+.edit-toggle.active { border-color: var(--fire); color: var(--fire); }
+
+/* 编辑模式:可编辑文本获得橙描边 */
+.editing [data-edit] {
+    outline: 1px dashed var(--fire);
+    outline-offset: 6px;
+    cursor: text;
+}
+.editing [data-edit]:focus {
+    outline: 1px solid var(--fire);
+    background: rgba(232, 93, 38, 0.06);
+}
+
+/* 保存提示 toast */
+.toast {
+    position: fixed;
+    right: 28px;
+    bottom: 74px;
+    z-index: 10002;
+    font-family: var(--font-chrome);
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: var(--cream);
+    background: rgba(26, 26, 24, 0.92);
+    border: 1px solid var(--fire);
+    padding: 12px 18px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage">
+
+    <!-- ============================================
+         SLIDE 1 · COVER(orange register,无 chrome)
+         ============================================ -->
+    <section class="slide slide-orange" aria-label="封面">
+        <div class="broadside-num">NO.01 / LESSON</div>
+        <div class="frame" style="justify-content: center;">
+            <div class="kicker-cn reveal d1">LESSONS / SLIDES · 第一课</div>
+            <h1 class="display reveal-blur d2">把文档变成<br>网页幻灯片</h1>
+            <div class="rule reveal d3"></div>
+            <p class="lead reveal d4" style="max-width: 1180px;">用 frontend-slides 这个 coding-agent skill,把一份 Markdown 或 PPTX 变成零依赖、单文件的网页演示文稿 — 不用碰一行 CSS。</p>
+        </div>
+        <div class="slide-foot slide-foot--abs reveal d5">
+            <span>SKILL / FRONTEND-SLIDES</span>
+            <span>TEMPLATE / BROADSIDE</span>
+            <span>2026.10</span>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 2 · 它是什么(dark,stat cards)
+         ============================================ -->
+    <section class="slide slide-dark" aria-label="它是什么">
+        <div class="frame">
+            <div class="slide-chrome">
+                <span>它是什么 / WHAT IT IS</span>
+                <span>02 / 15</span>
+            </div>
+            <div class="kicker reveal d1">WHAT IT IS</div>
+            <h2 class="h2 reveal-blur d2" style="max-width: 1500px;">一个让 agent 替你做 slides 的 skill</h2>
+            <p class="lead reveal d3" style="max-width: 1420px; margin-top: var(--gap-md);">它不是模板库,而是一套写给 coding agent 的工作流说明书 — agent 读完就知道怎么问需求、怎么给你看风格、怎么把内容编译成一个自包含的 HTML 文件。</p>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); column-gap: var(--gap-md); margin-top: var(--gap-lg);">
+                <div class="stat-card reveal d3">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">运行时依赖</div>
+                    <div class="stat-note">无 npm、无构建工具</div>
+                </div>
+                <div class="stat-card reveal d4">
+                    <div class="stat-value">1</div>
+                    <div class="stat-label">个产物文件</div>
+                    <div class="stat-note">单 HTML,双击即放</div>
+                </div>
+                <div class="stat-card reveal d5">
+                    <div class="stat-value">34</div>
+                    <div class="stat-label">套 bold 模板</div>
+                    <div class="stat-note">选一个才读完整设计文档</div>
+                </div>
+                <div class="stat-card reveal d6">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">个安全预设</div>
+                    <div class="stat-note">拿不准时的保底风格</div>
+                </div>
+            </div>
+            <div class="slide-foot">
+                <span>GITHUB / ZARAZHANGRUI / FRONTEND-SLIDES</span>
+                <span>MIT LICENSE</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 3 · 章节页:01 安装(orange,无 chrome)
+         ============================================ -->
+    <section class="slide slide-orange" aria-label="章节:安装">
+        <div class="broadside-num">01</div>
+        <div class="frame" style="justify-content: center;">
+            <div class="kicker-cn reveal d1">INSTALL / 安装</div>
+            <h1 class="display display-lg reveal-blur d2">安装</h1>
+            <div class="rule reveal d3"></div>
+            <p class="lead reveal d4">两条命令,或者一次 git clone。两分钟内装好。</p>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 4 · 三种安装方式(dark,三栏 compare)
+         ============================================ -->
+    <section class="slide slide-dark" aria-label="三种安装方式">
+        <div class="frame">
+            <div class="slide-chrome">
+                <span>安装 / INSTALL</span>
+                <span>04 / 15</span>
+            </div>
+            <div class="kicker reveal d1">THREE WAYS IN</div>
+            <h2 class="h2 reveal-blur d2">三种方式,按你的 agent 挑一种</h2>
+            <div class="compare" style="margin-top: var(--gap-lg);">
+                <div class="compare-left reveal d3">
+                    <div class="kicker">A / CLAUDE CODE</div>
+                    <h3 class="h3" style="margin: var(--gap-sm) 0 var(--gap-md);">插件市场安装(推荐)</h3>
+                    <div class="codeblock" style="font-size: 16px;"><span class="comment"># 两条命令,分两条消息发送</span><br>/plugin marketplace add https://github.com/zarazhangrui/frontend-slides<br><br>/plugin install frontend-slides@frontend-slides</div>
+                    <p class="caption" style="margin-top: var(--gap-md);">务必用 HTTPS 完整地址;短式写法可能走 SSH 导致失败。</p>
+                </div>
+                <div class="compare-mid reveal d4">
+                    <div class="kicker">B / MANUAL</div>
+                    <h3 class="h3" style="margin: var(--gap-sm) 0 var(--gap-md);">手动安装(任何目录)</h3>
+                    <div class="codeblock" style="font-size: 16px;">git clone https://github.com/zarazhangrui/frontend-slides.git ~/.claude/skills/frontend-slides</div>
+                    <p class="caption" style="margin-top: var(--gap-md);">等价做法:把 SKILL.md、STYLE_PRESETS.md、viewport-base.css、bold-template-pack/、scripts/ 复制进技能目录。</p>
+                </div>
+                <div class="compare-right reveal d5">
+                    <div class="kicker">C / OTHER AGENTS</div>
+                    <h3 class="h3" style="margin: var(--gap-sm) 0 var(--gap-md);">Codex / Gemini CLI / OpenCode…</h3>
+                    <p class="body-text">不需要安装。把仓库链接发给它:</p>
+                    <div class="codeblock" style="font-size: 16px; margin-top: var(--gap-sm);">https://github.com/zarazhangrui/frontend-slides</div>
+                    <p class="caption" style="margin-top: var(--gap-md);">能读文件系统的 agent 都会从 SKILL.md 开始,按需加载引用文件。</p>
+                </div>
+            </div>
+            <div class="slide-foot">
+                <span>安装 / INSTALL</span>
+                <span>装完即可在对话里直接唤起</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 5 · 唤起方式(dark,terminal card + bullets)
+         ============================================ -->
+    <section class="slide slide-dark" aria-label="唤起方式">
+        <div class="frame">
+            <div class="slide-chrome">
+                <span>使用 / INVOKE</span>
+                <span>05 / 15</span>
+            </div>
+            <div class="kicker reveal d1">INVOKE</div>
+            <h2 class="h2 reveal-blur d2">装好后,怎么唤起</h2>
+            <div style="display: flex; gap: var(--gap-lg); margin-top: var(--gap-lg); flex: 1; min-height: 0;">
+                <div style="flex: 1.1;">
+                    <ul class="blist">
+                        <li class="reveal d3">插件安装:输入 <span class="tag" style="font-size: 20px;">/frontend-slides:frontend-slides</span></li>
+                        <li class="reveal d4">手动安装:输入 <span class="tag" style="font-size: 20px;">/frontend-slides</span></li>
+                        <li class="reveal d5">其他 agent:直接说「用 frontend-slides skill,帮我做一份…」</li>
+                    </ul>
+                </div>
+                <div style="flex: 1;" class="reveal-scale d4">
+                    <div class="codeblock" style="height: 100%; display: flex; flex-direction: column; justify-content: center; font-size: 20px;">
+                        <div><span class="prompt">&gt;</span> /frontend-slides:frontend-slides</div>
+                        <div style="height: 18px;"></div>
+                        <div><span class="prompt">&gt;</span> 把 docs/roadmap.md 变成</div>
+                        <div>&nbsp;&nbsp;一份 15 页的分享 deck,</div>
+                        <div>&nbsp;&nbsp;阅读版,风格给我看三个选项</div>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-foot">
+                <span>使用 / INVOKE</span>
+                <span>插件技能带命名空间,独立技能不带</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 6 · 章节页:02 使用(orange,无 chrome)
+         ============================================ -->
+    <section class="slide slide-orange" aria-label="章节:使用">
+        <div class="broadside-num">02</div>
+        <div class="frame" style="justify-content: center;">
+            <div class="kicker-cn reveal d1">WORKFLOW / 使用</div>
+            <h1 class="display display-lg reveal-blur d2">使用</h1>
+            <div class="rule reveal d3"></div>
+            <p class="lead reveal d4">六个阶段,一次对话走完。你只负责回答和挑选。</p>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 7 · 六阶段工作流(dark,phase grid)
+         ============================================ -->
+    <section class="slide slide-dark" aria-label="六个阶段">
+        <div class="frame">
+            <div class="slide-chrome">
+                <span>使用 / WORKFLOW</span>
+                <span>07 / 15</span>
+            </div>
+            <div class="kicker reveal d1">SIX PHASES</div>
+            <h2 class="h2 reveal-blur d2">一次生成,走过的六个阶段</h2>
+            <div class="phase-grid" style="margin-top: var(--gap-lg);">
+                <div class="phase-card reveal d2">
+                    <div class="phase-num">P0</div>
+                    <div class="phase-name">模式检测</div>
+                    <div class="phase-desc">新建 / 转换 / 增强,先分清你要哪一种。</div>
+                </div>
+                <div class="phase-card reveal d3">
+                    <div class="phase-num">P1</div>
+                    <div class="phase-name">内容发现</div>
+                    <div class="phase-desc">一次问清四件事:目的、长度、内容、密度。</div>
+                </div>
+                <div class="phase-card reveal d4">
+                    <div class="phase-num">P2</div>
+                    <div class="phase-name">风格发现</div>
+                    <div class="phase-desc">生成三张真实风格的首页预览,用眼睛挑。</div>
+                </div>
+                <div class="phase-card reveal d3">
+                    <div class="phase-num">P3</div>
+                    <div class="phase-name">生成</div>
+                    <div class="phase-desc">单文件 HTML,CSS / JS 全部内联,1920×1080 固定舞台。</div>
+                </div>
+                <div class="phase-card reveal d4">
+                    <div class="phase-num">P4</div>
+                    <div class="phase-name">PPT 转换</div>
+                    <div class="phase-desc">python-pptx 抽取文字、图片与演讲备注。</div>
+                </div>
+                <div class="phase-card reveal d5">
+                    <div class="phase-num">P5-6</div>
+                    <div class="phase-name">交付与分享</div>
+                    <div class="phase-desc">浏览器打开、行内编辑;一键部署 Vercel 或导出 PDF。</div>
+                </div>
+            </div>
+            <div class="slide-foot">
+                <span>使用 / WORKFLOW</span>
+                <span>P4 仅在转换 PPTX 时进入</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 8 · 四个问题(dark,stat cards)
+         ============================================ -->
+    <section class="slide slide-dark" aria-label="四个问题">
+        <div class="frame">
+            <div class="slide-chrome">
+                <span>使用 / PHASE 1</span>
+                <span>08 / 15</span>
+            </div>
+            <div class="kicker reveal d1">PHASE 1 / FOUR QUESTIONS</div>
+            <h2 class="h2 reveal-blur d2">开工前,它会一次问清四件事</h2>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); column-gap: var(--gap-md); margin-top: var(--gap-lg);">
+                <div class="stat-card reveal d3">
+                    <div class="stat-value" style="font-size: 64px;">Q1</div>
+                    <div class="stat-label">目的</div>
+                    <div class="stat-note">路演 / 教学 / 大会分享 / 内部汇报</div>
+                </div>
+                <div class="stat-card reveal d4">
+                    <div class="stat-value" style="font-size: 64px;">Q2</div>
+                    <div class="stat-label">长度</div>
+                    <div class="stat-note">短 5-10 / 中 10-20 / 长 20+</div>
+                </div>
+                <div class="stat-card reveal d5">
+                    <div class="stat-value" style="font-size: 64px;">Q3</div>
+                    <div class="stat-label">内容</div>
+                    <div class="stat-note">全部就绪 / 粗略笔记 / 只有主题</div>
+                </div>
+                <div class="stat-card reveal d6">
+                    <div class="stat-value" style="font-size: 64px;">Q4</div>
+                    <div class="stat-label">密度</div>
+                    <div class="stat-note">演讲版 / 阅读版 — 下一页展开</div>
+                </div>
+            </div>
+            <p class="lead reveal d6" style="margin-top: var(--gap-lg); max-width: 1500px;">四个问题一次打包发问,不挤牙膏。密度这一问决定整份 deck 的性格。</p>
+            <div class="slide-foot">
+                <span>使用 / PHASE 1</span>
+                <span>有图片就顺带评估可用性</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 9 · 密度 compare(dark + 橙右板)
+         ============================================ -->
+    <section class="slide slide-dark" aria-label="两种密度">
+        <div class="frame">
+            <div class="slide-chrome">
+                <span>使用 / DENSITY</span>
+                <span>09 / 15</span>
+            </div>
+            <div class="kicker reveal d1">DENSITY</div>
+            <h2 class="h2 reveal-blur d2">两种密度,两种性格</h2>
+            <div class="compare" style="margin-top: var(--gap-lg);">
+                <div class="compare-left reveal d3">
+                    <div class="kicker">SPEAKER-LED / 低密度</div>
+                    <h3 class="h3" style="margin: var(--gap-sm) 0 var(--gap-md);">演讲版</h3>
+                    <p class="body-text">一页一个观点,大字号,大量留白,每页至多三条要点。页数更多,节奏更快 — 给现场讲的人用。</p>
+                </div>
+                <div class="compare-right compare-orange reveal-scale d4">
+                    <div class="kicker">READING-FIRST / 高密度</div>
+                    <h3 class="h3" style="margin: var(--gap-sm) 0 var(--gap-md); color: var(--ink);">阅读版</h3>
+                    <p class="body-text" style="color: var(--ink-75);">每页自成一篇,网格、表格、注释齐全 — 不看讲解也能读懂。给异步传阅、报告评审用。</p>
+                </div>
+            </div>
+            <p class="caption reveal d5" style="margin-top: var(--gap-md);">共同的底线:不滚动、不溢出、不重叠。装不下就拆页,不要把字缩小。</p>
+            <div class="slide-foot">
+                <span>使用 / DENSITY</span>
+                <span>混合需求时选更近的那一档</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 10 · 风格发现 show, don't tell(dark)
+         ============================================ -->
+    <section class="slide slide-dark" aria-label="风格发现">
+        <div class="frame">
+            <div class="slide-chrome">
+                <span>使用 / PHASE 2</span>
+                <span>10 / 15</span>
+            </div>
+            <div class="kicker reveal d1">PHASE 2 / SHOW, DON'T TELL</div>
+            <h2 class="h2 reveal-blur d2">风格不用嘴说,用眼睛挑</h2>
+            <p class="lead reveal d3" style="max-width: 1440px; margin-top: var(--gap-sm);">说不清自己喜欢什么风格是常态。所以它直接生成三张真实的首页预览,你只需要反应。</p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--gap-md); margin-top: var(--gap-lg);">
+                <div class="preview-card pc-a reveal-scale d3">
+                    <div class="swatch"></div>
+                    <div class="pc-tag">1 / SAFE PRESET</div>
+                    <div class="pc-desc">一个安全预设,来自 12 套内置 STYLE_PRESETS — 稳妥的保底。</div>
+                </div>
+                <div class="preview-card pc-b reveal-scale d4">
+                    <div class="swatch"></div>
+                    <div class="pc-tag">2 / BOLD TEMPLATE</div>
+                    <div class="pc-desc">至少一个 bold 模板,来自 34 套设计系统库 — 比如 deck 正在用的这一套。</div>
+                </div>
+                <div class="preview-card pc-c reveal-scale d5">
+                    <div class="swatch"></div>
+                    <div class="pc-tag">3 / WILDCARD</div>
+                    <div class="pc-desc">一张现场自定义 — 只为这份 deck 量身设计的大胆选项。</div>
+                </div>
+            </div>
+            <p class="caption reveal d6" style="margin-top: var(--gap-md);">选中之后才去读那一个模板的完整设计文档 — 按需加载,不看多余的。</p>
+            <div class="slide-foot">
+                <span>使用 / PHASE 2</span>
+                <span>预览即真实首页,不是风格色卡</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 11 · 章节页:03 从文档到幻灯片(orange)
+         ============================================ -->
+    <section class="slide slide-orange" aria-label="章节:从文档到幻灯片">
+        <div class="broadside-num">03</div>
+        <div class="frame" style="justify-content: center;">
+            <div class="kicker-cn reveal d1">DOCUMENT → SLIDES / 文档到幻灯片</div>
+            <h1 class="display reveal-blur d2" style="font-size: 200px;">文档到幻灯片</h1>
+            <div class="rule reveal d3"></div>
+            <p class="lead reveal d4">两条入口,同一个出口:一个自包含的 HTML 文件。</p>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 12 · 两条入口(dark compare + 橙右板)
+         ============================================ -->
+    <section class="slide slide-dark" aria-label="两条入口">
+        <div class="frame">
+            <div class="slide-chrome">
+                <span>文档到幻灯片 / TWO PATHS</span>
+                <span>12 / 15</span>
+            </div>
+            <div class="kicker reveal d1">TWO DOORS, ONE EXIT</div>
+            <h2 class="h2 reveal-blur d2">把一份文档喂给它</h2>
+            <div class="compare" style="margin-top: var(--gap-lg);">
+                <div class="compare-left reveal d3">
+                    <div class="kicker">A / MARKDOWN · NOTES</div>
+                    <h3 class="h3" style="margin: var(--gap-sm) 0 var(--gap-md);">文档直转</h3>
+                    <ul class="blist">
+                        <li>给它一份 .md 或粗略笔记</li>
+                        <li>回答四个问题,看三张风格预览</li>
+                        <li>选一个,整份 deck 直接生成</li>
+                    </ul>
+                </div>
+                <div class="compare-right compare-orange reveal-scale d4">
+                    <div class="kicker">B / PPTX</div>
+                    <h3 class="h3" style="margin: var(--gap-sm) 0 var(--gap-md); color: var(--ink);">PPT 转网页</h3>
+                    <ul class="blist">
+                        <li style="color: var(--ink-75);">python scripts/extract-pptx.py 抽取内容</li>
+                        <li style="color: var(--ink-75);">确认文字、图片、页序清单</li>
+                        <li style="color: var(--ink-75);">挑风格 — 演讲备注保留为注释</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="caption reveal d5" style="margin-top: var(--gap-md);">两条路都通向同一个出口:单文件 HTML,在任何设备的浏览器里播放。</p>
+            <div class="slide-foot">
+                <span>文档到幻灯片 / TWO PATHS</span>
+                <span>图片走相对路径,和 HTML 放一起</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 13 · 产出的硬规矩(dark,phase grid)
+         ============================================ -->
+    <section class="slide slide-dark" aria-label="产出的硬规矩">
+        <div class="frame">
+            <div class="slide-chrome">
+                <span>文档到幻灯片 / OUTPUT SPEC</span>
+                <span>13 / 15</span>
+            </div>
+            <div class="kicker reveal d1">OUTPUT SPEC</div>
+            <h2 class="h2 reveal-blur d2">产出的 HTML,有几条硬规矩</h2>
+            <div class="phase-grid" style="margin-top: var(--gap-lg);">
+                <div class="phase-card reveal d2">
+                    <div class="phase-num">FIXED STAGE</div>
+                    <div class="phase-name">固定舞台</div>
+                    <div class="phase-desc">1920×1080 画布整体缩放适配屏幕,永不按设备重排。</div>
+                </div>
+                <div class="phase-card reveal d3">
+                    <div class="phase-num">ZERO DEPS</div>
+                    <div class="phase-name">零依赖</div>
+                    <div class="phase-desc">单文件,CSS / JS 全内联;viewport-base.css 必须全量拷入。</div>
+                </div>
+                <div class="phase-card reveal d4">
+                    <div class="phase-num">WEB FONTS</div>
+                    <div class="phase-name">只用网络字体</div>
+                    <div class="phase-desc">Fontshare 或 Google Fonts,绝不用系统默认字体。</div>
+                </div>
+                <div class="phase-card reveal d3">
+                    <div class="phase-num">.SLIDE SWITCH</div>
+                    <div class="phase-name">可见性切换</div>
+                    <div class="phase-desc">翻页靠 visibility + opacity,不用 display:none。</div>
+                </div>
+                <div class="phase-card reveal d4">
+                    <div class="phase-num">KEYBOARD</div>
+                    <div class="phase-name">全键盘操控</div>
+                    <div class="phase-desc">方向键、空格、翻页键、触屏滑动、滚轮。</div>
+                </div>
+                <div class="phase-card reveal d5">
+                    <div class="phase-num">EDIT MODE</div>
+                    <div class="phase-name">行内编辑</div>
+                    <div class="phase-desc">按 E 或悬停左上角,点任意文字直接改,Ctrl+S 保存。</div>
+                </div>
+            </div>
+            <div class="slide-foot">
+                <span>文档到幻灯片 / OUTPUT SPEC</span>
+                <span>这些规矩写死在 SKILL.md 里</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 14 · 分享 + 这份 deck 本身(dark)
+         ============================================ -->
+    <section class="slide slide-dark" aria-label="分享">
+        <div class="frame">
+            <div class="slide-chrome">
+                <span>分享 / SHARE</span>
+                <span>14 / 15</span>
+            </div>
+            <div class="kicker reveal d1">SHARE</div>
+            <h2 class="h2 reveal-blur d2">一条命令,变成链接或 PDF</h2>
+            <div style="display: flex; gap: var(--gap-lg); margin-top: var(--gap-lg); flex: 1; min-height: 0;">
+                <div style="flex: 1;" class="reveal d3">
+                    <div class="codeblock" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                        <div><span class="comment"># 部署成一条 URL,手机也能看</span></div>
+                        <div>bash scripts/deploy.sh ./deck/</div>
+                        <div style="height: 22px;"></div>
+                        <div><span class="comment"># 逐页 1920×1080 截图合成 PDF</span></div>
+                        <div>bash scripts/export-pdf.sh deck.html</div>
+                    </div>
+                </div>
+                <div style="flex: 1;" class="reveal d4">
+                    <ul class="blist">
+                        <li>部署走 Vercel 免费层,链接任何设备可开</li>
+                        <li>PDF 是静态快照,动画不保留 — 属正常</li>
+                        <li>演讲备注在 PPT 转换时保留为 HTML 注释</li>
+                    </ul>
+                </div>
+            </div>
+            <p class="lead reveal d5" style="margin-top: var(--gap-md);">你现在看到的这一份,就是用同一个 skill 的 broadside 模板生成的 — 它吃自己的狗粮。</p>
+            <div class="slide-foot">
+                <span>分享 / SHARE</span>
+                <span>重跑部署脚本即原地更新,URL 不变</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SLIDE 15 · END(orange,无 chrome)
+         ============================================ -->
+    <section class="slide slide-orange" aria-label="结尾">
+        <div class="broadside-num">END / 15</div>
+        <div class="frame" style="justify-content: center;">
+            <div class="kicker-cn reveal d1">NEXT STEP / 下一步</div>
+            <h1 class="display display-lg reveal-blur d2">去试一试</h1>
+            <div class="rule reveal d3"></div>
+            <p class="lead reveal d4" style="max-width: 1300px;">现在就把一份文档喂给它:回答四个问题,看三张预览,挑一张。第一次成功之后,你不会再打开 PPT。</p>
+        </div>
+        <div class="slide-foot slide-foot--abs reveal d5">
+            <span>REPO / GITHUB.COM/ZARAZHANGRUI/FRONTEND-SLIDES</span>
+            <span>教程 / LESSONS / SLIDES / FRONTEND-SLIDES</span>
+        </div>
+    </section>
+
+</main>
+</div>
+
+<!-- === DECK CHROME(outside stage):导航点 + 页码 === -->
+<nav class="deck-controls" id="deckControls" aria-label="幻灯片导航">
+    <div class="nav-dots" id="navDots"></div>
+    <div class="page-counter" id="pageCounter">01 / 15</div>
+</nav>
+
+<!-- === INLINE EDITING CHROME === -->
+<div class="edit-hotzone" id="editHotzone" title="编辑模式(E)"></div>
+<button class="edit-toggle" id="editToggle" title="编辑模式(E)">✏️</button>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   固定舞台缩放 + 键盘/触屏/滚轮导航 + ?slide= 深链
+   =========================================== */
+class SlidePresentation {
+    constructor() {
+        this.slides = document.querySelectorAll('.slide');
+        this.currentSlide = 0;
+        this.stage = document.getElementById('deckStage');
+        this.wheelLock = false;
+
+        this.setupStageScale();
+        this.setupKeyboardNav();
+        this.setupTouchNav();
+        this.setupWheelNav();
+        this.buildNavDots();
+        this.applyDeepLink();      // 支持 ?slide=N 直接跳页(截图验证也靠它)
+        this.showSlide(this.currentSlide, false);
+    }
+
+    /* 舞台整体缩放:等比 fit 视口,允许留黑边,绝不重排 */
+    setupStageScale() {
+        const scale = () => {
+            const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+            const x = (window.innerWidth - 1920 * factor) / 2;
+            const y = (window.innerHeight - 1080 * factor) / 2;
+            this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+        };
+        scale();
+        window.addEventListener('resize', scale);
+    }
+
+    setupKeyboardNav() {
+        document.addEventListener('keydown', (e) => {
+            // 编辑模式下不抢按键
+            if (e.target.getAttribute('contenteditable')) return;
+            switch (e.key) {
+                case 'ArrowRight': case 'ArrowDown': case 'PageDown': case ' ':
+                    e.preventDefault(); this.next(); break;
+                case 'ArrowLeft': case 'ArrowUp': case 'PageUp':
+                    e.preventDefault(); this.prev(); break;
+                case 'Home': this.showSlide(0); break;
+                case 'End': this.showSlide(this.slides.length - 1); break;
+            }
+        });
+    }
+
+    setupTouchNav() {
+        let sx = 0, sy = 0;
+        document.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+        document.addEventListener('touchend', (e) => {
+            const dx = e.changedTouches[0].clientX - sx;
+            const dy = e.changedTouches[0].clientY - sy;
+            if (Math.abs(dx) < 50 && Math.abs(dy) < 50) return;
+            if (Math.abs(dx) > Math.abs(dy)) { dx < 0 ? this.next() : this.prev(); }
+            else { dy < 0 ? this.next() : this.prev(); }
+        }, { passive: true });
+    }
+
+    setupWheelNav() {
+        document.addEventListener('wheel', (e) => {
+            if (this.wheelLock || Math.abs(e.deltaY) < 30) return;
+            this.wheelLock = true;
+            (e.deltaY > 0 ? this.next() : this.prev());
+            setTimeout(() => { this.wheelLock = false; }, 800);
+        }, { passive: true });
+    }
+
+    buildNavDots() {
+        const box = document.getElementById('navDots');
+        this.slides.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.className = 'nav-dot';
+            dot.setAttribute('aria-label', `第 ${i + 1} 页`);
+            dot.addEventListener('click', () => this.showSlide(i));
+            box.appendChild(dot);
+        });
+        this.dots = box.querySelectorAll('.nav-dot');
+    }
+
+    applyDeepLink() {
+        const m = location.search.match(/[?&]slide=(\d+)/);
+        if (m) this.currentSlide = Math.max(0, Math.min(+m[1] - 1, this.slides.length - 1));
+    }
+
+    next() { this.showSlide(this.currentSlide + 1); }
+    prev() { this.showSlide(this.currentSlide - 1); }
+
+    showSlide(index, updateHash = true) {
+        this.currentSlide = Math.max(0, Math.min(index, this.slides.length - 1));
+        this.slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === this.currentSlide);
+            slide.classList.toggle('visible', i === this.currentSlide);
+        });
+        this.dots.forEach((dot, i) => dot.classList.toggle('on', i === this.currentSlide));
+        document.getElementById('pageCounter').textContent =
+            String(this.currentSlide + 1).padStart(2, '0') + ' / ' + String(this.slides.length).padStart(2, '0');
+        if (updateHash) history.replaceState(null, '', '?slide=' + (this.currentSlide + 1));
+    }
+}
+
+/* ===========================================
+   INLINE EDITOR(html-template.md 规范实现)
+   JS hover + 400ms 缓冲;E 键切换;Ctrl+S 保存
+   =========================================== */
+class InlineEditor {
+    constructor(deck) {
+        this.deck = deck;
+        this.isActive = false;
+        this.STORE_KEY = 'fs-lesson-deck-edits-v1';
+        this.toggleBtn = document.getElementById('editToggle');
+        this.hotzone = document.getElementById('editHotzone');
+        this.toastEl = document.getElementById('toast');
+
+        this.setupHover();       // hotzone hover,带 400ms 缓冲
+        this.setupClick();       // 按钮 + hotzone 直点
+        this.setupKey();         // E 键切换 / Ctrl+S 保存
+        this.restoreEdits();     // 恢复上次编辑
+    }
+
+    setupHover() {
+        let hideTimeout = null;
+        const show = () => { clearTimeout(hideTimeout); this.toggleBtn.classList.add('show'); };
+        const hide = () => {
+            hideTimeout = setTimeout(() => {
+                if (!this.isActive) this.toggleBtn.classList.remove('show');
+            }, 400);
+        };
+        this.hotzone.addEventListener('mouseenter', show);
+        this.hotzone.addEventListener('mouseleave', hide);
+        this.toggleBtn.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+        this.toggleBtn.addEventListener('mouseleave', hide);
+    }
+
+    setupClick() {
+        this.toggleBtn.addEventListener('click', () => this.toggleEditMode());
+        this.hotzone.addEventListener('click', () => this.toggleEditMode());
+    }
+
+    setupKey() {
+        document.addEventListener('keydown', (e) => {
+            if (e.target.getAttribute('contenteditable')) {
+                if (e.key === 's' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); this.saveEdits(); }
+                return;
+            }
+            if (e.key === 'e' || e.key === 'E') this.toggleEditMode();
+            if (e.key === 's' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); this.saveEdits(); }
+        });
+    }
+
+    toggleEditMode() {
+        this.isActive = !this.isActive;
+        document.body.classList.toggle('editing', this.isActive);
+        this.toggleBtn.classList.toggle('active', this.isActive);
+        // 给当前页所有标题/正文/列表项加 contenteditable
+        this.deck.slides.forEach((slide) => {
+            slide.querySelectorAll('h1, h2, h3, p, li, .stat-value, .stat-label, .phase-name')
+                .forEach((el) => el.setAttribute('contenteditable', this.isActive ? 'true' : 'false'));
+        });
+        this.toast(this.isActive ? '编辑模式:点击任意文字修改,Ctrl+S 保存' : '已退出编辑模式');
+    }
+
+    saveEdits() {
+        const edits = {};
+        this.deck.slides.forEach((slide, si) => {
+            const els = slide.querySelectorAll('[contenteditable="true"]');
+            els.forEach((el, ei) => { edits[si + ':' + ei] = el.innerHTML; });
+        });
+        localStorage.setItem(this.STORE_KEY, JSON.stringify(edits));
+        this.toast('已保存到本机浏览器(' + Object.keys(edits).length + ' 处)');
+    }
+
+    restoreEdits() {
+        const raw = localStorage.getItem(this.STORE_KEY);
+        if (!raw) return;
+        try {
+            const edits = JSON.parse(raw);
+            this.deck.slides.forEach((slide, si) => {
+                const els = slide.querySelectorAll('h1, h2, h3, p, li, .stat-value, .stat-label, .phase-name');
+                els.forEach((el, ei) => {
+                    if (edits[si + ':' + ei] !== undefined) el.innerHTML = edits[si + ':' + ei];
+                });
+            });
+        } catch (err) { /* 损坏的存储直接忽略 */ }
+    }
+
+    toast(msg) {
+        this.toastEl.textContent = msg;
+        this.toastEl.classList.add('show');
+        clearTimeout(this._toastTimer);
+        this._toastTimer = setTimeout(() => this.toastEl.classList.remove('show'), 2200);
+    }
+}
+
+/* ===========================================
+   BOOT
+   =========================================== */
+const deck = new SlidePresentation();
+const editor = new InlineEditor(deck);
+</script>
+</body>
+</html>

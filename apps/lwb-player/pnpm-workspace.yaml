@@ -1,0 +1,5 @@
+# 单包 workspace。pnpm 12 的构建脚本审批写在这里（pnpm approve-builds 维护）：
+# 允许 @scarf/scarf 与 esbuild 的 postinstall（无害：遥测上报 / 平台二进制校验）。
+allowBuilds:
+  "@scarf/scarf": true
+  esbuild: true

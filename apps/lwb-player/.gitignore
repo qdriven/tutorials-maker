@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.next/
+.env
+.env.local
+*.tsbuildinfo
+# Slidev 构建产物（由 scripts/build-slides.mjs 生成）
+public/slides/
+# 静态 deck 发布产物（由 scripts/build-decks.mjs 生成）
+public/decks/
+# Next 16 dev 自动生成的 agent 说明文件
+AGENTS.md

@@ -34,9 +34,11 @@ function deckId(file) {
   return path.basename(file, path.extname(file))
 }
 
-/** 解析每页标题：首个 `# ` 行，否则取 frontmatter title */
+/** 解析每页标题：首个 `# ` 行，否则取 frontmatter title。
+ *  先归一换行 —— Windows 检出是 CRLF，`\n---\n` 直接切会整份只剩一页 */
 function slideTitles(markdown) {
-  const withoutFrontmatter = markdown.replace(/^---\n.*?\n---\n/s, "")
+  const normalized = markdown.replace(/\r\n/g, "\n")
+  const withoutFrontmatter = normalized.replace(/^---\n.*?\n---\n/s, "")
   return withoutFrontmatter
     .split(/\n---\n/)
     .map((chunk) => chunk.trim())

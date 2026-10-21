@@ -1,0 +1,20 @@
+{
+  "frontend-slides-lesson-1": {
+    "title": "把文档变成网页幻灯片 — frontend-slides 入门",
+    "pages": 15,
+    "protocol": "slides-html",
+    "bytes": 55818
+  },
+  "slides-tool-deck": {
+    "title": "Tutorials Maker — 从操作指南到自动成片",
+    "pages": 9,
+    "protocol": "slides-html",
+    "bytes": 31125
+  },
+  "tutorials-maker-speaker": {
+    "title": "Tutorials Maker — 从操作指南到自动成片(演讲版)",
+    "pages": 9,
+    "protocol": "slides-html",
+    "bytes": 28293
+  }
+}

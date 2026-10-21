@@ -27,6 +27,7 @@ function resolveSourceDir(): string {
   const candidates = [
     argSource,
     process.env.LWB_SOURCE,
+    path.resolve(APP_ROOT, "../../tutorials/learn-workbuddy"),
     path.resolve(APP_ROOT, "../learn-workbuddy"),
     path.resolve(process.cwd(), "learn-workbuddy"),
     path.resolve(process.cwd(), "../learn-workbuddy"),
