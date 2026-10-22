@@ -1,0 +1,15 @@
+{
+  "name": "tutorials-maker",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@12.14.0",
+  "scripts": {
+    "dev:web": "pnpm --filter @tutorials-maker/math-tutor-web dev",
+    "dev:agent": "pnpm --filter @tutorials-maker/math-tutor-agent dev",
+    "build": "pnpm -r build",
+    "start": "pnpm --filter @tutorials-maker/math-tutor-web start",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint"
+  }
+}

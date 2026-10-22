@@ -5,3 +5,31 @@ Cap/
 .frontend-slides/
 slides-tool/work/
 tutorials/
+
+# monorepo build artifacts
+node_modules/
+.pnpm-store/
+.next/
+apps/*/.next/
+packages/*/dist/
+apps/*/dist/
+*.tsbuildinfo
+coverage/
+.turbo/
+
+# local environment files
+.env
+.env.local
+.env.*.local
+
+# local tooling logs
+install.log
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# editor and OS noise
+.DS_Store
+Thumbs.db
+*.swp
