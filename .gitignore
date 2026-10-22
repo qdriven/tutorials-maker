@@ -5,10 +5,39 @@ Cap/
 .frontend-slides/
 slides-tool/work/
 tutorials/
+
+# monorepo build artifacts
 node_modules/
 dist/
+.pnpm-store/
 .next/
+apps/*/.next/
 apps/*/public/slides/
+apps/*/dist/
+build-path/*/dist/
+build-path/*/*/dist/
+build-path/*/public/slides/
+build-path/*/*/public/slides/
+packages/*/dist/
+*.tsbuildinfo
+coverage/
 .turbo/
 .codex-tmp/
 apps/*/AGENTS.md
+
+# local environment files
+.env
+.env.local
+.env.*.local
+
+# local tooling logs
+install.log
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# editor and OS noise
+.DS_Store
+Thumbs.db
+*.swp

@@ -5,8 +5,10 @@
   "packageManager": "pnpm@12.14.0",
   "scripts": {
     "dev": "pnpm --filter lesson-viewer dev",
-    "build": "pnpm --filter lesson-viewer build",
-    "start": "pnpm --filter lesson-viewer start",
+    "dev:web": "pnpm --filter @tutorials-maker/math-tutor-web dev",
+    "dev:agent": "pnpm --filter @tutorials-maker/math-tutor-agent dev",
+    "build": "pnpm -r build",
+    "start": "pnpm --filter @tutorials-maker/math-tutor-web start",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test"
