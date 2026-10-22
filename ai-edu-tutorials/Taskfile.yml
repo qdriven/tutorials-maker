@@ -1,0 +1,121 @@
+# Taskfile - AI Edu Tutorials
+#
+# Usage (from repo root, in Git Bash or anywhere `task` is installed):
+#   task                  list tasks
+#   task dev:all          one-click: OpenMAIC dev (:3230) + Tauri shell
+#   task check            typecheck + cargo check
+#   task build            build the desktop installer
+#
+# Override external repo paths via env if your layout differs:
+#   OPENMAIC_PATH=... DEEPTUTOR_PATH=... task dev:openmaic
+#
+version: '3'
+
+vars:
+  DESKTOP: '{{.ROOT_DIR}}/desktop'
+  OPENMAIC: '{{.OPENMAIC_PATH | default "D:/copy-modify/ai-edu/OpenMAIC"}}'
+  DEEPTUTOR: '{{.DEEPTUTOR_PATH | default "D:/copy-modify/ai-edu/DeepTutor"}}'
+  OPENMAIC_PORT: '{{.OPENMAIC_PORT | default "3230"}}'
+
+tasks:
+  install:
+    desc: Install desktop JS deps (bun)
+    dir: '{{.DESKTOP}}'
+    cmds:
+      - bun install
+
+  install:openmaic:
+    desc: Install OpenMAIC deps (pnpm)
+    dir: '{{.OPENMAIC}}'
+    cmds:
+      - pnpm install
+
+  install:all:
+    desc: Install desktop + OpenMAIC deps
+    cmds:
+      - task: install
+      - task: install:openmaic
+
+  dev:
+    desc: Start Tauri desktop shell (dev)
+    dir: '{{.DESKTOP}}'
+    cmds:
+      - bun run tauri dev
+
+  dev:openmaic:
+    desc: Start OpenMAIC dev on the port the shell expects (:3230)
+    dir: '{{.OPENMAIC}}'
+    cmds:
+      - PORT={{.OPENMAIC_PORT}} pnpm dev
+
+  dev:all:
+    desc: One-click dev (OpenMAIC + Tauri). MODE=inline runs in one terminal.
+    cmds:
+      - bash start.sh
+
+  typecheck:
+    desc: TypeScript typecheck (tsc --noEmit)
+    dir: '{{.DESKTOP}}'
+    cmds:
+      - bun run typecheck
+
+  check:rust:
+    desc: cargo check (src-tauri)
+    dir: '{{.DESKTOP}}/src-tauri'
+    cmds:
+      - cargo check --message-format short
+
+  check:
+    desc: typecheck + cargo check
+    cmds:
+      - task: typecheck
+      - task: check:rust
+
+  lint:
+    desc: ESLint
+    dir: '{{.DESKTOP}}'
+    cmds:
+      - bun run lint
+
+  build:frontend:
+    desc: Build frontend (vite)
+    dir: '{{.DESKTOP}}'
+    cmds:
+      - bun run build
+
+  build:runtime:
+    desc: Build OpenMAIC bundled runtime into src-tauri/resources (PowerShell + Git Bash)
+    cmds:
+      - powershell -ExecutionPolicy Bypass -File build-openmaic-runtime.ps1
+
+  build:
+    desc: Build desktop installer (tauri build). Requires runtime built first for a working bundle.
+    dir: '{{.DESKTOP}}'
+    cmds:
+      - bun run tauri build
+
+  baseline:openmaic:
+    desc: Run OpenMAIC baseline (install + dev on :3230). Fill notes/baselines/openmaic.md after.
+    dir: '{{.OPENMAIC}}'
+    cmds:
+      - pnpm install
+      - PORT={{.OPENMAIC_PORT}} pnpm dev
+
+  baseline:deeptutor:
+    desc: |
+      DeepTutor KB + chat. Usage:
+        task baseline:deeptutor KB=mykb DOC=./sample.pdf QUESTION="main idea?"
+    dir: '{{.DEEPTUTOR}}'
+    vars:
+      KB: '{{.KB | default "sample-kb"}}'
+      DOC: '{{.DOC | default "sample.pdf"}}'
+      QUESTION: '{{.QUESTION | default "Explain the main idea of the document"}}'
+    cmds:
+      - deeptutor kb create {{.KB}} --doc {{.DOC}}
+      - deeptutor run chat "{{.QUESTION}}" --kb {{.KB}}
+
+  clean:
+    desc: Remove build artifacts (dist + cargo target)
+    cmds:
+      - rm -rf '{{.DESKTOP}}/dist'
+      - cargo clean --manifest-path '{{.DESKTOP}}/src-tauri/Cargo.toml'
