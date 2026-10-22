@@ -5,3 +5,10 @@ Cap/
 .frontend-slides/
 slides-tool/work/
 tutorials/
+node_modules/
+dist/
+.next/
+apps/*/public/slides/
+.turbo/
+.codex-tmp/
+apps/*/AGENTS.md

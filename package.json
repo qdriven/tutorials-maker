@@ -1,0 +1,14 @@
+{
+  "name": "tutorials-maker",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@12.14.0",
+  "scripts": {
+    "dev": "pnpm --filter lesson-viewer dev",
+    "build": "pnpm --filter lesson-viewer build",
+    "start": "pnpm --filter lesson-viewer start",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
+  }
+}
