@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: slides-lms
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/slides_lms}
+    username: ${DB_USER:slides}
+    password: ${DB_PASSWORD:slides_dev_only}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+server:
+  port: 8080
+
+---
+# demo profile：无 PostgreSQL 时用 H2（PG 兼容模式）跑通全流程
+# 启动：mvn spring-boot:run -Dspring-boot.run.profiles=demo
+spring:
+  config:
+    activate:
+      on-profile: demo
+  datasource:
+    url: jdbc:h2:mem:slides;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""

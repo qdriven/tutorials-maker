@@ -1,7 +1,5 @@
 # README
 
-
-
 For Create Different Tutorials:
 
 1. interactive
