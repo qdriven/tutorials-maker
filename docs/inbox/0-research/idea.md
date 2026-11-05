@@ -14,4 +14,26 @@
 2. 使用什么风格的会比较好
 3. 有什么可以参考的mockup或者figma，dribble这样的内容上有什么可以借鉴的
 
-请写入到docs/research/ui-resarch 中去
+请写入到docs/research/ui-resarch 中去.
+
+以下内容作为参考：
+
+```
+AI 写代码不缺能力，缺的是审美：6 个免费网站，专治“一眼 AI”🔥
+
+Vibe coding 的人最容易翻车的地方不是功能，是设计。功能跑通了，页面一打开就是满屏蓝紫渐变加圆角卡片。这 6 个站拿去抄作业：
+
+1. http://vibeprompts.dev｜现成的设计提示词，丢给 AI 直接出效果，不用自己憋描述
+
+2. http://minimal.gallery｜极简风格网站合集，找留白和克制的感觉
+
+3. http://kage.design｜设计参考与灵感，界面干净，翻起来不累
+
+4. http://styles.refero.design｜按风格分类的界面参考，想要什么调性直接筛
+
+5. http://designmd.ai｜把设计规范拆成 AI 能读的格式，让生成的页面有章法
+
+6. http://mobbin.com｜海量真实 App 和网页截图，按流程和组件找参考，最实用的一个
+
+别让 AI 自由发挥，先给它框住
+```
