@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NamiAgent</title>
+<style>
+:root{
+  --bg:#f6f6f8; --panel:#fff; --line:#e6e6ea; --text:#1d1d22; --muted:#6b6b76; --soft:#f2f2f5;
+  --accent:#b75be0; --accent2:#f0609e;
+  --c-system:#7c5cff; --c-user:#2f7bf5; --c-assistant:#12a37f; --c-tool:#e0457b; --c-call:#f08c00;
+  --ok:#12a37f; --bad:#e0457b; --warn:#f08c00;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#141417; --panel:#1c1c21; --line:#2c2c33; --text:#e9e9ee; --muted:#9a9aa6; --soft:#24242b; }
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);
+  font:14px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+button{font:inherit;cursor:pointer}
+code,pre{font-family:var(--mono);font-size:12.5px}
+pre{margin:0;white-space:pre-wrap;word-break:break-word}
+
+/* ---------- 顶栏 ---------- */
+header{height:52px;display:flex;align-items:center;gap:14px;padding:0 18px;border-bottom:1px solid var(--line);background:var(--panel)}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px}
+.brand svg{width:26px;height:26px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:12.5px;min-width:0}
+.meta span{background:var(--soft);border-radius:999px;padding:2px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+.meta .demo{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff}
+header .grow{flex:1}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:8px;padding:5px 12px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--text);color:var(--panel);border-color:var(--text)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+#toggleCtx{display:none}
+
+/* ---------- 主体两栏 ---------- */
+main{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);height:calc(100% - 52px)}
+.col{display:flex;flex-direction:column;min-height:0}
+.chat{border-right:1px solid var(--line)}
+#timeline{flex:1;overflow:auto;padding:18px 22px 8px}
+.empty{color:var(--muted);text-align:center;margin-top:16vh;line-height:2}
+.empty b{color:var(--text)}
+.chip-btn{display:inline-block;margin:4px;border:1px solid var(--line);border-radius:999px;padding:3px 12px;background:var(--panel);color:var(--text)}
+
+.item{margin:0 0 12px}
+.sub{margin-left:26px;border-left:2px dashed var(--line);padding-left:12px}
+.sub-tag{font-size:11.5px;color:var(--muted)}
+.user{display:flex;justify-content:flex-end}
+.user .bubble{background:var(--c-user);color:#fff;border-radius:14px 14px 4px 14px;padding:8px 14px;max-width:80%;white-space:pre-wrap}
+.step{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;margin:16px 0 8px}
+.step::before,.step::after{content:"";flex:1;height:1px;background:var(--line)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.card .hd{display:flex;align-items:center;gap:8px;padding:7px 12px;font-size:13px}
+.card .bd{padding:8px 12px;border-top:1px solid var(--line)}
+.think{border-style:dashed;background:transparent}
+.think .hd{color:var(--muted);cursor:pointer}
+.think .bd{color:var(--muted);white-space:pre-wrap}
+.tool .hd code{font-weight:600;color:var(--c-call)}
+.tool .args{color:var(--muted);font-family:var(--mono);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.pill{font-size:11.5px;border-radius:999px;padding:1px 9px;white-space:nowrap}
+.pill.run{background:var(--soft);color:var(--muted)}
+.pill.wait{background:#fff3e0;color:#b26a00}
+.pill.ok{background:#e3f6ef;color:#0d7a5f}
+.pill.bad{background:#fde8ef;color:#b8325f}
+@media (prefers-color-scheme: dark){
+  .pill.wait{background:#3a2a10;color:#f5b041}.pill.ok{background:#12332a;color:#52d6ae}.pill.bad{background:#3a1724;color:#f17ba1}
+}
+.tool .bd{max-height:240px;overflow:auto;background:var(--soft)}
+.answer{border-left:3px solid var(--c-assistant)}
+.answer .bd{border-top:none;white-space:pre-wrap;font-size:14.5px}
+.error{border-color:var(--bad);color:var(--bad)}
+.log{color:var(--muted);font-size:12px;font-family:var(--mono)}
+.caret{display:inline-block;transition:transform .15s}
+.closed .caret{transform:rotate(-90deg)}
+.closed .bd{display:none}
+
+/* ---------- 输入框 ---------- */
+.composer{border-top:1px solid var(--line);padding:12px 18px;background:var(--panel)}
+.composer form{display:flex;gap:10px;align-items:flex-end}
+textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:inherit;background:var(--bg);color:var(--text);min-height:42px;max-height:160px}
+textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.hint{color:var(--muted);font-size:12px;margin-top:6px;display:flex;justify-content:space-between;gap:8px}
+#status.busy{color:var(--accent)}
+
+/* ---------- 上下文面板 ---------- */
+.ctx{background:var(--panel)}
+.ctx-hd{padding:14px 18px 10px;border-bottom:1px solid var(--line)}
+.ctx-hd h2{font-size:15px;margin:0 0 2px}
+.ctx-hd .sub2{color:var(--muted);font-size:12.5px}
+.stack{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--soft);margin:10px 0 6px}
+.stack div{height:100%;transition:width .3s}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.nums{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+#ctxList{flex:1;overflow:auto;padding:12px 18px 18px}
+.blk{border:1px solid var(--line);border-left:4px solid var(--c);border-radius:8px;margin-bottom:8px;background:var(--panel);cursor:pointer}
+.blk .top{display:flex;align-items:center;gap:8px;padding:5px 10px;font-size:12px}
+.blk .role{font-weight:650;color:var(--c)}
+.blk .tok{margin-left:auto;color:var(--muted);font-variant-numeric:tabular-nums}
+.blk .txt{padding:0 10px 7px;font-size:12.5px;color:var(--text);white-space:pre-wrap;word-break:break-word;max-height:4.8em;overflow:hidden}
+.blk.open .txt{max-height:none}
+.blk .rs{margin:0 10px 8px;border:1px dashed var(--line);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--muted);white-space:pre-wrap;max-height:3.4em;overflow:hidden}
+.blk.open .rs{max-height:none}
+.blk .calls{padding:0 10px 8px;display:flex;flex-wrap:wrap;gap:6px}
+.blk .calls code{background:#fff1dc;color:#9a5a00;border-radius:5px;padding:1px 6px;font-size:11.5px}
+@media (prefers-color-scheme: dark){ .blk .calls code{background:#3a2a10;color:#f5b041} }
+.blk.new{animation:flash 1.6s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 45%,transparent)}100%{box-shadow:0 0 0 0 transparent}}
+.ctx-note{color:var(--muted);font-size:12px;padding:0 18px 14px;line-height:1.7}
+
+/* ---------- 确认弹窗 ---------- */
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}
+.mask.show{display:flex}
+.dialog{background:var(--panel);border-radius:14px;max-width:560px;width:100%;padding:18px 20px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.dialog h3{margin:0 0 4px;font-size:16px}
+.dialog .why{color:var(--muted);font-size:12.5px;margin-bottom:10px}
+.dialog pre{background:var(--soft);border-radius:8px;padding:10px 12px;max-height:280px;overflow:auto}
+.dialog input{width:100%;margin-top:10px;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font:inherit;background:var(--bg);color:var(--text)}
+.dialog .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}
+.btn.allow{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.deny{color:var(--bad);border-color:var(--bad)}
+
+@media (max-width:860px){
+  main{grid-template-columns:minmax(0,1fr)}
+  header{gap:8px;padding:0 12px}
+  .btn{white-space:nowrap;padding:5px 10px}
+  .meta span:not(.demo){display:none}
+  .meta .demo{max-width:110px}
+  .chat{border-right:none}
+  #timeline{padding:14px 14px 8px}
+  .composer{padding:10px 12px}
+  .hint span:first-child{display:none}
+  .ctx{display:none}
+  body.show-ctx .ctx{display:flex;position:fixed;inset:52px 0 0 0;z-index:5}
+  #toggleCtx{display:inline-block}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 1024 1024" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B06CFF"/><stop offset="1" stop-color="#F0609E"/></linearGradient></defs><rect width="1024" height="1024" rx="228" fill="url(#lg)"/><g stroke="#fff" stroke-width="40" stroke-linecap="round"><line x1="512" y1="470" x2="230" y2="470"/><line x1="512" y1="470" x2="794" y2="470"/><line x1="430" y1="600" x2="430" y2="790"/><line x1="594" y1="600" x2="594" y2="790"/></g><circle cx="222" cy="470" r="58" fill="#fff"/><circle cx="802" cy="470" r="58" fill="#fff"/><rect x="380" y="770" width="100" height="56" rx="28" fill="#fff"/><rect x="544" y="770" width="100" height="56" rx="28" fill="#fff"/><rect x="332" y="250" width="360" height="360" rx="84" fill="#fff"/><g fill="#C65BD8"><rect x="397" y="315" width="72" height="72" rx="18"/><rect x="397" y="409" width="72" height="72" rx="18"/><rect x="491" y="409" width="72" height="72" rx="18"/><rect x="397" y="503" width="72" height="72" rx="18"/><rect x="491" y="503" width="72" height="72" rx="18"/><rect x="585" y="503" width="72" height="72" rx="18"/></g><g fill="#C65BD8" fill-opacity=".16"><rect x="491" y="315" width="72" height="72" rx="18"/><rect x="585" y="315" width="72" height="72" rx="18"/><rect x="585" y="409" width="72" height="72" rx="18"/></g></svg>
+    NamiAgent
+  </div>
+  <div class="meta" id="meta"></div>
+  <div class="grow"></div>
+  <button class="btn" id="toggleCtx">上下文</button>
+  <button class="btn" id="resetBtn" title="清空对话，从头开始">新会话</button>
+</header>
+
+<main>
+  <section class="col chat">
+    <div id="timeline"></div>
+    <div class="composer">
+      <form id="form">
+        <textarea id="input" rows="1" placeholder="给 Agent 一个任务，比如：在工作区写一个 hello.py 并运行它"></textarea>
+        <button class="btn primary" id="send" type="submit">发送</button>
+      </form>
+      <div class="hint"><span>Enter 发送，Shift+Enter 换行 · 开头写 <code>/plan </code> 让它先出计划</span><span id="status">就绪</span></div>
+    </div>
+  </section>
+
+  <aside class="col ctx">
+    <div class="ctx-hd">
+      <h2>上下文</h2>
+      <div class="sub2" id="ctxSub">还没有调用过模型</div>
+      <div class="stack" id="stack"></div>
+      <div class="legend">
+        <span><i style="background:var(--c-system)"></i>system</span>
+        <span><i style="background:var(--c-user)"></i>user</span>
+        <span><i style="background:var(--c-assistant)"></i>assistant</span>
+        <span><i style="background:var(--c-call)"></i>tool_call</span>
+        <span><i style="background:var(--c-tool)"></i>tool 结果</span>
+      </div>
+      <div class="nums"><span id="estTok">估算 0 tokens</span><span id="apiTok"></span></div>
+    </div>
+    <div id="ctxList"></div>
+    <div class="ctx-note">这一列就是这次发给模型的全部内容。模型不记得上一次调用，所以每转一圈都要把它整个重发一遍，越跑越长。token 数是按字符粗略估算的，右上角是 API 返回的真实计数。</div>
+  </aside>
+</main>
+
+<div class="mask" id="mask">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+    <h3 id="dlgTitle">Agent 想执行一个操作</h3>
+    <div class="why">这个操作有副作用，按第 3 课的权限规则，要你点头才能执行。</div>
+    <pre id="dlgBody"></pre>
+    <input id="dlgNote" placeholder="拒绝原因（可选，会告诉 Agent）">
+    <div class="acts">
+      <button class="btn deny" data-ans="n">拒绝</button>
+      <button class="btn" data-ans="a" id="dlgAlways">本次会话一直允许</button>
+      <button class="btn allow" data-ans="y">允许</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const tl = $('#timeline');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ROLE_COLOR = {system:'var(--c-system)', user:'var(--c-user)', assistant:'var(--c-assistant)', tool:'var(--c-tool)'};
+
+// 粗略估算 token：中日韩字符约 0.6 个，其余约 0.3 个。只用来比大小，不是计费
+function estTokens(s){
+  s = String(s || ''); let cjk = 0;
+  for (const ch of s) if (/[　-鿿＀-￯]/.test(ch)) cjk++;
+  return Math.max(1, Math.round(cjk * 0.6 + (s.length - cjk) * 0.3));
+}
+
+let busy = false, stepNo = 0, lastCtxLen = 0, pendingConfirm = null;
+const toolCards = {};
+
+function scrollDown(){ tl.scrollTop = tl.scrollHeight; }
+function add(html, depth){
+  const wrap = document.createElement('div');
+  wrap.className = 'item' + (depth > 0 ? ' sub' : '');
+  wrap.innerHTML = (depth > 0 ? '<div class="sub-tag">子 Agent</div>' : '') + html;
+  tl.querySelector('.empty')?.remove();
+  tl.appendChild(wrap); scrollDown();
+  return wrap;
+}
+function setBusy(b, text){
+  busy = b; $('#send').disabled = b; $('#resetBtn').disabled = b;
+  const st = $('#status'); st.textContent = text || (b ? 'Agent 运行中…' : '就绪'); st.className = b ? 'busy' : '';
+}
+function showEmpty(){
+  tl.innerHTML = `<div class="empty"><b>Agent = 一个 while 循环</b><br>调模型 → 执行工具 → 把结果写回上下文 → 再调模型<br>右边能看到每一圈上下文怎么变长<br>
+  <button class="chip-btn" data-q="在工作区写一个 hello.py，打印一句话，然后运行它">写个 hello.py 并运行</button>
+  <button class="chip-btn" data-q="看看工作区里有哪些文件">看看工作区</button></div>`;
+}
+tl.addEventListener('click', e => { const q = e.target.dataset?.q; if (q) { $('#input').value = q; send(); } });
+
+// ---------- 上下文面板 ----------
+function renderContext(messages, apiTokens){
+  const list = $('#ctxList'); list.innerHTML = '';
+  const sums = {system:0,user:0,assistant:0,call:0,tool:0}; let total = 0;
+  messages.forEach((m, i) => {
+    const content = m.content == null ? '' : (typeof m.content === 'string' ? m.content : JSON.stringify(m.content));
+    const rs = m.reasoning_content || '';
+    const calls = m.tool_calls || [];
+    const tCalls = calls.reduce((a, c) => a + estTokens(c.function?.name + c.function?.arguments), 0);
+    const tMain = content ? estTokens(content) : 0, tRs = rs ? estTokens(rs) : 0;
+    const t = tMain + tRs + tCalls; total += t;
+    const key = m.role === 'tool' ? 'tool' : m.role;
+    sums[key] = (sums[key] || 0) + tMain + tRs; sums.call += tCalls;
+    const label = m.role === 'tool' ? 'tool 结果' : m.role === 'assistant' && calls.length ? 'assistant · 调用工具' : m.role;
+    const el = document.createElement('div');
+    el.className = 'blk' + (i >= lastCtxLen && lastCtxLen > 0 ? ' new' : '');
+    el.style.setProperty('--c', ROLE_COLOR[m.role] || 'var(--muted)');
+    el.innerHTML = `<div class="top"><span class="role">${label}</span>${i === 0 ? '<span class="tok" style="margin-left:0">· 每次都重发</span>' : ''}<span class="tok">≈ ${t} tok</span></div>`
+      + (rs ? `<div class="rs" title="思考模式下模型返回的 reasoning_content。带工具的对话里，它要原样回传给 API">思考（reasoning_content，会回传）：${esc(rs)}</div>` : '')
+      + (content ? `<div class="txt">${esc(content)}</div>` : '')
+      + (calls.length ? `<div class="calls">${calls.map(c => `<code>${esc(c.function?.name)}(${esc((c.function?.arguments || '').slice(0, 60))})</code>`).join('')}</div>` : '');
+    el.addEventListener('click', () => el.classList.toggle('open'));
+    list.appendChild(el);
+  });
+  lastCtxLen = messages.length;
+  const st = $('#stack');
+  st.innerHTML = [['system','--c-system'],['user','--c-user'],['assistant','--c-assistant'],['call','--c-call'],['tool','--c-tool']]
+    .map(([k, c]) => `<div style="width:${total ? 100 * sums[k] / total : 0}%;background:var(${c})"></div>`).join('');
+  $('#estTok').textContent = `${messages.length} 块 · 估算 ${total} tokens`;
+  if (apiTokens != null) $('#apiTok').textContent = `API 计数 prompt_tokens：${apiTokens}`;
+  list.scrollTop = list.scrollHeight;
+}
+
+// ---------- 事件处理 ----------
+function onEvent(ev){
+  const d = ev.depth || 0;
+  switch (ev.kind){
+    case 'reset': tl.innerHTML = ''; showEmpty(); stepNo = 0; lastCtxLen = 0; renderContext(ev.messages, null);
+      $('#ctxSub').textContent = '新会话：上下文里只有 system'; $('#apiTok').textContent = ''; break;
+    case 'user': stepNo = 0; add(`<div class="user"><div class="bubble">${esc(ev.text)}</div></div>`, 0); setBusy(true); break;
+    case 'llm_request':
+      if (d === 0 && ev.purpose === 'step'){
+        stepNo++;
+        $('#ctxSub').textContent = `第 ${stepNo} 次调用模型时发出去的内容`;
+        renderContext(ev.messages, null);
+      }
+      add(`<div class="step">${ev.purpose === 'summary' ? '上下文太长，调用模型做压缩摘要（第 4 课）' : `第 ${d === 0 ? stepNo : '·'} 次调用模型 · 发出 ${ev.messages.length} 条消息`}</div>`, d);
+      if (d === 0) setBusy(true, '等待模型回复…');
+      break;
+    case 'llm_response':
+      if (d === 0 && ev.prompt_tokens != null) $('#apiTok').textContent = `API 计数 prompt_tokens：${ev.prompt_tokens}`;
+      if (ev.reasoning) add(`<div class="card think"><div class="hd" onclick="this.parentNode.classList.toggle('closed')"><span class="caret">▾</span>思考过程 · 模型返回的原文（${ev.seconds}s）</div><div class="bd">${esc(ev.reasoning)}</div></div>`, d);
+      if (ev.purpose === 'step' && ev.content && ev.tool_calls.length) add(`<div class="card"><div class="bd" style="border-top:none">${esc(ev.content)}</div></div>`, d);
+      if (d === 0) setBusy(true, ev.tool_calls.length ? '执行工具…' : '整理回答…');
+      break;
+    case 'tool_start': {
+      let a = ev.arguments; try { a = JSON.stringify(JSON.parse(a)); } catch {}
+      const el = add(`<div class="card tool closed"><div class="hd" onclick="this.parentNode.classList.toggle('closed')"><span class="caret">▾</span><code>${esc(ev.name)}</code><span class="args">${esc(a)}</span><span class="pill run">运行中</span></div><div class="bd"><pre>…</pre></div></div>`, d);
+      toolCards[ev.call_id] = el; break; }
+    case 'confirm_request': {
+      const card = Object.values(toolCards).reverse().find(c => c.querySelector('code')?.textContent === ev.name && c.querySelector('.pill.run'));
+      if (card){ const p = card.querySelector('.pill'); p.className = 'pill wait'; p.textContent = '等你确认'; }
+      openConfirm(ev); setBusy(true, '等你确认…'); break; }
+    case 'confirm_result': if (pendingConfirm === ev.confirm_id) closeConfirm(); break;
+    case 'tool_result': {
+      const el = toolCards[ev.call_id]; if (!el) break;
+      const p = el.querySelector('.pill'); p.className = 'pill ' + (ev.denied ? 'bad' : 'ok'); p.textContent = ev.denied ? '已拒绝' : '完成';
+      el.querySelector('pre').textContent = ev.result;
+      if (ev.denied) el.querySelector('.card').classList.remove('closed');
+      break; }
+    case 'log': break;   // 工具调用已经单独显示，命令行版的日志不重复展示
+    case 'error': add(`<div class="card error"><div class="bd" style="border-top:none">${esc(ev.message)}</div></div>`, 0); break;
+    case 'done':
+      if (ev.reply) add(`<div class="card answer"><div class="bd">${esc(ev.reply)}</div></div>`, 0);
+      renderContext(ev.messages, ev.prompt_tokens);
+      $('#ctxSub').textContent = '本轮结束后的上下文（下一轮会在这个基础上继续加）';
+      setBusy(false); break;
+  }
+}
+
+// ---------- 权限确认 ----------
+function openConfirm(ev){
+  pendingConfirm = ev.confirm_id;
+  $('#dlgTitle').textContent = `Agent 想执行：${ev.name}`;
+  $('#dlgBody').textContent = ev.rendered;
+  $('#dlgNote').value = '';
+  $('#dlgAlways').style.display = ev.rememberable ? '' : 'none';
+  $('#mask').classList.add('show');
+  $('.dialog .allow').focus();
+}
+function closeConfirm(){ pendingConfirm = null; $('#mask').classList.remove('show'); }
+document.querySelectorAll('.dialog [data-ans]').forEach(b => b.addEventListener('click', async () => {
+  const id = pendingConfirm; if (!id) return;
+  closeConfirm();
+  await fetch('/api/confirm', {method:'POST', body: JSON.stringify({confirm_id: id, answer: b.dataset.ans, note: $('#dlgNote').value})});
+}));
+
+// ---------- 发送 ----------
+async function send(){
+  const box = $('#input'); const text = box.value.trim();
+  if (!text || busy) return;
+  box.value = ''; autosize();
+  setBusy(true);
+  const r = await fetch('/api/chat', {method:'POST', body: JSON.stringify({text})});
+  if (!r.ok){ const j = await r.json().catch(() => ({})); add(`<div class="card error"><div class="bd" style="border-top:none">${esc(j.error || r.status)}</div></div>`, 0); setBusy(false); }
+}
+$('#form').addEventListener('submit', e => { e.preventDefault(); send(); });
+$('#input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); send(); } });
+function autosize(){ const t = $('#input'); t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight, 160) + 'px'; }
+$('#input').addEventListener('input', autosize);
+$('#resetBtn').addEventListener('click', async () => { if (!busy && confirm('清空当前对话，开始新会话？')) await fetch('/api/reset', {method:'POST', body:'{}'}); });
+$('#toggleCtx').addEventListener('click', () => document.body.classList.toggle('show-ctx'));
+
+// ---------- 启动 ----------
+(async function init(){
+  const s = await (await fetch('/api/state')).json();
+  $('#meta').innerHTML = (s.demo ? '<span class="demo">演示模式 · 假模型</span>' : '')
+    + `<span>${esc(s.lesson)}</span><span>模型 ${esc(s.model)}</span><span title="${esc(s.workspace)}">工作区 ${esc(s.workspace)}</span>`;
+  showEmpty();
+  renderContext(s.messages, null);
+  if (s.messages.length > 1) $('#ctxSub').textContent = '已保存的会话（上次的对话还在上下文里）';
+  const es = new EventSource('/api/events');
+  es.onmessage = m => onEvent(JSON.parse(m.data));
+  es.onerror = () => setBusy(busy, '连接断开，正在重连…');
+  es.onopen = () => setBusy(s.busy && busy);
+})();
+</script>
+</body>
+</html>

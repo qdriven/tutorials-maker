@@ -1,0 +1,62 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource-variable/noto-sans-sc";
+@import "@innate/ui/tokens.css";
+@import "./playground.css";
+
+@source "../";
+@source "../../node_modules/@innate/ui/src";
+@source "../../../../../base/innate-fe/packages/ui/src";
+
+/* Zen Terminal on top of @innate/ui tokens.
+   --accent stays the playground green (agent state). Primary stays black, the CTA. */
+.ha {
+  --font-sans:
+    "Inter Variable", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC Variable",
+    "Microsoft YaHei", sans-serif;
+  --font-mono:
+    "JetBrains Mono Variable", ui-monospace, "SF Mono", Menlo, Consolas,
+    "PingFang SC", monospace;
+  --sans: var(--font-sans);
+  --mono: var(--font-mono);
+  --background: #ffffff;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
+  --primary: #18181b;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --destructive: #dc2626;
+  --input: #d4d4d8;
+  --ring: #6d28d9;
+  --radius: 10px;
+  --la: #7c3aed;
+  --la-strong: #6d28d9;
+  --la-dim: rgba(124, 58, 237, 0.08);
+  --la-border: rgba(124, 58, 237, 0.35);
+  --act-strong: #1d4ed8;
+}
+
+.ha-btn {
+  height: 38px;
+  border-radius: 10px;
+  padding-inline: 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+button.mcard {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+}
+
+.ed-head button:first-of-type {
+  margin-left: auto;
+}

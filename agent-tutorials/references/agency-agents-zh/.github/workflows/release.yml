@@ -1,0 +1,48 @@
+# npm 发布——Trusted Publishing（与 agency-orchestrator 同款）：
+# 需先在 npmjs.com 给包 agency-agents-zh 配 GitHub Actions 发布者
+# （org: jnMetaCode / repo: agency-agents-zh / workflow: release.yml / environment 留空，
+#   Allowed actions 勾 "Allow npm publish"），之后推 v* tag 即自动发版，无需 OTP/token。
+name: Release (npm)
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # Trusted Publishing 取 OIDC token 必需，自动附带 provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@11
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: scripts/tests/requirements.txt
+      - name: Check release tag matches package version
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          node --input-type=module -e 'import fs from "node:fs"; const version = JSON.parse(fs.readFileSync("package.json", "utf8")).version; if (process.env.RELEASE_TAG !== `v${version}`) throw new Error("Release tag does not match package version");'
+      - name: Verify counts & lint
+        run: |
+          node scripts/check-counts.mjs
+          bash scripts/lint-agents.sh
+      - name: Install example test dependencies
+        run: python -m pip install -r scripts/tests/requirements.txt
+      - name: Test examples
+        run: python -m unittest discover -s scripts/tests -p 'test_*.py' -v
+      - name: Verify packaged consumer installation
+        run: npm run check:package
+      - name: Publish to npm
+        run: npm publish --access public

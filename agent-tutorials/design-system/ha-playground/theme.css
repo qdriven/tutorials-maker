@@ -1,0 +1,108 @@
+/* ============================================================
+   HA Playground Theme — "Zen Terminal" (v1.0)
+   来源：POC 清账后最终态 · 设计权威：design-system/ha-playground/MASTER.md
+   风格族：AI-Native UI × agentway zen tokens（zinc 亮色基底）
+   用法：正式版在 tokens.css 引入本文件；暗色主题为第二迭代（.dark 覆盖组，见 §8）
+   ============================================================ */
+
+:root {
+  /* ── 1. 基底 / 表面（zinc 亮色阶）────────────────────── */
+  --bg: #ffffff;            /* 页面底色 */
+  --surface: #ffffff;       /* 卡片/面板 */
+  --surface-2: #f4f4f5;     /* 内嵌底：代码块头、工具条、hover */
+  --surface-3: #e4e4e7;     /* 更深内嵌：进度轨道、选中底 */
+
+  /* ── 2. 边框 ──────────────────────────────────────────── */
+  --border: #e4e4e7;        /* 常规分隔 */
+  --border-strong: #d4d4d8; /* 输入框 / 可交互 hover */
+
+  /* ── 3. 文字（zinc 墨阶）──────────────────────────────── */
+  --fg: #18181b;            /* 标题 / 主文字 */
+  --fg-2: #52525b;          /* 正文 / 次级 */
+  --fg-3: #71717a;          /* 弱化：meta、占位 */
+  --fg-faint: #a1a1aa;      /* 最弱：禁用、装饰 */
+  --fg-inverse: #ffffff;    /* 深底上的文字 */
+
+  /* ── 4. 双 Accent 语义（本 Theme 的核心约定）──────────── */
+  /* 翡翠 = Agent 态：运行中/成功/互动 Playground/观察结果 */
+  --accent: #16a34a;             /* 图标/边框/填充（≥16px 或非文本） */
+  --accent-strong: #15803d;      /* 文本级强调（≥4.5:1）小字号必须用它 */
+  --accent-dim: rgba(22, 163, 74, .09);   /* 底色晕染 */
+  --accent-glow: rgba(22, 163, 74, .35);  /* 点亮节点 drop-shadow */
+  /* 紫 = 学习态：课程视图/进度/选中项/练习 */
+  --la: #7c3aed;
+  --la-strong: #6d28d9;          /* 文本级紫（q-kicker/ls-kicker/crumbs） */
+  --la-dim: rgba(124, 58, 237, .08);
+  --la-border: rgba(124, 58, 237, .35);
+  /* 琥珀 = 思考态（Thought / 加载中） */
+  --think: #d97706;
+  --think-strong: #b45309;
+  --think-dim: rgba(217, 119, 6, .09);
+  /* 蓝 = 行动态（Action / 工具调用 / 项目徽章） */
+  --act: #2563eb;                 /* 图标/左色条（非文本或 ≥16px） */
+  --act-strong: #1d4ed8;          /* 文本级蓝（11px 徽章/sk 必须） */
+  --act-dim: rgba(37, 99, 235, .08);
+  /* 功能色 */
+  --err: #dc2626;
+
+  /* ── 5. 终端 / 代码面板 ───────────────────────────────── */
+  --term-bg: #fafafa;            /* 终端与输出面板底 */
+  --code-bg: #ffffff;            /* 编辑器底 */
+  --term-head: var(--surface-2);
+
+  /* ── 6. 主按钮（zen 惯例：黑底白字为主 CTA）───────────── */
+  --btn-primary-bg: #18181b;
+  --btn-primary-hover: #3f3f46;
+  --btn-primary-fg: #ffffff;
+
+  /* ── 7. 阴影 / 圆角 / 动效 ────────────────────────────── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .04), 0 1px 3px rgba(0, 0, 0, .03);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, .04), 0 14px 36px rgba(0, 0, 0, .06);
+  --radius-sm: 7px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-full: 999px;
+  --ease: cubic-bezier(.22, 1, .36, 1);   /* 全站唯一入场曲线 */
+  --dur-fast: .18s;
+  --dur-base: .3s;
+  --dur-enter: .55s;                      /* slide/step 入场 */
+  --stagger: 60ms;                        /* 交错级联步长 */
+
+  /* ── 8. 字体 / 字阶（地板 11px，正文 14px）────────────── */
+  --font-sans: 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'PingFang SC', monospace;
+  --fs-11: 11px;   /* 徽章/meta 地板 */
+  --fs-12: 12px;   /* 说明、小注 */
+  --fs-13: 13px;   /* 辅助正文 */
+  --fs-14: 14px;   /* 正文 */
+  --fs-15: 15px;   /* 强调正文 */
+  --fs-20: 20px;   /* 小标题 */
+  --fs-28: 28px;   /* 视图标题（clamp 中值） */
+  --fs-40: 40px;   /* Hero */
+
+  /* ── 9. 间距（4/8 栅格）──────────────────────────────── */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+
+  /* ── 10. 焦点 / 层级 ─────────────────────────────────── */
+  --focus-ring: 2.5px solid #6d28d9;      /* :focus-visible 全站统一 */
+  --z-header: 50; --z-modal: 90; --z-skip: 100;
+
+  /* ── 11. 触屏热区 ───────────────────────────────────── */
+  --hit-min: 24px;                        /* 视觉可小于此，命中区不可 */
+}
+
+/* ============ 组件契约速查（实现须遵守） ============
+ * 图标     Lucide SVG only，尺寸 token：14/16/22/26（.ic-*）；
+ *          同层级同粗细，装饰图标 aria-hidden
+ * 主 CTA   每屏一个：黑底白字；hover #3f3f46；active 下压 1px
+ * 交互件   hover 只变色/描边，**不做位移**（防点击抖动）；
+ *          位移仅限 :active 或内部子元素
+ * 卡片     圆角 14–16px + --border + 白底；hover 提升用描边+shadow-sm
+ * 徽章     mono 11px 胶囊；语义底色用对应 *-dim + strong 文字
+ * 步骤卡   左色条 3px：thought 琥珀 / action 蓝 / observation 翡翠
+ * 循环图   轨道 #e4e4e7；点亮 = accent 描边 + accent-dim 填充 + glow
+ * 动效     reduced-motion 全局关闭；打字机/流光/交错走 --ease
+ * 深链接   所有视图进 hash（#/roadmap、#/lesson/4）
+ * ================================================ */

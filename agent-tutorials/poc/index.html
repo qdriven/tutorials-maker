@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hello-Agents Playground · POC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+<style>
+:root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f4f4f5; --surface3:#e4e4e7;
+  --border:#e4e4e7; --border2:#d4d4d8;
+  --fg:#18181b; --fg2:#52525b; --fg3:#71717a;
+  --accent:#16a34a; --accent-dim:rgba(22,163,74,.09); --accent-strong:#15803d;
+  --think:#d97706; --think-strong:#b45309; --think-dim:rgba(217,119,6,.09);
+  --act:#2563eb; --act-dim:rgba(37,99,235,.08);
+  --err:#dc2626;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.04),0 1px 3px rgba(0,0,0,.03);
+  --shadow-md:0 2px 4px rgba(0,0,0,.04),0 14px 36px rgba(0,0,0,.06);
+  --ease:cubic-bezier(.22,1,.36,1);
+  --sans:'Inter','PingFang SC','Hiragino Sans GB','Noto Sans SC','Microsoft YaHei',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,'PingFang SC',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--fg); font-family:var(--sans);
+  min-height:100vh; overflow-x:hidden;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 15% 0%, rgba(22,163,74,.06), transparent),
+    radial-gradient(ellipse 50% 40% at 85% 10%, rgba(37,99,235,.05), transparent);
+}
+::selection{background:rgba(22,163,74,.15)}
+
+/* ───────── header ───────── */
+header{
+  position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:20px;
+  padding:0 24px; height:56px;
+  background:rgba(255,255,255,.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:15px; letter-spacing:.2px; white-space:nowrap}
+.brand .dot{width:10px;height:10px;border-radius:3px;background:var(--accent);box-shadow:0 0 10px rgba(22,163,74,.45);animation:breathe 3s ease-in-out infinite}
+.brand em{font-style:normal;color:var(--fg3);font-weight:400}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.82);opacity:.7}}
+.tabs{display:flex; gap:4px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:4px}
+.tab{
+  appearance:none; border:0; background:transparent; color:var(--fg2); cursor:pointer;
+  font:500 13px/1 var(--sans); padding:8px 14px; border-radius:7px;
+  transition:color .18s var(--ease), background .18s var(--ease), transform .18s var(--ease);
+}
+.tab:hover{color:var(--fg)}
+.tab.active{background:#18181b; color:#fff; font-weight:600}
+.head-note{margin-left:auto; font:500 11px/1 var(--mono); color:var(--fg3); border:1px solid var(--border); border-radius:999px; padding:6px 10px; white-space:nowrap}
+
+/* ───────── views ───────── */
+main{max-width:1200px; margin:0 auto; padding:28px 24px 40px}
+section[hidden]{display:none}
+
+/* ───────── slides ───────── */
+.slides-stage{position:relative; min-height:500px; border:1px solid var(--border); border-radius:16px; background:var(--surface); overflow:hidden; box-shadow:var(--shadow-md)}
+.slide{
+  position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; align-items:center;
+  padding:48px 64px; text-align:center; opacity:0; pointer-events:none;
+  transform:translateX(46px); transition:opacity .5s var(--ease), transform .55s var(--ease);
+}
+.slide.prev{transform:translateX(-46px)}
+.slide.active{opacity:1; pointer-events:auto; transform:none; z-index:2}
+.slide .bg{position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none}
+.orb{position:absolute; width:420px; height:420px; border-radius:50%; filter:blur(110px); opacity:.12}
+.orb.a{background:var(--accent); top:-140px; left:-80px; animation:orbFloat 16s ease-in-out infinite alternate}
+.orb.b{background:#3b82f6; bottom:-160px; right:-60px; animation:orbFloat 20s ease-in-out infinite alternate-reverse}
+@keyframes orbFloat{from{transform:translate(0,0) scale(1)}to{transform:translate(70px,-50px) scale(1.18)}}
+.slide>*{position:relative; z-index:1}
+
+.rv{opacity:0}
+.slide.active .rv{animation:rvIn .6s var(--ease) both; animation-delay:var(--d,0s)}
+@keyframes rvIn{from{opacity:0; transform:translateY(22px) scale(.97)}to{opacity:1; transform:none}}
+
+.eyebrow{font:600 11px/1 var(--mono); letter-spacing:.22em; color:var(--accent-strong); text-transform:uppercase; margin-bottom:18px}
+.h1{font-size:clamp(34px,5.2vw,58px); font-weight:700; line-height:1.12; letter-spacing:-.02em;
+  background:linear-gradient(115deg,#18181b 30%,#16a34a 70%,#2563eb 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+.sub{margin-top:18px; color:var(--fg2); font-size:clamp(14px,1.6vw,17px); max-width:560px; line-height:1.7}
+.badges{display:flex; gap:10px; margin-top:30px; flex-wrap:wrap; justify-content:center}
+.badge{font:500 12px/1 var(--mono); color:var(--fg2); border:1px solid var(--border2); background:var(--surface2); padding:9px 14px; border-radius:999px; transition:border-color .2s,color .2s,transform .2s var(--ease)}
+.badge:hover{border-color:var(--accent); color:var(--fg)}
+
+.h2{font-size:clamp(24px,3vw,34px); font-weight:700; letter-spacing:-.01em; margin:0 0 14px}
+.lead{color:var(--fg2); font-size:15.5px; line-height:1.75; max-width:640px}
+.lead b{color:var(--fg); font-weight:600}
+
+.cardrow{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:36px; width:100%; max-width:920px}
+.icard{background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:22px 16px; transition:transform .25s var(--ease), border-color .25s}
+.icard:hover{transform:translateY(-4px); border-color:var(--border2)}
+.icard .ico{font-size:26px; margin-bottom:12px; display:block}
+.icard .t{font-weight:600; font-size:14.5px; margin-bottom:6px}
+.icard .d{color:var(--fg3); font-size:12.5px; line-height:1.55}
+
+.cmp{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:34px; width:100%; max-width:920px}
+.cmpcol{background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:24px 20px}
+.cmpcol.agent{border-color:rgba(22,163,74,.4)}
+.cmpcol .ct{font:600 12px/1 var(--mono); letter-spacing:.14em; color:var(--fg3); margin-bottom:20px}
+.cmpcol.agent .ct{color:var(--accent)}
+.flow{display:flex; align-items:center; justify-content:center; gap:8px; min-height:64px}
+.fnode{background:var(--surface3); border:1px solid var(--border2); color:var(--fg2); font:500 12px/1 var(--mono); padding:11px 13px; border-radius:9px; white-space:nowrap}
+.farrow{color:var(--fg3); font-size:13px}
+.loopsvg{width:88px; height:88px; margin:0 auto}
+.loopsvg .ring{fill:none; stroke:var(--accent); stroke-width:2.5; stroke-dasharray:5 9; stroke-linecap:round; opacity:.85; animation:spin 7s linear infinite; transform-origin:center}
+.loopsvg .core{font-size:20px}
+.loopsvg text{fill:var(--fg); font-family:var(--sans)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cmpnote{margin-top:14px; color:var(--fg3); font-size:12.5px; line-height:1.6}
+.cmpcol.agent .cmpnote{color:rgba(22,163,74,.85)}
+
+.chips{display:flex; align-items:center; justify-content:center; gap:12px; margin-top:38px; flex-wrap:wrap}
+.rchip{font:600 15px/1 var(--mono); padding:16px 22px; border-radius:12px; border:1px solid var(--border2); color:var(--fg2); background:var(--surface2); animation:chipCycle 3.9s infinite}
+.rchip small{display:block; font:400 10.5px/1 var(--mono); color:var(--fg3); margin-top:7px; letter-spacing:.12em}
+.rchip.c1{animation-delay:0s}.rchip.c2{animation-delay:1.3s}.rchip.c3{animation-delay:2.6s}
+.rchip.c1:hover{border-color:var(--think)}.rchip.c2:hover{border-color:var(--act)}.rchip.c3:hover{border-color:var(--accent)}
+@keyframes chipCycle{0%,26%{border-color:var(--think); color:var(--fg); box-shadow:0 0 20px rgba(217,119,6,.15); transform:translateY(-3px)}34%,100%{border-color:var(--border2); color:var(--fg2); box-shadow:none; transform:none}}
+.rchip.c2{animation-name:chipCycle2}.rchip.c3{animation-name:chipCycle3}
+@keyframes chipCycle2{0%,26%{border-color:var(--act); color:var(--fg); box-shadow:0 0 20px rgba(37,99,235,.14); transform:translateY(-3px)}34%,100%{border-color:var(--border2); color:var(--fg2); box-shadow:none; transform:none}}
+@keyframes chipCycle3{0%,26%{border-color:var(--accent); color:var(--fg); box-shadow:0 0 20px rgba(22,163,74,.16); transform:translateY(-3px)}34%,100%{border-color:var(--border2); color:var(--fg2); box-shadow:none; transform:none}}
+.loopform{margin-top:26px; font:500 14px/1 var(--mono); color:var(--fg3)}
+.loopform b{color:var(--accent); font-weight:600}
+
+.moderow{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:34px; width:100%; max-width:920px}
+.mcard{background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:26px 20px; text-align:left; cursor:pointer; transition:transform .25s var(--ease), border-color .25s}
+.mcard:hover{border-color:var(--accent); box-shadow:0 8px 24px rgba(22,163,74,.12)}
+.mcard:hover .go{transform:translateX(4px)}
+.mcard .go{transition:transform .25s var(--ease)}
+.mcard:active{transform:translateY(1px)}
+.mcard .ico{font-size:24px}
+.mcard .t{font-weight:600; font-size:15px; margin:12px 0 8px}
+.mcard .d{color:var(--fg3); font-size:12.5px; line-height:1.6}
+.mcard .go{margin-top:16px; font:600 11.5px/1 var(--mono); color:var(--accent-strong); letter-spacing:.08em}
+
+.miles{display:flex; gap:0; margin-top:38px; width:100%; max-width:920px}
+.mile{flex:1; position:relative; padding:0 8px}
+.mile::before{content:''; position:absolute; top:5px; left:0; right:0; height:2px; background:var(--border2)}
+.mile:first-child::before{left:50%}.mile:last-child::before{right:50%}
+.mile .pt{width:12px; height:12px; border-radius:50%; background:var(--border2); margin:0 auto; position:relative; z-index:1; border:2px solid var(--bg)}
+.mile.done .pt{background:var(--accent); box-shadow:0 0 8px rgba(22,163,74,.45)}
+.mile .mt{font:600 12px/1 var(--mono); color:var(--fg2); margin-top:14px}
+.mile .md{color:var(--fg3); font-size:11.5px; margin-top:8px; line-height:1.5}
+.mile.done .mt{color:var(--accent-strong)}
+
+.slides-nav{display:flex; align-items:center; justify-content:center; gap:18px; margin-top:20px}
+.snav{appearance:none; background:var(--surface); border:1px solid var(--border); color:var(--fg2); width:38px; height:38px; border-radius:10px; cursor:pointer; font-size:15px; transition:all .2s var(--ease)}
+.snav:hover{color:var(--fg); border-color:var(--border2)}
+.snav:active{transform:translateY(1px)}
+.dots{display:flex; gap:7px}
+.dots button{appearance:none; border:0; cursor:pointer; padding:0; height:8px; width:8px; border-radius:999px; background:var(--border2); transition:all .3s var(--ease)}
+.dots button.on{width:26px; background:var(--accent)}
+.counter{font:500 12px/1 var(--mono); color:var(--fg3); min-width:44px; text-align:center}
+.kbd-hint{text-align:center; margin-top:10px; color:var(--fg3); font-size:11.5px}
+.kbd-hint kbd{font-family:var(--mono); border:1px solid var(--border2); border-bottom-width:2px; border-radius:5px; padding:2px 6px; font-size:10.5px; margin:0 2px}
+
+/* ───────── demo view ───────── */
+.demo-grid{display:grid; grid-template-columns:380px 1fr; gap:20px; align-items:stretch}
+.panel{background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; box-shadow:var(--shadow-sm)}
+.panel-title{font:600 11px/1 var(--mono); letter-spacing:.16em; color:var(--fg3); text-transform:uppercase; padding:16px 20px 0}
+.loopbox{padding:8px 20px 4px; display:flex; justify-content:center}
+.loopbox svg{width:100%; max-width:330px}
+.lnode circle.body{fill:var(--surface2); stroke:var(--border2); stroke-width:1.5; transition:all .35s var(--ease)}
+.lnode text.nm{fill:var(--fg2); font-size:13px; font-weight:600; font-family:var(--sans); transition:fill .3s}
+.lnode text.en{fill:var(--fg3); font-size:8.5px; font-family:var(--mono); letter-spacing:.1em; transition:fill .3s}
+.lnode.lit circle.body{fill:var(--accent-dim); stroke:var(--accent); filter:drop-shadow(0 0 9px rgba(22,163,74,.35))}
+.lnode.lit text.nm{fill:var(--fg)}
+.lnode.lit text.en{fill:var(--accent)}
+.lflow{fill:none; stroke:var(--border2); stroke-width:1.5}
+.lflow.hot{stroke:var(--accent); stroke-dasharray:5 6; animation:dashMove 1s linear infinite}
+@keyframes dashMove{to{stroke-dashoffset:-11}}
+.orbit{fill:var(--accent); filter:drop-shadow(0 0 5px rgba(22,163,74,.55))}
+.legend{display:flex; justify-content:center; gap:14px; padding:10px 16px 18px; flex-wrap:wrap}
+.lg{display:flex; align-items:center; gap:7px; font:500 11px/1 var(--mono); color:var(--fg3); transition:color .3s}
+.lg .sw{width:8px; height:8px; border-radius:3px; background:var(--border2); transition:background .3s}
+.lg.on{color:var(--fg2)}
+.lg.on .sw{background:var(--accent); box-shadow:0 0 6px rgba(22,163,74,.4)}
+.center-label{font-family:var(--sans)}
+.center-label .big{fill:var(--fg); font-size:15px; font-weight:600}
+.center-label .small{fill:var(--fg3); font-size:9px; font-family:var(--mono); letter-spacing:.15em}
+
+.demo-right{display:flex; flex-direction:column; gap:14px}
+.scenario-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.scenario-row label{font:500 12px/1 var(--mono); color:var(--fg3)}
+.sel{
+  appearance:none; background:var(--surface); color:var(--fg); border:1px solid var(--border2);
+  font:500 13px/1 var(--sans); padding:10px 34px 10px 14px; border-radius:10px; cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a1a1aa' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 12px center;
+}
+.sel:hover{border-color:var(--fg3)}
+.btn{
+  appearance:none; border:1px solid var(--border2); background:var(--surface2); color:var(--fg); cursor:pointer;
+  font:600 13px/1 var(--sans); padding:10px 18px; border-radius:10px; white-space:nowrap;
+  transition:all .2s var(--ease);
+}
+.btn:hover{border-color:var(--fg3)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
+.btn.primary{background:#18181b; color:#fff; border-color:#18181b}
+.btn.primary:hover{background:#3f3f46}
+
+.terminal{flex:1; min-height:420px; display:flex; flex-direction:column}
+.term-head{display:flex; align-items:center; gap:8px; padding:13px 16px; border-bottom:1px solid var(--border); background:var(--surface2)}
+.tdot{width:11px; height:11px; border-radius:50%}
+.tdot.r{background:#ff5f57}.tdot.y{background:#febc2e}.tdot.g{background:#28c840}
+.term-title{font:500 12px/1 var(--mono); color:var(--fg3); margin-left:8px}
+.term-status{margin-left:auto; display:flex; align-items:center; gap:7px; font:500 11px/1 var(--mono); color:var(--fg3)}
+.tstat{width:8px; height:8px; border-radius:50%; background:var(--border2); transition:background .3s}
+.tstat.run{background:var(--think); animation:breathe 1.1s ease-in-out infinite}
+.tstat.ok{background:var(--accent); box-shadow:0 0 6px rgba(22,163,74,.45)}
+.term-body{flex:1; overflow-y:auto; padding:18px; font:400 13px/1.75 var(--mono); background:#fafafa}
+.term-body::-webkit-scrollbar{width:8px}
+.term-body::-webkit-scrollbar-thumb{background:var(--border2); border-radius:4px}
+.goal-line{color:var(--fg2); margin-bottom:14px}
+.goal-line b{color:var(--fg)}
+.caret{display:inline-block; width:8px; height:15px; background:var(--accent); vertical-align:-2px; margin-left:2px; animation:caretBlink 1.1s step-end infinite}
+@keyframes caretBlink{0%,100%{opacity:1}50%{opacity:0}}
+.step{border-radius:11px; padding:13px 16px; margin-top:12px; border:1px solid var(--border); background:var(--surface); animation:stepIn .45s var(--ease) both; overflow-wrap:break-word}
+@keyframes stepIn{from{opacity:0; transform:translateY(14px) scale(.98)}to{opacity:1; transform:none}}
+.step .sk{font:600 11px/1 var(--mono); letter-spacing:.18em; margin-bottom:8px; display:flex; align-items:center; gap:7px}
+.step .sk::before{content:''; width:6px; height:6px; border-radius:2px}
+.step-thought{border-left:3px solid var(--think)}
+.step-thought .sk{color:var(--think-strong)} .step-thought .sk::before{background:var(--think)}
+.step-thought .st{color:var(--fg2)}
+.step-action{border-left:3px solid var(--act); background:linear-gradient(90deg,var(--act-dim),var(--surface))}
+.step-action .sk{color:var(--act)} .step-action .sk::before{background:var(--act)}
+.toolcall{font:500 12.5px/1.5 var(--mono); color:var(--fg)}
+.toolcall .fn{color:var(--act); font-weight:600}
+.toolcall .arg{color:var(--accent-strong)}
+.step-obs{border-left:3px solid var(--accent)}
+.step-obs .sk{color:var(--accent-strong)} .step-obs .sk::before{background:var(--accent)}
+.step-obs .st{color:var(--fg2); font-size:12.5px}
+.step-answer{border:1px solid rgba(22,163,74,.4); background:linear-gradient(120deg,var(--accent-dim),var(--surface)); box-shadow:0 4px 18px rgba(22,163,74,.12)}
+.step-answer .sk{color:var(--accent-strong)} .step-answer .sk::before{background:var(--accent)}
+.step-answer .st{color:var(--fg); font-weight:500}
+.poc-note{font:400 12px/1.6 var(--mono); color:var(--fg3); padding:2px 4px}
+.poc-note b{color:var(--fg2); font-weight:500}
+
+/* ───────── lab view ───────── */
+.lab-head{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px}
+.lab-head .info{color:var(--fg2); font-size:13.5px; line-height:1.6}
+.kchip{display:inline-flex; align-items:center; gap:8px; font:500 11.5px/1 var(--mono); color:var(--fg2); border:1px solid var(--border2); background:var(--surface); border-radius:999px; padding:8px 14px}
+.kdot{width:8px; height:8px; border-radius:50%; background:var(--border2); transition:background .3s}
+.kdot.load{background:var(--think); animation:breathe 1s ease-in-out infinite}
+.kdot.ready{background:var(--accent); box-shadow:0 0 6px rgba(22,163,74,.45)}
+.kdot.run{background:var(--act); animation:breathe .9s ease-in-out infinite}
+.lab-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:stretch}
+.ed-wrap{background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; box-shadow:var(--shadow-sm)}
+.ed-head{display:flex; align-items:center; gap:10px; padding:11px 16px; border-bottom:1px solid var(--border); background:var(--surface2)}
+.fn-chip{font:500 12px/1 var(--mono); color:var(--fg2)}
+.ed-head .btn{margin-left:auto; padding:8px 14px; font-size:12px}
+.ed-head .btn.ghost{background:transparent}
+#pyEditor{
+  flex:1; width:100%; min-height:420px; resize:vertical; border:0; outline:none;
+  background:#ffffff; color:#18181b; caret-color:var(--accent);
+  font:400 13px/1.8 var(--mono); padding:18px; tab-size:4; white-space:pre;
+}
+.out-body{
+  flex:1; min-height:420px; max-height:560px; overflow-y:auto; padding:18px; margin:0;
+  font:400 13px/1.8 var(--mono); background:#fafafa; color:var(--fg2); white-space:pre-wrap;
+}
+.out-body::-webkit-scrollbar{width:8px}
+.out-body::-webkit-scrollbar-thumb{background:var(--border2); border-radius:4px}
+.out-body .err{color:var(--err)}
+.out-body .dim{color:var(--fg3)}
+
+/* ───────── roadmap view ───────── */
+.rm-head{padding:8px 4px 4px}
+.rm-stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.rstat{font:500 12.5px/1 var(--mono); color:var(--fg2); border:1px solid var(--border); background:var(--surface2); border-radius:999px; padding:9px 14px}
+.rstat b{color:var(--accent); font-weight:600; margin-right:5px}
+.pchips{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.pchip{appearance:none;border:1px solid var(--border2);background:var(--surface);color:var(--fg2);font:500 12.5px/1 var(--sans);padding:9px 14px;border-radius:999px;cursor:pointer;transition:all .2s var(--ease)}
+.pchip:hover{border-color:var(--fg3);color:var(--fg)}
+.pchip.on{background:#18181b;color:#fff;border-color:#18181b;font-weight:600}
+.stage{margin-top:30px}
+.stage-head{display:flex;align-items:center;gap:14px;padding:6px 4px}
+.stage-idx{width:40px;height:40px;border-radius:12px;border:1px solid var(--border2);background:var(--surface2);display:flex;align-items:center;justify-content:center;font:600 13px/1 var(--mono);color:var(--fg2);flex:none}
+.stage-name{font-weight:700;font-size:16px}
+.stage-desc{color:var(--fg3);font-size:12.5px;margin-top:4px}
+.stage-tag{margin-left:auto;font:500 11px/1 var(--mono);color:var(--fg3);border:1px solid var(--border);border-radius:999px;padding:6px 10px;white-space:nowrap}
+.rn-list{margin:10px 0 6px 19px;border-left:2px solid var(--border);padding-left:26px}
+.rn{display:flex;align-items:center;gap:14px;padding:13px 16px;border:1px solid var(--border);border-radius:12px;background:var(--surface);margin:10px 0;cursor:pointer;position:relative;transition:border-color .2s var(--ease),box-shadow .2s var(--ease),opacity .25s}
+.rn::before{content:'';position:absolute;left:-30px;top:50%;margin-top:-5px;width:10px;height:10px;border-radius:50%;background:var(--border2);transition:background .2s}
+.rn:hover{border-color:var(--accent);box-shadow:0 6px 20px rgba(22,163,74,.1)}
+.rn:hover::before{background:var(--accent)}
+.rn.done::before{background:var(--accent)}
+.rn.now{border-color:rgba(22,163,74,.45)}
+.rn.now::before{left:-32px;margin-top:-7px;width:8px;height:8px;background:#fff;border:3px solid var(--accent)}
+.rn-idx{font:600 12px/1 var(--mono);color:var(--fg3);flex:none;width:24px}
+.rn-main{flex:1;min-width:0}
+.rn-title{font-weight:600;font-size:14.5px;display:flex;align-items:center;gap:8px}
+.rn-check{color:var(--accent-strong);font-size:12px}
+.rn-sub{color:var(--fg3);font-size:12px;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rn-meta{display:flex;gap:6px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+.mb{font:500 11px/1 var(--mono);border:1px solid var(--border2);color:var(--fg2);border-radius:999px;padding:5px 8px;white-space:nowrap}
+.mb.hot{border-color:transparent;background:var(--accent-dim);color:var(--accent);font-weight:600}
+.mb.blue{border-color:transparent;background:var(--act-dim);color:var(--act)}
+.mb.dk{border-color:transparent;background:#18181b;color:#fff}
+.rn-time{font:400 11px/1 var(--mono);color:var(--fg3);flex:none}
+.rn-go{font:600 11.5px/1 var(--mono);color:var(--accent-strong);flex:none;opacity:0;transform:translateX(-6px);transition:all .2s var(--ease)}
+.rn:hover .rn-go{opacity:1;transform:none}
+.rn.dim{opacity:.3;filter:saturate(.2)}
+@media (max-width:980px){
+  .rn{flex-wrap:wrap}
+  .rn-meta{justify-content:flex-start}
+  .rn-go,.stage-tag,.rn-time{display:none}
+}
+
+/* ───────── dictionary view ───────── */
+.dict-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.dict-input{flex:1;min-width:240px;padding:12px 16px;border:1px solid var(--border2);border-radius:10px;font:400 14px/1 var(--sans);background:var(--surface);color:var(--fg);outline:none;transition:border-color .2s}
+.dict-input:focus{border-color:var(--accent)}
+.dchips{display:flex;gap:7px;flex-wrap:wrap}
+.dchip{appearance:none;border:1px solid var(--border);background:var(--surface2);color:var(--fg2);font:500 12px/1 var(--sans);padding:8px 12px;border-radius:999px;cursor:pointer;transition:all .18s var(--ease)}
+.dchip:hover{color:var(--fg);border-color:var(--border2)}
+.dchip.on{background:var(--accent-strong);border-color:var(--accent-strong);color:#fff;font-weight:600}
+.dict-count{font:500 11.5px/1 var(--mono);color:var(--fg3);white-space:nowrap;margin-left:auto}
+.dict-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.term{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:16px 18px;display:flex;flex-direction:column;gap:8px;transition:border-color .2s var(--ease),box-shadow .2s var(--ease)}
+.term:hover{border-color:var(--border2);box-shadow:var(--shadow-sm)}
+.term[hidden]{display:none}
+.tn{font-weight:600;font-size:14.5px}
+.te{font:500 11px/1 var(--mono);color:var(--fg3);margin-left:8px;font-weight:400}
+.td{color:var(--fg2);font-size:13px;line-height:1.65}
+.tc{appearance:none;align-self:flex-start;border:0;background:transparent;color:var(--accent-strong);font:600 11.5px/1 var(--mono);cursor:pointer;padding:2px 0}
+.tc:hover{text-decoration:underline}
+.uc-meta{display:flex;gap:6px;flex-wrap:wrap}
+.uc-links{display:flex;gap:16px;align-items:center;margin-top:2px}
+a.tc{text-decoration:none}
+@media (max-width:980px){
+  .dict-grid{grid-template-columns:1fr}
+  .dict-count{display:none}
+}
+
+/* ───────── lesson view (AI Hero 式) ───────── */
+#view-lesson{--la:#7c3aed; --la-strong:#6D28D9; --la-dim:rgba(124,58,237,.08); --la-border:rgba(124,58,237,.35)}
+.ls-grid{display:grid; grid-template-columns:1fr 320px; gap:20px; align-items:start}
+.ls-crumbs{display:flex; align-items:center; gap:10px; font:500 12px/1 var(--mono); color:var(--fg3); margin-bottom:14px; flex-wrap:wrap}
+.ls-meta{display:flex; gap:12px; align-items:center; color:var(--fg3); font:400 12.5px/1 var(--mono); margin:-6px 0 16px}
+.player{position:relative; aspect-ratio:16/8.4; background:#18181b; border-radius:14px; overflow:hidden; margin-bottom:18px}
+.p-glow{position:absolute; inset:0; background:radial-gradient(ellipse 55% 60% at 70% 20%, rgba(124,58,237,.35), transparent), radial-gradient(ellipse 40% 50% at 15% 90%, rgba(124,58,237,.18), transparent)}
+.pbig{position:absolute; left:50%; top:44%; transform:translate(-50%,-50%); width:64px; height:64px; border-radius:50%; border:0; background:rgba(255,255,255,.95); color:#18181b; font-size:20px; cursor:pointer; box-shadow:0 10px 30px rgba(0,0,0,.35); transition:transform .2s var(--ease), background .2s}
+.pbig:hover{transform:translate(-50%,-50%) scale(1.06)}
+.pbar{position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:10px; padding:10px 14px; background:linear-gradient(transparent, rgba(0,0,0,.55))}
+.psm{width:28px; height:28px; border-radius:7px; border:0; background:rgba(255,255,255,.15); color:#fff; font-size:11px; cursor:pointer; flex:none}
+.psm:hover{background:rgba(255,255,255,.25)}
+.player .ptrack{flex:1; height:4px; border-radius:99px; background:rgba(255,255,255,.2); overflow:hidden}
+.player .pfill{height:100%; width:0%; background:var(--la); border-radius:99px; transition:width .4s linear}
+.ptime{font:500 11px/1 var(--mono); color:rgba(255,255,255,.85); flex:none}
+.ls-body{font-size:14px; line-height:1.8; color:var(--fg2)}
+.ls-body p{margin-bottom:10px}
+.ls-body b{color:var(--fg)}
+.ls-code{margin:14px 0 0; padding:16px 18px; border:1px solid var(--border); border-radius:12px; background:#fafafa; font:400 12.5px/1.75 var(--mono); color:var(--fg); white-space:pre-wrap; overflow-x:auto}
+.quiz{margin-top:16px; border:1px solid var(--border); border-left:3px solid var(--la); border-radius:12px; background:var(--surface2); padding:18px 20px}
+.q-kicker{font:600 11px/1 var(--mono); letter-spacing:.18em; color:var(--la-strong); margin-bottom:10px}
+.q-title{font-weight:600; font-size:14px; margin-bottom:14px}
+.q-opts{display:flex; flex-direction:column; gap:8px}
+.q-opt{appearance:none; text-align:left; border:1px solid var(--border2); background:var(--surface); color:var(--fg2); font:400 13px/1.5 var(--sans); padding:11px 14px; border-radius:10px; cursor:pointer; transition:all .18s var(--ease)}
+.q-opt:hover{border-color:var(--la); color:var(--fg)}
+.q-opt.sel{border-color:var(--la); background:var(--la-dim); color:var(--fg); font-weight:500}
+.q-opt.ok{border-color:var(--accent); background:var(--accent-dim); color:var(--fg); font-weight:500}
+.q-opt.err{border-color:var(--err); background:rgba(220,38,38,.06)}
+.q-opt:disabled{cursor:default}
+.q-foot{display:flex; align-items:center; gap:12px; margin-top:14px}
+.q-fb{font:500 12.5px/1.5 var(--sans); color:var(--fg3)}
+.q-fb.good{color:var(--accent); font-weight:600}
+.q-fb.bad{color:var(--err)}
+.q-fb .why{color:var(--fg3); font-weight:400}
+.ls-nav{display:flex; justify-content:space-between; margin-top:18px}
+.ls-lockable{position:relative}
+.ls-lock{position:absolute; inset:-4px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.6); backdrop-filter:blur(7px); -webkit-backdrop-filter:blur(7px); border-radius:14px; z-index:3}
+.ls-lock[hidden]{display:none}
+.ls-lock-card{background:var(--surface); border:1px solid var(--la-border); border-radius:14px; padding:26px 30px; text-align:center; box-shadow:var(--shadow-md); max-width:320px}
+.ls-lock-ico{font-size:26px}
+.ls-lock-t{font-weight:700; margin:10px 0 6px}
+.ls-lock-d{color:var(--fg3); font-size:12px; line-height:1.6; margin-bottom:16px}
+.ls-side{position:sticky; top:72px; border:1px solid var(--border); border-radius:14px; background:var(--surface); overflow:hidden}
+.ls-course-head{padding:18px 18px 14px; border-bottom:1px solid var(--border); background:var(--surface2)}
+.ls-kicker{font:600 11px/1 var(--mono); letter-spacing:.18em; color:var(--la-strong); margin-bottom:8px}
+.ls-course-title{font-weight:700; font-size:15.5px}
+.ls-course-sub{color:var(--fg3); font-size:12px; margin-top:6px}
+.ls-course-progress{display:flex; align-items:center; gap:10px; margin-top:14px}
+.ls-course-progress .ptrack{flex:1; height:5px; border-radius:99px; background:var(--surface3); overflow:hidden}
+.ls-course-progress .pfill{height:100%; width:0%; background:var(--la); border-radius:99px; transition:width .4s var(--ease)}
+.pcount{font:600 11px/1 var(--mono); color:var(--fg2); flex:none}
+.ls-list{max-height:520px; overflow-y:auto}
+.ls-list::-webkit-scrollbar{width:8px}
+.ls-list::-webkit-scrollbar-thumb{background:var(--border2); border-radius:4px}
+.ls-item{display:flex; align-items:center; gap:12px; width:100%; text-align:left; appearance:none; border:0; border-bottom:1px solid var(--border); background:var(--surface); padding:13px 16px; cursor:pointer; transition:background .15s}
+.ls-item:hover{background:var(--surface2)}
+.ls-item.now{background:var(--la-dim); box-shadow:inset 3px 0 0 var(--la)}
+.ls-i-idx{width:26px; height:26px; border-radius:8px; border:1px solid var(--border2); background:var(--surface2); display:flex; align-items:center; justify-content:center; font:600 11px/1 var(--mono); color:var(--fg2); flex:none}
+.ls-item.now .ls-i-idx{border-color:var(--la); color:var(--la)}
+.ls-item.done .ls-i-idx{border-color:transparent; background:var(--accent-dim); color:var(--accent)}
+.ls-i-main{flex:1; min-width:0}
+.ls-i-t{font-weight:500; font-size:13px; color:var(--fg); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.ls-i-d{font:400 11px/1 var(--mono); color:var(--fg3); margin-top:5px}
+.ls-i-b{font:600 11px/1 var(--mono); letter-spacing:.08em; border-radius:999px; padding:4px 8px; flex:none}
+.ls-i-b.free{border:1px solid var(--border2); color:var(--fg3)}
+.ls-i-b.pro{background:#18181b; color:#fff}
+@media (max-width:980px){
+  .ls-grid{grid-template-columns:1fr}
+  .ls-side{position:static}
+  .ls-list{max-height:320px}
+}
+
+/* ───────── footer ───────── */
+footer{border-top:1px solid var(--border); margin-top:20px; padding:22px 24px 30px; text-align:center; color:var(--fg3); font-size:12px; line-height:1.8}
+footer a{color:var(--fg2); text-decoration:none; border-bottom:1px solid var(--border2)}
+footer a:hover{color:var(--accent); border-color:var(--accent)}
+
+/* ───────── responsive ───────── */
+@media (max-width:980px){
+  .demo-grid{grid-template-columns:1fr}
+  .lab-grid{grid-template-columns:1fr}
+  .cardrow{grid-template-columns:repeat(2,1fr)}
+  .cmp{grid-template-columns:1fr}
+  .moderow{grid-template-columns:1fr}
+  .slide{padding:36px 24px}
+  .miles{flex-direction:column; gap:22px}
+  .mile::before{display:none}
+  header{padding:0 14px; gap:10px}
+  .head-note{display:none}
+}
+@media (max-width:768px){
+  header{padding:0 10px; gap:8px; flex-wrap:nowrap}
+  .tabs{overflow-x:auto; max-width:100%; scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{white-space:nowrap; flex:none}
+  .brand em{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important}
+}
+
+/* ───────── a11y & icons（ui-ux-pro-max 清账）───────── */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:absolute;left:-999px;top:8px;z-index:100;background:#18181b;color:#fff;padding:9px 16px;border-radius:9px;font:600 13px/1 var(--sans);text-decoration:none}
+.skip:focus{left:8px}
+:focus-visible{outline:2.5px solid #6D28D9;outline-offset:2px;border-radius:4px}
+.lucide{display:inline-block;vertical-align:-0.15em}
+.ic14{width:14px;height:14px}.ic16{width:16px;height:16px}.ic22{width:22px;height:22px}.ic26{width:26px;height:26px}
+.icard .ico .lucide{width:26px;height:26px}
+.mcard .ico .lucide{width:24px;height:24px}
+.pbig .lucide{width:22px;height:22px}
+.sk .lucide{width:13px;height:13px}
+.dots button{position:relative}
+.dots button::after{content:'';position:absolute;inset:-8px}
+.uc-empty{color:var(--fg3);padding:30px;text-align:center;border:1px dashed var(--border2);border-radius:12px;margin-top:18px;font-size:13.5px}
+
+/* ───────── persona 画像层 ───────── */
+.p-chip{display:inline-flex;align-items:center;gap:6px;appearance:none;border:1px solid var(--border2);background:var(--surface2);color:var(--fg2);font:500 12px/1 var(--sans);padding:8px 12px;border-radius:999px;cursor:pointer;white-space:nowrap;transition:border-color .2s,color .2s}
+.p-chip:hover{color:var(--fg);border-color:var(--fg3)}
+.p-banner{display:flex;align-items:center;gap:8px;margin-top:16px;background:var(--accent-dim);border:1px solid rgba(22,163,74,.25);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--fg2)}
+.p-banner[hidden]{display:none}
+.p-banner .lucide{color:var(--accent-strong)}
+.p-banner button{margin-left:auto;background:none;border:0;color:var(--accent-strong);font:600 12px/1 var(--mono);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.stage[hidden]{display:none}
+.p-modal{position:fixed;inset:0;z-index:90;background:rgba(9,9,11,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px}
+.p-modal[hidden]{display:none}
+.p-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;max-width:760px;width:100%;padding:30px;box-shadow:var(--shadow-md)}
+.p-title{font-size:22px;font-weight:700;margin-top:10px}
+.p-sub{color:var(--fg2);font-size:13.5px;margin-top:8px;line-height:1.6}
+.p-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.p-opt{text-align:left;appearance:none;border:1px solid var(--border2);background:var(--surface2);border-radius:14px;padding:18px;cursor:pointer;transition:border-color .2s var(--ease),box-shadow .2s var(--ease);color:var(--fg);font-family:var(--sans)}
+.p-opt:hover{border-color:var(--accent);box-shadow:0 8px 24px rgba(22,163,74,.12)}
+.p-opt .lucide{color:var(--accent-strong)}
+.p-o-t{font-weight:700;font-size:15px;margin-top:10px}
+.p-o-d{color:var(--fg2);font-size:12.5px;line-height:1.6;margin-top:6px}
+.p-o-g{color:var(--accent-strong);font-size:11.5px;font-weight:600;margin-top:10px;font-family:var(--mono)}
+.p-skip{margin-top:18px;background:none;border:0;color:var(--fg3);font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+@media (max-width:768px){.p-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主内容</a>
+
+<header>
+  <div class="brand"><span class="dot"></span>HA<span>·</span><em>Playground</em></div>
+  <nav class="tabs" role="tablist" aria-label="视图">
+    <button class="tab active" data-view="roadmap" role="tab" aria-selected="true"><i data-lucide="map" class="ic16"></i> 学习路线</button>
+    <button class="tab" data-view="lesson" role="tab" aria-selected="false"><i data-lucide="graduation-cap" class="ic16"></i> 课程</button>
+    <button class="tab" data-view="slides" role="tab" aria-selected="false"><i data-lucide="book-open" class="ic16"></i> 讲解 Slides</button>
+    <button class="tab" data-view="demo" role="tab" aria-selected="false"><i data-lucide="zap" class="ic16"></i> 互动 Playground</button>
+    <button class="tab" data-view="lab" role="tab" aria-selected="false"><i data-lucide="flask-conical" class="ic16"></i> 实验 Notebook</button>
+    <button class="tab" data-view="uc" role="tab" aria-selected="false"><i data-lucide="folder-open" class="ic16"></i> 案例</button>
+    <button class="tab" data-view="dict" role="tab" aria-selected="false"><i data-lucide="library" class="ic16"></i> 术语词典</button>
+  </nav>
+  <button class="p-chip" id="personaChip" aria-label="选择用户画像"><i data-lucide="user-round" class="ic14"></i><span id="personaChipText">选择画像</span></button>
+  <div class="head-note">POC · M0</div>
+</header>
+
+<main id="main">
+
+<!-- ═══════════ VIEW 0 · ROADMAP ═══════════ -->
+<section id="view-roadmap" aria-label="学习路线">
+  <div class="rm-head">
+    <div class="eyebrow">CURRICULUM · ROADMAP</div>
+    <h1 class="h2">工具起步 · 原理渐进 · 一路到自研</h1>
+    <p class="lead">零基础用现成 Agent 工具起步，想学的人往原理走，开发者一路走到自研框架。点击任意节点直达模块，或按目标选一条线。</p>
+    <div class="rm-stats">
+      <span class="rstat"><b>6</b> 阶段</span>
+      <span class="rstat"><b>16</b> 章</span>
+      <span class="rstat"><b>5</b> 零代码工具课</span>
+      <span class="rstat"><b>9</b> 互动 Playground</span>
+      <span class="rstat"><b>8</b> Notebook</span>
+      <span class="rstat"><b>4</b> 项目实战</span>
+    </div>
+    <div class="pchips" role="group" aria-label="按目标选线">
+      <button class="pchip on" data-path="all"><i data-lucide="compass" class="ic14"></i> 全部</button>
+      <button class="pchip" data-path="tool"><i data-lucide="wrench" class="ic14"></i> 工具线 · 零代码</button>
+      <button class="pchip" data-path="base"><i data-lucide="search" class="ic14"></i> 原理线 · 理解智能体</button>
+      <button class="pchip" data-path="build"><i data-lucide="hammer" class="ic14"></i> 构建线 · 亲手实现</button>
+      <button class="pchip" data-path="apply"><i data-lucide="rocket" class="ic14"></i> 应用线 · 做出产品</button>
+    </div>
+    <div class="p-banner" id="personaBanner" hidden><i data-lucide="sparkles" class="ic14"></i><span id="personaBannerText"></span><button id="personaHero" data-goto="uc"></button><button id="personaSwitch">切换画像</button></div>
+  </div>
+
+  <div class="stage" data-stage="tool">
+    <div class="stage-head">
+      <span class="stage-idx">00</span>
+      <div><div class="stage-name">工具觉醒 · 零代码起步</div><div class="stage-desc">先用现成 Agent 干活，再回头理解原理 —— 所有人从这里开始</div></div>
+      <span class="stage-tag">工具课 · 全员 · 零代码</span>
+    </div>
+    <div class="rn-list">
+      <div class="rn done" data-goto="lesson" data-path="tool">
+        <span class="rn-idx">T1</span>
+        <div class="rn-main"><div class="rn-title">豆包工作：你说豆包干 <span class="rn-check">✓</span></div><div class="rn-sub">任务拆解 · 电脑操作 · 交付结果 —— 亲眼看到 Agent 循环</div></div>
+        <div class="rn-meta"><span class="mb hot">零代码</span></div>
+        <span class="rn-time">≈30 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn done" data-goto="lesson" data-path="tool">
+        <span class="rn-idx">T2</span>
+        <div class="rn-main"><div class="rn-title">DeepSeek：深度思考与调研</div><div class="rn-sub">推理模式 · 联网调研 —— 对照"纯聊天"的差异</div></div>
+        <div class="rn-meta"><span class="mb hot">零代码</span></div>
+        <span class="rn-time">≈25 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn now" data-goto="lesson" data-path="tool">
+        <span class="rn-idx">T3</span>
+        <div class="rn-main"><div class="rn-title">WorkBuddy：多 Agent 并行交付</div><div class="rn-sub">一句话交出文档 / 表格 / PPT —— 理解"任务编排"</div></div>
+        <div class="rn-meta"><span class="mb hot">零代码</span></div>
+        <span class="rn-time">≈35 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn" data-goto="lesson" data-path="tool build">
+        <span class="rn-idx">T4</span>
+        <div class="rn-main"><div class="rn-title">DeepSeek Harness：看懂 Agent 运行时</div><div class="rn-sub">开源框架 · 一切皆插件 —— 小白看演示，开发者读 Cordis 源码</div></div>
+        <div class="rn-meta"><span class="mb hot">工具</span><span class="mb">开发者</span></div>
+        <span class="rn-time">≈40 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn" data-goto="lesson" data-path="tool build">
+        <span class="rn-idx">T5</span>
+        <div class="rn-main"><div class="rn-title">ZCode / mcode：命令行编程 Agent + MCP</div><div class="rn-sub">CLI 里跑 Agent · 接上第一个 MCP server</div></div>
+        <div class="rn-meta"><span class="mb hot">工具</span><span class="mb">需基础</span></div>
+        <span class="rn-time">≈45 min</span><span class="rn-go">进入 →</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" data-stage="base">
+    <div class="stage-head">
+      <span class="stage-idx">01</span>
+      <div><div class="stage-name">智能体与语言模型基础</div><div class="stage-desc">建立心智模型：什么是智能体、从哪来、LLM 如何驱动</div></div>
+      <span class="stage-tag">第 1–3 章 · 免费</span>
+    </div>
+    <div class="rn-list">
+      <div class="rn done" data-goto="slides" data-path="base">
+        <span class="rn-idx">01</span>
+        <div class="rn-main"><div class="rn-title">初识智能体 <span class="rn-check">✓</span></div><div class="rn-sub">Agent 定义 · 感知/规划/行动闭环 · 技术栈一览</div></div>
+        <div class="rn-meta"><span class="mb">讲解</span><span class="mb">Notebook</span></div>
+        <span class="rn-time">≈30 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn done" data-goto="slides" data-path="base">
+        <span class="rn-idx">02</span>
+        <div class="rn-main"><div class="rn-title">智能体发展史 <span class="rn-check">✓</span></div><div class="rn-sub">从符号主义到 LLM 智能体的演进时间线</div></div>
+        <div class="rn-meta"><span class="mb">讲解</span></div>
+        <span class="rn-time">≈20 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn now" data-goto="slides" data-path="base">
+        <span class="rn-idx">03</span>
+        <div class="rn-main"><div class="rn-title">大语言模型基础</div><div class="rn-sub">Transformer · Prompt · 采样参数与调用</div></div>
+        <div class="rn-meta"><span class="mb">讲解</span><span class="mb">Notebook</span></div>
+        <span class="rn-time">≈40 min</span><span class="rn-go">进入 →</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" data-stage="build">
+    <div class="stage-head">
+      <span class="stage-idx">02</span>
+      <div><div class="stage-name">构建你的大语言模型智能体</div><div class="stage-desc">经典范式 → 主流框架 → 从零自研</div></div>
+      <span class="stage-tag">第 4–7 章 · 核心</span>
+    </div>
+    <div class="rn-list">
+      <div class="rn" data-goto="lesson" data-path="build">
+        <span class="rn-idx">04</span>
+        <div class="rn-main"><div class="rn-title">智能体经典范式构建</div><div class="rn-sub">ReAct / Plan-and-Execute / Reflexion 逐个跑起来</div></div>
+        <div class="rn-meta"><span class="mb hot">课程 · 核心</span><span class="mb">讲解</span><span class="mb">互动</span></div>
+        <span class="rn-time">≈45 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn" data-goto="slides" data-path="apply">
+        <span class="rn-idx">05</span>
+        <div class="rn-main"><div class="rn-title">基于低代码平台的智能体搭建</div><div class="rn-sub">可视化平台快速搭建（外链指引）</div></div>
+        <div class="rn-meta"><span class="mb">讲解 · 外链</span></div>
+        <span class="rn-time">≈25 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn" data-goto="demo" data-path="build">
+        <span class="rn-idx">06</span>
+        <div class="rn-main"><div class="rn-title">框架开发实践</div><div class="rn-sub">LangChain / LlamaIndex 真实沙箱运行</div></div>
+        <div class="rn-meta"><span class="mb hot">互动</span><span class="mb">讲解</span></div>
+        <span class="rn-time">≈50 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn" data-goto="lab" data-path="build">
+        <span class="rn-idx">07</span>
+        <div class="rn-main"><div class="rn-title">构建你的 Agent 框架</div><div class="rn-sub">纯 Python 逐层实现 · Notebook 关卡式</div></div>
+        <div class="rn-meta"><span class="mb hot">Notebook · 核心</span><span class="mb">讲解</span><span class="mb">互动</span></div>
+        <span class="rn-time">≈60 min</span><span class="rn-go">进入 →</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" data-stage="advanced">
+    <div class="stage-head">
+      <span class="stage-idx">03</span>
+      <div><div class="stage-name">高级知识扩展</div><div class="stage-desc">记忆 · 上下文 · 协议 · 强化学习 · 评估</div></div>
+      <span class="stage-tag">第 8–12 章 · +CS329Z 专题</span>
+    </div>
+    <div class="rn-list">
+      <div class="rn" data-goto="demo" data-path="build">
+        <span class="rn-idx">08</span>
+        <div class="rn-main"><div class="rn-title">记忆与检索</div><div class="rn-sub">短期/长期记忆 · RAG 命中可视化</div></div>
+        <div class="rn-meta"><span class="mb hot">互动</span><span class="mb">Notebook</span></div>
+        <span class="rn-time">≈40 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn" data-goto="slides" data-path="base">
+        <span class="rn-idx">09</span>
+        <div class="rn-main"><div class="rn-title">上下文工程</div><div class="rn-sub">上下文窗口 · 压缩 · 结构化组织</div></div>
+        <div class="rn-meta"><span class="mb">讲解</span><span class="mb">Notebook</span></div>
+        <span class="rn-time">≈35 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn" data-goto="demo" data-path="build">
+        <span class="rn-idx">10</span>
+        <div class="rn-main"><div class="rn-title">智能体通信协议</div><div class="rn-sub">MCP / A2A 消息流动画</div></div>
+        <div class="rn-meta"><span class="mb hot">互动</span><span class="mb">讲解</span></div>
+        <span class="rn-time">≈35 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn" data-goto="slides" data-path="base">
+        <span class="rn-idx">11</span>
+        <div class="rn-main"><div class="rn-title">Agentic-RL</div><div class="rn-sub">智能体强化学习前沿</div></div>
+        <div class="rn-meta"><span class="mb">讲解</span></div>
+        <span class="rn-time">≈40 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn" data-goto="demo" data-path="apply">
+        <span class="rn-idx">12</span>
+        <div class="rn-main"><div class="rn-title">智能体性能评估</div><div class="rn-sub">基准 · 轨迹评估 · Dashboard 实时渲染</div></div>
+        <div class="rn-meta"><span class="mb hot">互动</span><span class="mb">Notebook</span></div>
+        <span class="rn-time">≈30 min</span><span class="rn-go">进入 →</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" data-stage="capstone">
+    <div class="stage-head">
+      <span class="stage-idx">04</span>
+      <div><div class="stage-name">综合案例进阶</div><div class="stage-desc">三个完整项目把所有能力串起来</div></div>
+      <span class="stage-tag">第 13–15 章 · 项目</span>
+    </div>
+    <div class="rn-list">
+      <div class="rn" data-goto="demo" data-path="apply">
+        <span class="rn-idx">13</span>
+        <div class="rn-main"><div class="rn-title">智能旅行助手</div><div class="rn-sub">综合案例一 · 工具编排与行程规划</div></div>
+        <div class="rn-meta"><span class="mb blue">项目</span></div>
+        <span class="rn-time">≈90 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn" data-goto="demo" data-path="apply">
+        <span class="rn-idx">14</span>
+        <div class="rn-main"><div class="rn-title">自动化深度研究智能体</div><div class="rn-sub">综合案例二 · 多步研究流水线</div></div>
+        <div class="rn-meta"><span class="mb blue">项目</span></div>
+        <span class="rn-time">≈90 min</span><span class="rn-go">进入 →</span>
+      </div>
+      <div class="rn" data-goto="demo" data-path="apply">
+        <span class="rn-idx">15</span>
+        <div class="rn-main"><div class="rn-title">构建赛博小镇</div><div class="rn-sub">综合案例三 · 多智能体社会模拟</div></div>
+        <div class="rn-meta"><span class="mb blue">项目</span></div>
+        <span class="rn-time">≈120 min</span><span class="rn-go">进入 →</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" data-stage="graduate">
+    <div class="stage-head">
+      <span class="stage-idx">05</span>
+      <div><div class="stage-name">毕业设计及未来展望</div><div class="stage-desc">自选课题，完整交付一个智能体产品</div></div>
+      <span class="stage-tag">第 16 章 · 毕业</span>
+    </div>
+    <div class="rn-list">
+      <div class="rn" data-goto="demo" data-path="apply">
+        <span class="rn-idx">16</span>
+        <div class="rn-main"><div class="rn-title">毕业设计</div><div class="rn-sub">自选课题 · 完整交付</div></div>
+        <div class="rn-meta"><span class="mb dk">毕业项目</span></div>
+        <span class="rn-time">自定</span><span class="rn-go">进入 →</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ VIEW 0.5 · AI HERO 式课程 ═══════════ -->
+<section id="view-lesson" hidden aria-label="AI Hero 式课程">
+  <div class="ls-grid">
+    <div class="ls-main">
+      <div class="ls-crumbs">路线图 / 第 4 章 · 经典范式构建 <span class="mb" style="border-color:transparent;background:var(--la-dim,#ece9fd);color:var(--la-strong)">免费试学前 3 课</span></div>
+      <h1 class="h2" id="lsTitle">—</h1>
+      <div class="ls-meta" id="lsMeta"></div>
+      <div class="player" id="player" aria-label="课时视频">
+        <div class="p-glow"></div>
+        <button class="pbig" id="pBig" aria-label="播放">▶</button>
+        <div class="pbar">
+          <button class="psm" id="pSm" aria-label="播放/暂停">▶</button>
+          <div class="ptrack"><div class="pfill" id="pFill"></div></div>
+          <span class="ptime" id="pTime">0:00 / 0:00</span>
+        </div>
+      </div>
+      <div class="ls-lockable" id="lsLockable">
+        <div class="ls-body" id="lsBody"></div>
+        <pre class="ls-code" id="lsCode"></pre>
+        <div class="quiz">
+          <div class="q-kicker">CHECKPOINT · 随堂练习</div>
+          <div class="q-title" id="qTitle"></div>
+          <div class="q-opts" id="qOpts" role="group" aria-label="练习选项"></div>
+          <div class="q-foot"><button class="btn" id="qSubmit">提交答案</button><span class="q-fb" id="qFb" aria-live="polite"></span></div>
+        </div>
+        <div class="ls-lock" id="lsLock" hidden>
+          <div class="ls-lock-card">
+            <div class="ls-lock-ico"><i data-lucide="lock" class="ic26"></i></div>
+            <div class="ls-lock-t">完整版课时</div>
+            <div class="ls-lock-d">Pro 内容 · 正式版接入沙箱后开放，POC 仅演示解锁形态</div>
+            <button class="btn primary" id="lsUnlock">解锁完整版</button>
+          </div>
+        </div>
+      </div>
+      <div class="ls-nav">
+        <button class="btn" id="lsPrev">← 上一课</button>
+        <button class="btn primary" id="lsNext">下一课 →</button>
+      </div>
+    </div>
+    <aside class="ls-side">
+      <div class="ls-course-head">
+        <div class="ls-kicker">COURSE · 第 4 章</div>
+        <div class="ls-course-title">智能体经典范式构建</div>
+        <div class="ls-course-sub">6 个微课 · ReAct / 工具调用 / P&E / Reflexion</div>
+        <div class="ls-course-progress">
+          <div class="ptrack"><div class="pfill" id="cFill"></div></div>
+          <span class="pcount" id="cCount">0 / 6</span>
+        </div>
+      </div>
+      <div class="ls-list" id="lsList" role="list"></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ═══════════ VIEW 1 · SLIDES ═══════════ -->
+<section id="view-slides" hidden aria-label="讲解 Slides">
+  <div class="slides-stage" id="slidesStage">
+
+    <!-- S1 · 封面 -->
+    <article class="slide active">
+      <div class="bg"><div class="orb a"></div><div class="orb b"></div></div>
+      <div class="eyebrow rv" style="--d:.05s">Datawhale · Hello-Agents 交互版</div>
+      <h1 class="h1 rv" style="--d:.15s">从零开始<br>构建智能体</h1>
+      <p class="sub rv" style="--d:.3s">穿透框架表象，回到智能体核心原理。<br>精简讲解 × 实时互动 × 浏览器内可运行。</p>
+      <div class="badges rv" style="--d:.45s">
+        <span class="badge">16 章 · 全映射</span>
+        <span class="badge">Slides 动画讲解</span>
+        <span class="badge">Playground 实时互动</span>
+        <span class="badge">Notebook 浏览器执行</span>
+      </div>
+    </article>
+
+    <!-- S2 · 什么是智能体 -->
+    <article class="slide">
+      <h2 class="h2 rv" style="--d:.05s">什么是智能体？</h2>
+      <p class="lead rv" style="--d:.15s">能<b>感知环境</b>、<b>自主决策</b>、<b>调用工具</b>并持续迭代以<b>达成目标</b>的系统。<br>LLM 是大脑，四要素围绕它组成闭环。</p>
+      <div class="cardrow">
+        <div class="icard rv" style="--d:.25s"><span class="ico"><i data-lucide="brain"></i></span><div class="t">大脑 · LLM</div><div class="d">理解、推理与生成，一切决策的核心</div></div>
+        <div class="icard rv" style="--d:.35s"><span class="ico"><i data-lucide="eye"></i></span><div class="t">感知 · Input</div><div class="d">接收用户目标与环境反馈（Observation）</div></div>
+        <div class="icard rv" style="--d:.45s"><span class="ico"><i data-lucide="map"></i></span><div class="t">规划 · Plan</div><div class="d">拆解目标，决定下一步行动（Thought）</div></div>
+        <div class="icard rv" style="--d:.55s"><span class="ico"><i data-lucide="wrench"></i></span><div class="t">行动 · Tools</div><div class="d">搜索、计算、API —— 走出"只会说话"的边界</div></div>
+      </div>
+    </article>
+
+    <!-- S3 · 与传统程序对比 -->
+    <article class="slide">
+      <h2 class="h2 rv" style="--d:.05s">与传统程序的本质区别</h2>
+      <p class="lead rv" style="--d:.15s">传统程序：<b>路径固定</b>，逻辑写死在代码里。<br>智能体：<b>路径未知</b>，在循环中自主探索直到收敛。</p>
+      <div class="cmp">
+        <div class="cmpcol rv" style="--d:.28s">
+          <div class="ct">传统程序 · DETERMINISTIC</div>
+          <div class="flow">
+            <span class="fnode">输入</span><span class="farrow">→</span>
+            <span class="fnode">固定逻辑</span><span class="farrow">→</span>
+            <span class="fnode">输出</span>
+          </div>
+          <p class="cmpnote">开发者预先写出每一步分支</p>
+        </div>
+        <div class="cmpcol agent rv" style="--d:.42s">
+          <div class="ct">智能体 · AGENTIC LOOP</div>
+          <div class="flow">
+            <svg class="loopsvg" viewBox="0 0 96 96" aria-hidden="true">
+              <circle class="ring" cx="48" cy="48" r="34"/>
+              <text class="core" x="48" y="57" text-anchor="middle">AI</text>
+            </svg>
+            <span class="fnode" style="border-color:rgba(22,163,74,.45);color:var(--fg)">目标</span>
+            <span class="farrow">⇄</span>
+            <span class="fnode" style="border-color:rgba(22,163,74,.45);color:var(--fg)">环境</span>
+          </div>
+          <p class="cmpnote">模型在循环中自己决定下一步</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- S4 · ReAct 范式 -->
+    <article class="slide">
+      <h2 class="h2 rv" style="--d:.05s">核心范式 · ReAct</h2>
+      <p class="lead rv" style="--d:.15s"><b>Reason + Act</b>：推理指导行动，行动结果反馈推理 —— 三步循环，直到能给出最终答案。</p>
+      <div class="chips">
+        <div class="rchip c1 rv" style="--d:.3s"><i data-lucide="brain" class="ic16"></i> Thought<small>REASONING · 推理</small></div>
+        <span class="farrow rv" style="--d:.4s">→</span>
+        <div class="rchip c2 rv" style="--d:.45s"><i data-lucide="wrench" class="ic16"></i> Action<small>TOOL CALL · 行动</small></div>
+        <span class="farrow rv" style="--d:.55s">→</span>
+        <div class="rchip c3 rv" style="--d:.6s"><i data-lucide="eye" class="ic16"></i> Observation<small>ENVIRONMENT · 观察</small></div>
+        <span class="rv" style="--d:.7s; font-size:20px; color:var(--fg3)">⟲</span>
+      </div>
+      <div class="loopform rv" style="--d:.8s">Thought → Action → Observation → … <b>× N</b> → ✅ Final Answer</div>
+    </article>
+
+    <!-- S5 · 一课三段式 -->
+    <article class="slide">
+      <h2 class="h2 rv" style="--d:.05s">这门课怎么学？一课三段式</h2>
+      <p class="lead rv" style="--d:.15s">文字多的内容用<b>动画 Slides</b> 讲透，交互多的内容<b>亲手跑起来</b>。</p>
+      <div class="moderow">
+        <div class="mcard rv" style="--d:.28s" data-goto="slides"><span class="ico"><i data-lucide="book-open"></i></span><div class="t">讲解 Slides</div><div class="d">每章长文压缩为 5–8 页动画演示：概念卡、循环图、对比图</div><div class="go">当前视图 →</div></div>
+        <div class="mcard rv" style="--d:.42s" data-goto="demo"><span class="ico"><i data-lucide="zap"></i></span><div class="t">互动 Playground</div><div class="d">实时可视化 agent 循环，工具调用逐帧上演（方案三）</div><div class="go">切过去看看 →</div></div>
+        <div class="mcard rv" style="--d:.56s" data-goto="lab"><span class="ico"><i data-lucide="flask-conical"></i></span><div class="t">实验 Notebook</div><div class="d">浏览器内真实执行 Python，改代码立刻看效果（方案四）</div><div class="go">切过去跑一段 →</div></div>
+      </div>
+    </article>
+
+    <!-- S6 · 路线 -->
+    <article class="slide">
+      <h2 class="h2 rv" style="--d:.05s">从 POC 到完整平台</h2>
+      <p class="lead rv" style="--d:.15s">本页即 <b>M0</b>。动效与事件流渲染器与正式版共用同一套契约。</p>
+      <div class="miles">
+        <div class="mile done rv" style="--d:.25s"><div class="pt"></div><div class="mt">M0 · POC</div><div class="md">三视图 + 模拟事件流<br>（本页）</div></div>
+        <div class="mile rv" style="--d:.38s"><div class="pt"></div><div class="mt">M1 · 内容管线</div><div class="md">md → slide-schema<br>第 1–4 章</div></div>
+        <div class="mile rv" style="--d:.51s"><div class="pt"></div><div class="mt">M2 · Notebook</div><div class="md">JupyterLite 关卡<br>第 7 章自研框架</div></div>
+        <div class="mile rv" style="--d:.64s"><div class="pt"></div><div class="mt">M3 · 沙箱</div><div class="md">Docker 池 + SSE<br>真实 LLM 接入</div></div>
+        <div class="mile rv" style="--d:.77s"><div class="pt"></div><div class="mt">M4 · 全量</div><div class="md">16 章 + 进度保存<br>发布</div></div>
+      </div>
+      <div class="badges rv" style="--d:.9s">
+        <span class="badge" data-goto="demo" style="cursor:pointer;background:#18181b;color:#fff;border-color:#18181b;font-weight:600"><i data-lucide="play" class="ic14"></i> 去看 agent 跑起来</span>
+      </div>
+    </article>
+  </div>
+
+  <div class="slides-nav">
+    <button class="snav" id="prevBtn" aria-label="上一页">←</button>
+    <div class="dots" id="dots"></div>
+    <button class="snav" id="nextBtn" aria-label="下一页">→</button>
+    <span class="counter" id="slideCounter">1 / 6</span>
+  </div>
+  <div class="kbd-hint"><kbd>←</kbd><kbd>→</kbd> 键盘翻页 · 卡片可点击</div>
+</section>
+
+<!-- ═══════════ VIEW 2 · 互动 PLAYGROUND ═══════════ -->
+<section id="view-demo" hidden aria-label="互动 Playground">
+  <h1 class="sr-only">互动 Playground · ReAct 实时演示</h1>
+  <div class="demo-grid">
+    <div class="panel">
+      <div class="panel-title">ReAct Loop · 实时状态</div>
+      <div class="loopbox">
+        <svg id="loopSvg" viewBox="0 0 320 320" role="img" aria-label="ReAct 循环图">
+          <defs>
+            <marker id="arr" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0 L8 4 L0 8 z" fill="#a1a1aa"/>
+            </marker>
+            <marker id="arrHot" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0 0 L8 4 L0 8 z" fill="#16a34a"/>
+            </marker>
+          </defs>
+          <!-- 外环轨道 -->
+          <path id="orbitPath" d="M 160 42 A 118 118 0 1 1 159.9 42" fill="none" stroke="#e4e4e7" stroke-width="1.5"/>
+          <!-- 弧线箭头 -->
+          <path class="lflow" id="f1" d="M 233 70 A 118 118 0 0 1 266 132" marker-end="url(#arr)"/>
+          <path class="lflow" id="f2" d="M 266 188 A 118 118 0 0 1 233 250" marker-end="url(#arr)"/>
+          <path class="lflow" id="f3" d="M 87 250 A 118 118 0 0 1 54 188" marker-end="url(#arr)"/>
+          <!-- 反馈弧：观察 → 推理 -->
+          <path class="lflow" id="fBack" d="M 68 186 Q 160 236 252 186" fill="none" stroke-dasharray="4 5"/>
+          <!-- 巡航光点 -->
+          <circle class="orbit" r="4.5">
+            <animateMotion dur="9s" repeatCount="indefinite" rotate="auto">
+              <mpath href="#orbitPath"/>
+            </animateMotion>
+          </circle>
+          <!-- 节点 -->
+          <g class="lnode" id="nGoal">
+            <circle class="body" cx="160" cy="42" r="30"/>
+            <text class="nm" x="160" y="40" text-anchor="middle">目标</text>
+            <text class="en" x="160" y="54" text-anchor="middle">GOAL</text>
+          </g>
+          <g class="lnode" id="nReason">
+            <circle class="body" cx="278" cy="160" r="30"/>
+            <text class="nm" x="278" y="158" text-anchor="middle">推理</text>
+            <text class="en" x="278" y="172" text-anchor="middle">THOUGHT</text>
+          </g>
+          <g class="lnode" id="nAct">
+            <circle class="body" cx="160" cy="278" r="30"/>
+            <text class="nm" x="160" y="276" text-anchor="middle">行动</text>
+            <text class="en" x="160" y="290" text-anchor="middle">ACTION</text>
+          </g>
+          <g class="lnode" id="nObserve">
+            <circle class="body" cx="42" cy="160" r="30"/>
+            <text class="nm" x="42" y="158" text-anchor="middle">观察</text>
+            <text class="en" x="42" y="172" text-anchor="middle">OBSERVE</text>
+          </g>
+          <!-- 中心标签 -->
+          <g class="center-label">
+            <text class="big" id="phaseBig" x="160" y="156" text-anchor="middle">待运行</text>
+            <text class="small" id="phaseSmall" x="160" y="174" text-anchor="middle">PRESS RUN</text>
+          </g>
+        </svg>
+      </div>
+      <div class="legend">
+        <span class="lg" id="lgReason"><span class="sw"></span>推理</span>
+        <span class="lg" id="lgAct"><span class="sw"></span>行动</span>
+        <span class="lg" id="lgObserve"><span class="sw"></span>观察</span>
+        <span class="lg" id="lgDone"><span class="sw"></span>完成</span>
+      </div>
+    </div>
+
+    <div class="demo-right">
+      <div class="scenario-row">
+        <label for="scenarioSelect">场景</label>
+        <select class="sel" id="scenarioSelect">
+          <option value="weather">天气判断 · 双工具循环</option>
+          <option value="calc">数学求解 · calculator</option>
+        </select>
+        <button class="btn primary" id="runBtn"><i data-lucide="play" class="ic14"></i> 运行 Agent</button>
+      </div>
+      <div class="panel terminal">
+        <div class="term-head">
+          <span class="tdot r"></span><span class="tdot y"></span><span class="tdot g"></span>
+          <span class="term-title">agent@hello-agents:~/react-demo</span>
+          <span class="term-status"><span class="tstat" id="tStat"></span><span id="tStatText">IDLE</span></span>
+        </div>
+        <div class="term-body" id="termBody" aria-live="polite"></div>
+      </div>
+      <p class="poc-note"><b>POC 说明</b>：此处由脚本模拟 LLM 事件流（免 Key 可演示）。正式版（M3）为同一渲染器 + FastAPI 代理 / Docker 沙箱的真实 SSE 事件。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ VIEW 3 · NOTEBOOK ═══════════ -->
+<section id="view-lab" hidden aria-label="实验 Notebook">
+  <h1 class="sr-only">实验 Notebook · 浏览器内执行 Python</h1>
+  <div class="lab-head">
+    <span class="info">方案四形态：浏览器内 Pyodide 内核<b style="color:var(--fg)">真实执行 Python</b> —— 纯 Python 练习免后端、免 Key，改代码立刻重跑。</span>
+    <span class="kchip"><span class="kdot" id="kDot"></span><span id="kText">内核未加载</span></span>
+  </div>
+  <div class="lab-grid">
+    <div class="ed-wrap">
+      <div class="ed-head">
+        <span class="fn-chip">mini_react_agent.py</span>
+        <button class="btn ghost" id="resetBtn" title="恢复默认代码"><i data-lucide="rotate-ccw" class="ic14"></i> 重置</button>
+        <button class="btn primary" id="pyRunBtn"><i data-lucide="play" class="ic14"></i> 运行</button>
+      </div>
+      <textarea id="pyEditor" spellcheck="false" aria-label="Python 代码编辑器"></textarea>
+    </div>
+    <div class="ed-wrap">
+      <div class="ed-head"><span class="fn-chip">输出 · stdout（实时流式）</span></div>
+      <pre class="out-body" id="pyOut" aria-live="polite"><span class="dim">▶ 点击「运行」：首次将加载 Pyodide 内核（约 10MB，CDN），之后执行在浏览器本地完成。</span></pre>
+    </div>
+  </div>
+  <p class="poc-note" style="margin-top:12px"><b>提示</b>：试着把 <b>PLAN</b> 里的目标城市改成"上海"，或给 <b>TOOLS</b> 加一个新工具，再点运行 —— 整个循环轨迹会实时重算。</p>
+</section>
+
+<!-- ═══════════ VIEW 5 · 案例 USE-CASE ═══════════ -->
+<section id="view-uc" hidden aria-label="案例 Use-Case">
+  <div class="rm-head">
+    <div class="eyebrow">USE-CASE LIBRARY · 案例库</div>
+    <h1 class="h2">真实世界的 Agent 用法</h1>
+    <p class="lead">精选自 <b>1,910 个真实用例库</b>（agentusecases.ai 镜像）+ <b>WorkBuddy 官方 230+ 案例库</b>，持续增量同步。每张卡：场景 · 工具对照 · 难度 · 背后原理（可跳课程）· 原文。</p>
+  </div>
+  <div class="dict-bar">
+    <div class="dchips" role="group" aria-label="按场景过滤">
+      <button class="dchip on" data-uc="all">全部</button>
+      <button class="dchip" data-uc="work">办公效率</button>
+      <button class="dchip" data-uc="research">研究调研</button>
+      <button class="dchip" data-uc="dev">软件开发</button>
+      <button class="dchip" data-uc="life">生活与账务</button>
+    </div>
+    <span class="dict-count" id="ucCount">16 个精选案例</span>
+  </div>
+  <div class="dict-grid" id="ucGrid">
+    <div class="term" data-uc="work">
+      <div class="tn">调研 → PPT + 表格一键生成 <span class="te">from web research</span></div>
+      <div class="td">Agent Mode 从网页调研生成演示文稿与电子书草稿，并把调研结果整理成表格——设计不算惊艳，但省了好几个小时。</div>
+      <div class="uc-meta"><span class="mb">办公</span><span class="mb hot">豆包工作 / WorkBuddy 同类</span><span class="mb">零代码</span></div>
+      <div class="uc-links"><button class="tc" data-goto="lesson">原理：规划 + 工具 →</button><a class="tc" href="https://agentusecases.ai/use-case/build-presentations-and-spreadsheets-from-web-research" target="_blank" rel="noopener">原文 ↗</a></div>
+    </div>
+    <div class="term" data-uc="work">
+      <div class="tn">异步站会自动收集汇总 <span class="te">async standup updates</span></div>
+      <div class="td">Zapier 内部用 Agent 收集各成员异步站会更新并汇总，把每天 5 次站会减到每周 2 次。</div>
+      <div class="uc-meta"><span class="mb">办公</span><span class="mb hot">豆包 × 飞书 同类</span><span class="mb">零代码</span></div>
+      <div class="uc-links"><button class="tc" data-goto="demo">原理：记忆 + 信息聚合 →</button><a class="tc" href="https://agentusecases.ai/use-case/collect-and-summarize-async-standup-updates" target="_blank" rel="noopener">原文 ↗</a></div>
+    </div>
+    <div class="term" data-uc="work">
+      <div class="tn">财务 · 多源自动对账 <span class="te">bank × ERP reconciliation</span></div>
+      <div class="td">自动下载银行流水与本地 ERP 导出表，逐笔匹配每一款项并标出差异——财务月结从两天缩到两小时。</div>
+      <div class="uc-meta"><span class="mb">办公</span><span class="mb hot">WorkBuddy 官方 · 财务岗</span><span class="mb">零代码</span></div>
+      <div class="uc-links"><button class="tc" data-goto="demo">原理：工具调用 + 数据处理 →</button><a class="tc" href="https://github.com/EvoLinkAI/awesome-workbuddy-use-cases" target="_blank" rel="noopener">案例库 ↗</a></div>
+    </div>
+    <div class="term" data-uc="work">
+      <div class="tn">HR · 简历批量筛选 <span class="te">resume screening</span></div>
+      <div class="td">批量读取下载文件夹里的 50 份简历，按岗位要求逐份评分并输出对比表格——HR 只看前 10 份。</div>
+      <div class="uc-meta"><span class="mb">办公</span><span class="mb hot">WorkBuddy 官方 · HR 岗</span><span class="mb">零代码</span></div>
+      <div class="uc-links"><button class="tc" data-goto="lesson">原理：批处理 + 结构化输出 →</button><a class="tc" href="https://github.com/EvoLinkAI/awesome-workbuddy-use-cases" target="_blank" rel="noopener">案例库 ↗</a></div>
+    </div>
+    <div class="term" data-uc="work">
+      <div class="tn">法务 · 合同合规审查 <span class="te">contract compliance review</span></div>
+      <div class="td">读取合同文件，对比公司标准模版，自动标出所有"责任豁免"和"违约条款"的差异点。</div>
+      <div class="uc-meta"><span class="mb">办公</span><span class="mb hot">WorkBuddy 官方 · 法务岗</span><span class="mb">零代码</span></div>
+      <div class="uc-links"><button class="tc" data-goto="demo">原理：文档理解 + 检索 →</button><a class="tc" href="https://github.com/EvoLinkAI/awesome-workbuddy-use-cases" target="_blank" rel="noopener">案例库 ↗</a></div>
+    </div>
+    <div class="term" data-uc="work">
+      <div class="tn">税务政策每日速报 <span class="te">tax policy briefing</span></div>
+      <div class="td">每天自动检索税务局官网，摘要与本公司相关的政策变动并推送——"主动式 Agent"的最小可用形态。</div>
+      <div class="uc-meta"><span class="mb">办公</span><span class="mb hot">WorkBuddy 官方 · 财务岗</span><span class="mb">零代码</span></div>
+      <div class="uc-links"><button class="tc" data-goto="lesson">原理：主动式 Agent（定时触发） →</button><a class="tc" href="https://github.com/EvoLinkAI/awesome-workbuddy-use-cases" target="_blank" rel="noopener">案例库 ↗</a></div>
+    </div>
+    <div class="term" data-uc="work">
+      <div class="tn">催账 Agent 小队 <span class="te">chase overdue invoices</span></div>
+      <div class="td">自由职业者用 Claude Code 编排一套系统：找出逾期发票并排优先级、写个性化提醒、处理回复，对方承诺付款后自动暂停催收 48 小时。</div>
+      <div class="uc-meta"><span class="mb">办公</span><span class="mb hot">WorkBuddy / ZCode 可复刻</span><span class="mb">轻代码</span></div>
+      <div class="uc-links"><button class="tc" data-goto="demo">原理：多 Agent + 规划 →</button><a class="tc" href="https://agentusecases.ai/use-case/chase-overdue-invoices-with-a-squad-of-agents" target="_blank" rel="noopener">原文 ↗</a></div>
+    </div>
+    <div class="term" data-uc="research">
+      <div class="tn">arXiv 论文每周自动分拣 <span class="te">weekly paper triage</span></div>
+      <div class="td">每周自动化按关键词检索 arXiv，新论文入 CSV，分成"精读/略读/放弃"三档，还能对照 Zotero 核查论断。</div>
+      <div class="uc-meta"><span class="mb">研究</span><span class="mb hot">DeepSeek 调研同类</span><span class="mb">轻代码</span></div>
+      <div class="uc-links"><button class="tc" data-goto="demo">原理：检索 + RAG →</button><a class="tc" href="https://agentusecases.ai/use-case/automate-a-weekly-arxiv-paper-triage" target="_blank" rel="noopener">原文 ↗</a></div>
+    </div>
+    <div class="term" data-uc="research">
+      <div class="tn">Drive 里的论文自动编目 <span class="te">papers into Drive</span></div>
+      <div class="td">n8n 工作流从新 PDF 提取元数据，在 Semantic Scholar / PubMed 找相关论文，生成 APA 引用、写入表格并创建 Notion 摘要。</div>
+      <div class="uc-meta"><span class="mb">研究</span><span class="mb">轻代码</span></div>
+      <div class="uc-links"><button class="tc" data-goto="demo">原理：知识库 + 记忆 →</button><a class="tc" href="https://agentusecases.ai/use-case/catalog-and-summarize-papers-dropped-into-drive" target="_blank" rel="noopener">原文 ↗</a></div>
+    </div>
+    <div class="term" data-uc="research">
+      <div class="tn">家谱调研整理成表格与计划 <span class="te">genealogy research</span></div>
+      <div class="td">用 ChatGPT 的 Agent Mode 把家谱调研编译成可用表格与后续计划——非技术用户也能完成的多步数据任务。</div>
+      <div class="uc-meta"><span class="mb">研究</span><span class="mb">生活</span><span class="mb">零代码</span></div>
+      <div class="uc-links"><button class="tc" data-goto="lesson">原理：多步任务拆解 →</button><a class="tc" href="https://agentusecases.ai/use-case/compile-genealogy-research-into-a-spreadsheet-and-plan" target="_blank" rel="noopener">原文 ↗</a></div>
+    </div>
+    <div class="term" data-uc="dev">
+      <div class="tn">语音接线员经 MCP 排约 <span class="te">voice receptionist via MCP</span></div>
+      <div class="td">自建 MCP server 暴露查询/排约/取消三个工具，ElevenLabs 语音 Agent 经电话线直连公司 CRM 接听客户来电。</div>
+      <div class="uc-meta"><span class="mb">办公</span><span class="mb hot">MCP 标杆案例</span><span class="mb">开发者</span></div>
+      <div class="uc-links"><button class="tc" data-goto="demo">原理：MCP 协议 →</button><a class="tc" href="https://agentusecases.ai/use-case/let-a-voice-receptionist-schedule-appointments-via-mcp" target="_blank" rel="noopener">原文 ↗</a></div>
+    </div>
+    <div class="term" data-uc="dev">
+      <div class="tn">Figma 设计稿 → 网站主页 <span class="te">Figma via MCP</span></div>
+      <div class="td">用 MCP 把 Figma 接入 Cursor，为字体档案站生成新主页——在 Lable 效果不佳后，MCP 直连设计源数据效果出众。</div>
+      <div class="uc-meta"><span class="mb">开发</span><span class="mb hot">MCP</span><span class="mb">开发者</span></div>
+      <div class="uc-links"><button class="tc" data-goto="demo">原理：MCP 工具生态 →</button><a class="tc" href="https://agentusecases.ai/use-case/build-a-homepage-from-figma-designs-via-mcp" target="_blank" rel="noopener">原文 ↗</a></div>
+    </div>
+    <div class="term" data-uc="dev">
+      <div class="tn">零经验 5 分钟做出第一个 App <span class="te">no coding experience</span></div>
+      <div class="td">从没写过可用代码的用户，用 Replit Agent + Claude Sonnet 约 5 分钟做出一个能用的 App——小白"英雄时刻"案例。</div>
+      <div class="uc-meta"><span class="mb">开发</span><span class="mb hot">ZCode / mcode 同类</span><span class="mb">零代码</span></div>
+      <div class="uc-links"><button class="tc" data-goto="lesson">原理：Agent 循环 →</button><a class="tc" href="https://agentusecases.ai/use-case/build-a-first-app-with-no-coding-experience" target="_blank" rel="noopener">原文 ↗</a></div>
+    </div>
+    <div class="term" data-uc="dev">
+      <div class="tn">并行 Agent 团队写 C 编译器 <span class="te">team of parallel agents</span></div>
+      <div class="td">Anthropic 工程实录：把任务拆给多个 Opus Agent 团队并行开发一个 C 编译器——多 Agent 分工的教科书案例。</div>
+      <div class="uc-meta"><span class="mb">开发</span><span class="mb hot">多 Agent</span><span class="mb">开发者</span></div>
+      <div class="uc-links"><button class="tc" data-goto="demo">原理：多 Agent 协作 →</button><a class="tc" href="https://agentusecases.ai/use-case/build-a-c-compiler-with-a-team-of-parallel-agents" target="_blank" rel="noopener">原文 ↗</a></div>
+    </div>
+    <div class="term" data-uc="dev">
+      <div class="tn">5 分钟审计 222 个 PR（附翻车） <span class="te">audit PRs with terminal agent</span></div>
+      <div class="td">独立测试：终端编程 Agent 5 分钟内审计 222 个 PR、成本约 1 毛钱——但它也给一个不存在的 Google 项目做了计划。效率与幻觉一并看。</div>
+      <div class="uc-meta"><span class="mb">开发</span><span class="mb hot">ZCode / mcode 同类</span><span class="mb">开发者</span></div>
+      <div class="uc-links"><button class="tc" data-goto="demo">原理：评估与幻觉 →</button><a class="tc" href="https://agentusecases.ai/use-case/audit-hundreds-of-pull-requests-with-a-terminal-coding-agent" target="_blank" rel="noopener">原文 ↗</a></div>
+    </div>
+    <div class="term" data-uc="dev">
+      <div class="tn">给 Agent 记忆加上"遗忘" <span class="te">agentic forgetting</span></div>
+      <div class="td">实现 Tim Kellogg 的 agentic forgetting 思路：最简版本效果就令人印象深刻——记忆不是越多越好，会遗忘才健康。</div>
+      <div class="uc-meta"><span class="mb">进阶</span><span class="mb hot">记忆机制</span><span class="mb">开发者</span></div>
+      <div class="uc-links"><button class="tc" data-goto="demo">原理：记忆管理 →</button><a class="tc" href="https://agentusecases.ai/use-case/add-agentic-forgetting-to-an-agent-s-memory" target="_blank" rel="noopener">原文 ↗</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ VIEW 4 · 术语词典 ═══════════ -->
+<section id="view-dict" hidden aria-label="术语词典">
+  <div class="rm-head">
+    <div class="eyebrow">AI DICTIONARY · 术语索引</div>
+    <h1 class="h2">术语词典</h1>
+    <p class="lead">课程关键概念的可检索索引：支持中英文关键字即时过滤，每个术语可一键跳回对应章节。</p>
+  </div>
+  <div class="dict-bar">
+    <input class="dict-input" id="dictQ" type="search" placeholder="搜索术语：如 ReAct、记忆、MCP…" aria-label="搜索术语">
+    <div class="dchips" role="group" aria-label="按分类过滤">
+      <button class="dchip on" data-cat="all">全部</button>
+      <button class="dchip" data-cat="base">基础</button>
+      <button class="dchip" data-cat="paradigm">范式</button>
+      <button class="dchip" data-cat="memory">记忆与知识</button>
+      <button class="dchip" data-cat="proto">协议</button>
+      <button class="dchip" data-cat="eval">训练与评估</button>
+      <button class="dchip" data-cat="eng">工程</button>
+    </div>
+    <span class="dict-count" id="dictCount">16 个术语</span>
+  </div>
+  <div class="uc-empty" id="dictEmpty" hidden>没有找到相关术语 —— 试试「记忆」「MCP」，或切换分类。</div>
+  <div class="dict-grid" id="dictGrid">
+    <div class="term" data-cat="base"><div class="tn">智能体 <span class="te">Agent</span></div><div class="td">能感知环境、自主决策、调用工具并持续迭代以达成目标的系统。</div><button class="tc" data-goto="slides">第 1 章 · 讲解 →</button></div>
+    <div class="term" data-cat="base"><div class="tn">工具调用 <span class="te">Tool Calling</span></div><div class="td">模型输出结构化指令，由运行时执行外部工具并把结果回填给模型。</div><button class="tc" data-goto="demo">第 4 章 · 互动 →</button></div>
+    <div class="term" data-cat="base"><div class="tn">多智能体系统 <span class="te">Multi-Agent System</span></div><div class="td">多个智能体按角色分工、通过消息协作完成复杂任务的系统形态。</div><button class="tc" data-goto="demo">第 15 章 · 项目 →</button></div>
+    <div class="term" data-cat="paradigm"><div class="tn">ReAct <span class="te">Reason + Act</span></div><div class="td">推理与行动交替进行的经典范式：Thought → Action → Observation 循环。</div><button class="tc" data-goto="lesson">第 4 章 · 课程 →</button></div>
+    <div class="term" data-cat="paradigm"><div class="tn">先规划后执行 <span class="te">Plan-and-Execute</span></div><div class="td">先生成完整任务计划，再逐步执行并按需重规划的范式。</div><button class="tc" data-goto="demo">第 4 章 · 互动 →</button></div>
+    <div class="term" data-cat="paradigm"><div class="tn">自我反思 <span class="te">Reflexion</span></div><div class="td">把失败经验转化为语言化反思，写回记忆指导下一轮尝试。</div><button class="tc" data-goto="demo">第 4 章 · 互动 →</button></div>
+    <div class="term" data-cat="memory"><div class="tn">记忆体系 <span class="te">Memory</span></div><div class="td">短期（上下文内）与长期（外部存储）记忆共同构成的体系。</div><button class="tc" data-goto="demo">第 8 章 · 互动 →</button></div>
+    <div class="term" data-cat="memory"><div class="tn">检索增强生成 <span class="te">RAG</span></div><div class="td">先从知识库检索相关内容、再注入上下文生成的知识注入方法。</div><button class="tc" data-goto="demo">第 8 章 · 互动 →</button></div>
+    <div class="term" data-cat="memory"><div class="tn">向量检索 <span class="te">Vector Search</span></div><div class="td">将文本编码为向量，以相似度找出语义最相关内容的检索方式。</div><button class="tc" data-goto="lab">第 8 章 · Notebook →</button></div>
+    <div class="term" data-cat="memory"><div class="tn">上下文工程 <span class="te">Context Engineering</span></div><div class="td">对模型可见信息进行系统性选择、压缩与组织，用有限窗口做最多的事。</div><button class="tc" data-goto="slides">第 9 章 · 讲解 →</button></div>
+    <div class="term" data-cat="proto"><div class="tn">模型上下文协议 <span class="te">MCP</span></div><div class="td">连接模型与外部工具/数据源的开放协议，"AI 应用的 USB-C"。</div><button class="tc" data-goto="demo">第 10 章 · 互动 →</button></div>
+    <div class="term" data-cat="proto"><div class="tn">智能体协作协议 <span class="te">A2A</span></div><div class="td">Agent-to-Agent：跨智能体（可跨厂商/框架）的任务委托与状态通信。</div><button class="tc" data-goto="demo">第 10 章 · 互动 →</button></div>
+    <div class="term" data-cat="eval"><div class="tn">智能体强化学习 <span class="te">Agentic RL</span></div><div class="td">以真实/模拟环境中的多步任务为训练信号的强化学习方法。</div><button class="tc" data-goto="slides">第 11 章 · 讲解 →</button></div>
+    <div class="term" data-cat="eval"><div class="tn">轨迹评估 <span class="te">Trajectory Evaluation</span></div><div class="td">不只看最终答案，还评估中间步骤（工具选择、效率、成本）的评估方式。</div><button class="tc" data-goto="demo">第 12 章 · 互动 →</button></div>
+    <div class="term" data-cat="eng"><div class="tn">沙箱 <span class="te">Sandbox</span></div><div class="td">隔离执行智能体生成代码的安全环境，方案三的执行底座。</div><button class="tc" data-goto="demo">第 6 章 · 互动 →</button></div>
+    <div class="term" data-cat="eng"><div class="tn">流式输出 <span class="te">Streaming / SSE</span></div><div class="td">服务端向浏览器持续推送事件，让思考与工具调用逐帧可见。</div><button class="tc" data-goto="lab">第 7 章 · Notebook →</button></div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════ 画像 Onboarding ═══════════ -->
+<div class="p-modal" id="personaModal" hidden role="dialog" aria-modal="true" aria-label="选择你的画像">
+  <div class="p-card">
+    <div class="eyebrow" style="margin-bottom:0">ONBOARDING · 30 秒定制</div>
+    <div class="p-title">你更像谁？</div>
+    <p class="p-sub">选一个最像的，我们把路线、案例和难度都按你调整 —— 随时可以换。</p>
+    <div class="p-grid">
+      <button class="p-opt" data-persona="p1">
+        <i data-lucide="briefcase" class="ic22"></i>
+        <div class="p-o-t">职场效率族</div>
+        <div class="p-o-d">Office / Excel 重度用户，想让 AI 把活干了。原理以后再说。</div>
+        <div class="p-o-g">第一个任务：5 分钟交出一份周报</div>
+      </button>
+      <button class="p-opt" data-persona="p2">
+        <i data-lucide="code" class="ic22"></i>
+        <div class="p-o-t">潜力新手</div>
+        <div class="p-o-d">不懂代码，但想搞懂原理、愿意亲手试一试。</div>
+        <div class="p-o-g">第一个任务：改一行代码，亲眼看循环变化</div>
+      </button>
+      <button class="p-opt" data-persona="p3">
+        <i data-lucide="mouse-pointer-click" class="ic22"></i>
+        <div class="p-o-t">纯工具用户</div>
+        <div class="p-o-d">只要会用 WorkBuddy / 豆包工作这类产品，别讲原理。</div>
+        <div class="p-o-g">第一个任务：让 WorkBuddy 直接交付一份文档</div>
+      </button>
+      <button class="p-opt" data-persona="p4">
+        <i data-lucide="trophy" class="ic22"></i>
+        <div class="p-o-t">输出导向</div>
+        <div class="p-o-d">我要有拿得出手的作品和结果，课程只是手段。</div>
+        <div class="p-o-g">第一个任务：选定目标作品，反向点亮课程</div>
+      </button>
+    </div>
+    <button class="p-skip" id="personaSkip">先随便看看，稍后再选</button>
+  </div>
+</div>
+
+<footer>
+  内容改编自 Datawhale《Hello-Agents · 从零开始构建智能体》（<a href="https://github.com/datawhalechina/hello-agents" target="_blank" rel="noopener">datawhalechina/hello-agents</a>，CC BY-NC-SA 4.0）·
+  设计体系参考 <a href="https://agentway.dev" target="_blank" rel="noopener">agentway.dev</a> zen tokens<br>
+  M0 Proof-of-Concept · Slides / Playground / Notebook 三段式学习 · 事件流渲染契约与正式版一致
+</footer>
+
+<!-- 默认 Python 代码（独立存放，避免转义） -->
+<script type="text/plain" id="pyDefault">
+# Mini ReAct Agent —— 纯 Python · 浏览器内真实执行（Pyodide 内核）
+# LLM 由脚本模拟，无需 API Key；生产版经代理接入真实模型
+import math, time
+
+TOOLS = {
+    "weather":    lambda q: '{"temp": "16°C", "cond": "多云", "aqi": 42}',
+    "calculator": lambda q: str(eval(q, {"__builtins__": {}}, {"sqrt": math.sqrt})),
+}
+
+PLAN = [
+    ("先查北京明天的天气。",             "weather",    "北京"),
+    ("再算骑行 25km / 15km/h 的耗时。",  "calculator", "25/15"),
+]
+
+def react_agent(goal):
+    print(f"🎯 目标: {goal}")
+    memory = []
+    for i, (thought, tool, arg) in enumerate(PLAN, 1):
+        print(f"\n—— 第 {i} 轮 ReAct ——")
+        print(f"💭 Thought    : {thought}")
+        print(f"🔧 Action     : {tool}({arg!r})")
+        time.sleep(0.35)                 # 模拟工具网络延迟
+        obs = TOOLS[tool](arg)
+        memory.append({"tool": tool, "arg": arg, "obs": obs})
+        print(f"👁 Observation: {obs}")
+    t = memory[1]["obs"]
+    print(f"\n✅ Final Answer: 明天多云 16°C、AQI 42，适合骑行；25km 约需 {t} 小时。")
+    return memory
+
+trace = react_agent("北京明天适合骑车吗？")
+print(f"\n记忆轨迹: {len(trace)} 轮工具调用已写入 memory")
+</script>
+
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function ic(n,c){return '<i data-lucide="'+n+'"'+(c?' class="'+c+'"':'')+'></i>'}
+function refreshIcons(){ if(window.lucide&&window.lucide.createIcons){window.lucide.createIcons()} }
+
+/* ═══════════ 视图切换 ═══════════ */
+var tabs=document.querySelectorAll('.tab');
+function showView(name){
+  ['roadmap','lesson','slides','demo','lab','uc','dict'].forEach(function(v){
+    $('view-'+v).hidden=(v!==name);
+  });
+  tabs.forEach(function(t){
+    var on=t.dataset.view===name;
+    t.classList.toggle('active',on);
+    t.setAttribute('aria-selected',on?'true':'false');
+  });
+  if(('#/'+name)!==location.hash){ history.replaceState(null,'','#/'+name) }
+}
+tabs.forEach(function(t){t.addEventListener('click',function(){showView(t.dataset.view)})});
+document.querySelectorAll('[data-goto]').forEach(function(el){
+  el.addEventListener('click',function(){showView(el.dataset.goto)});
+  if(el.classList.contains('rn')){
+    el.setAttribute('tabindex','0');
+    el.setAttribute('role','button');
+    el.addEventListener('keydown',function(e){
+      if(e.key==='Enter'||e.key===' '){e.preventDefault(); showView(el.dataset.goto)}
+    });
+  }
+});
+
+/* ═══════════ Slides 引擎 ═══════════ */
+var slides=Array.prototype.slice.call(document.querySelectorAll('#slidesStage .slide'));
+var dotsBox=$('dots'), cur=0;
+slides.forEach(function(_,i){
+  var b=document.createElement('button');
+  b.setAttribute('aria-label','第'+(i+1)+'页');
+  if(i===0)b.classList.add('on');
+  b.addEventListener('click',function(){goTo(i)});
+  dotsBox.appendChild(b);
+});
+var dots=Array.prototype.slice.call(dotsBox.children);
+function goTo(i){
+  if(i<0||i>=slides.length||i===cur)return;
+  slides[cur].classList.remove('active');
+  slides[cur].classList.toggle('prev',i>cur);
+  slides[i].classList.remove('prev');
+  slides[i].classList.add('active');
+  cur=i;
+  dots.forEach(function(d,j){d.classList.toggle('on',j===cur)});
+  $('slideCounter').textContent=(cur+1)+' / '+slides.length;
+}
+$('prevBtn').addEventListener('click',function(){goTo(cur-1)});
+$('nextBtn').addEventListener('click',function(){goTo(cur+1)});
+document.addEventListener('keydown',function(e){
+  if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+  if($('view-slides').hidden)return;
+  if(e.key==='ArrowRight')goTo(cur+1);
+  if(e.key==='ArrowLeft')goTo(cur-1);
+});
+
+/* ═══════════ 互动 Playground ═══════════ */
+var PHASES={
+  reason:{node:'nReason',lg:'lgReason',big:'推理中',small:'THINKING…'},
+  act:{node:'nAct',lg:'lgAct',big:'行动中',small:'CALLING TOOL…'},
+  observe:{node:'nObserve',lg:'lgObserve',big:'观察中',small:'READING RESULT…'},
+  done:{node:null,lg:'lgDone',big:'完成',small:'FINAL ANSWER'}
+};
+function setPhase(ph){
+  ['nGoal','nReason','nAct','nObserve'].forEach(function(id){$(id).classList.remove('lit')});
+  ['lgReason','lgAct','lgObserve','lgDone'].forEach(function(id){$(id).classList.remove('on')});
+  ['f1','f2','f3','fBack'].forEach(function(id){$(id).classList.remove('hot')});
+  if(ph==='start'){$('nGoal').classList.add('lit');return}
+  if(ph==='idle'){$('phaseBig').textContent='待运行';$('phaseSmall').textContent='PRESS RUN';return}
+  var p=PHASES[ph]; if(!p)return;
+  if(p.node)$(p.node).classList.add('lit');
+  $(p.lg).classList.add('on');
+  if(ph==='reason')$('f1').classList.add('hot');
+  if(ph==='act'){$('f1').classList.add('hot');$('f2').classList.add('hot')}
+  if(ph==='observe'){$('f2').classList.add('hot');$('f3').classList.add('hot');$('fBack').classList.add('hot')}
+  if(ph==='done'){$('fBack').classList.add('hot')}
+  $('phaseBig').textContent=p.big;
+  $('phaseSmall').textContent=p.small;
+}
+
+var SCENARIOS={
+  weather:{goal:'北京明天适合骑车吗？',steps:[
+    {ph:'reason',kind:'thought',text:'用户想知道明天是否适合骑行，我需要先查天气。'},
+    {ph:'act',kind:'action',tool:'weather.get',arg:'city="北京", date="明天"'},
+    {ph:'observe',kind:'obs',text:'{ "temp": "16°C", "cond": "多云", "wind": "2 级", "aqi": 42 }'},
+    {ph:'reason',kind:'thought',text:'16°C、微风、AQI 42 —— 条件很好，可以给结论了。'},
+    {ph:'done',kind:'answer',text:'适合骑行 🚴  北京明天 16°C 多云、2 级微风、AQI 42，体感舒适，放心出发。'}
+  ]},
+  calc:{goal:'计算 sqrt(144) + 7 × 3',steps:[
+    {ph:'reason',kind:'thought',text:'表达式含平方根和乘法，我用 calculator 工具精确求解。'},
+    {ph:'act',kind:'action',tool:'calculator',arg:'sqrt(144) + 7*3'},
+    {ph:'observe',kind:'obs',text:'33'},
+    {ph:'done',kind:'answer','text':'√144 + 7×3 = 12 + 21 = 33'}
+  ]}
+};
+
+var termBody=$('termBody'), runBtn=$('runBtn'), runToken=0;
+function scrollTerm(){termBody.scrollTop=termBody.scrollHeight}
+function addGoal(goal){
+  var d=document.createElement('div');d.className='goal-line';
+  d.innerHTML='<b>'+ic('target')+' 目标:</b> <span></span><span class="caret"></span>';
+  termBody.appendChild(d);scrollTerm();
+  return typeInto(d.children[1],goal,34);
+}
+function typeInto(el,text,cps){
+  if(reduced){el.textContent=text;return Promise.resolve()}
+  return new Promise(function(res){
+    var i=0;
+    (function tick(){
+      if(el.dataset.dead==='1')return res();
+      el.textContent=text.slice(0,++i);
+      scrollTerm();
+      if(i<text.length)setTimeout(tick,1000/cps);else res();
+    })();
+  });
+}
+function killCaret(){
+  termBody.querySelectorAll('.caret').forEach(function(c){c.remove()});
+}
+function addStep(kind,label){
+  var d=document.createElement('div');
+  d.className='step step-'+kind;
+  d.innerHTML='<div class="sk">'+label+'</div>';
+  termBody.appendChild(d);scrollTerm();
+  return d;
+}
+function setStatus(mode,text){
+  var s=$('tStat');
+  s.className='tstat'+(mode==='run'?' run':mode==='ok'?' ok':'');
+  $('tStatText').textContent=text;
+}
+function sleep(ms,token){return new Promise(function(res){setTimeout(function(){res(token===runToken)},ms)})}
+
+async function runScenario(){
+  var token=++runToken;
+  var sc=SCENARIOS[$('scenarioSelect').value];
+  runBtn.disabled=true;runBtn.textContent='运行中…';
+  setStatus('run','RUNNING');setPhase('start');
+  termBody.innerHTML='';
+  await addGoal(sc.goal);
+  await sleep(350,token);
+  killCaret();
+  if(token!==runToken)return;
+  for(var i=0;i<sc.steps.length;i++){
+    var st=sc.steps[i];
+    setPhase(st.ph);
+    await sleep(st.kind==='answer'?300:420,token);
+    if(token!==runToken)return;
+    var el;
+    if(st.kind==='thought'){
+      el=addStep('thought',ic('brain')+' THOUGHT · 推理');
+      var span=document.createElement('span');span.className='st';
+      var car=document.createElement('span');car.className='caret';
+      el.appendChild(span);el.appendChild(car);
+      await typeInto(span,st.text,32);
+      car.remove();
+    }else if(st.kind==='action'){
+      el=addStep('action',ic('wrench')+' ACTION · 工具调用');
+      el.insertAdjacentHTML('beforeend','<div class="toolcall"><span class="fn">'+st.tool+'</span>(<span class="arg">'+st.arg+'</span>)</div>');
+      scrollTerm();
+      await sleep(650,token);
+    }else if(st.kind==='obs'){
+      el=addStep('obs',ic('eye')+' OBSERVATION · 环境返回');
+      el.insertAdjacentHTML('beforeend','<div class="st">'+st.text.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div>');
+      scrollTerm();
+      await sleep(500,token);
+    }else{
+      el=addStep('answer',ic('check')+' FINAL ANSWER · 完成');
+      el.insertAdjacentHTML('beforeend','<div class="st">'+st.text+'</div>');
+      scrollTerm();
+    }
+    refreshIcons();
+    if(token!==runToken)return;
+  }
+  killCaret();
+  refreshIcons();
+  setStatus('ok','DONE');
+  runBtn.disabled=false;runBtn.innerHTML=ic('play','ic14')+' 再跑一次';
+}
+runBtn.addEventListener('click',runScenario);
+$('scenarioSelect').addEventListener('change',function(){
+  if($('tStatText').textContent!=='RUNNING'){
+    termBody.innerHTML='<div class="goal-line"><b>'+ic('target')+' 目标:</b> '+SCENARIOS[this.value].goal+' <span class="dim" style="color:var(--fg3)">(待运行)</span></div>';
+    setPhase('idle');setStatus('','IDLE');
+    runBtn.disabled=false;runBtn.innerHTML=ic('play','ic14')+' 运行 Agent';
+    refreshIcons();
+  }
+});
+termBody.innerHTML='<div class="goal-line"><b>'+ic('target')+' 目标:</b> 北京明天适合骑车吗？ <span style="color:var(--fg3)">(待运行 · 点击上方按钮)</span></div>';
+
+/* ═══════════ Notebook（Pyodide）═══════════ */
+var editor=$('pyEditor'), pyOut=$('pyOut'), pyRunBtn=$('pyRunBtn');
+var defaultCode=$('pyDefault').textContent.trim();
+editor.value=defaultCode;
+var pyodide=null, pyLoading=false, outCaret=null;
+
+function kSet(cls,text){$('kDot').className='kdot'+(cls?' '+cls:'');$('kText').textContent=text}
+function outAppend(text,cls){
+  if(outCaret)outCaret.remove();
+  var span=document.createElement('span');
+  if(cls)span.className=cls;
+  span.textContent=text;
+  pyOut.appendChild(span);
+  outCaret=document.createElement('span');outCaret.className='caret';
+  pyOut.appendChild(outCaret);
+  pyOut.scrollTop=pyOut.scrollHeight;
+}
+function outClear(){pyOut.innerHTML='';outCaret=null}
+
+editor.addEventListener('keydown',function(e){
+  if(e.key==='Tab'){
+    e.preventDefault();
+    var s=this.selectionStart,en=this.selectionEnd;
+    this.value=this.value.slice(0,s)+'    '+this.value.slice(en);
+    this.selectionStart=this.selectionEnd=s+4;
+  }
+  if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();pyRunBtn.click()}
+});
+$('resetBtn').addEventListener('click',function(){editor.value=defaultCode});
+
+function loadScript(src){
+  return new Promise(function(res,rej){
+    var s=document.createElement('script');
+    s.src=src;s.onload=res;s.onerror=function(){rej(new Error('CDN 加载失败'))};
+    document.head.appendChild(s);
+  });
+}
+async function ensurePyodide(){
+  if(pyodide)return pyodide;
+  if(pyLoading)throw new Error('内核正在加载中…');
+  pyLoading=true;
+  try{
+    kSet('load','下载内核 (≈10MB, 仅首次)…');
+    outAppend('⏳ 正在从 CDN 加载 Pyodide 内核…\n','dim');
+    await loadScript('https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js');
+    kSet('load','初始化解释器…');
+    outAppend('⏳ 初始化 WASM 解释器…\n','dim');
+    pyodide=await loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/'});
+    pyodide.setStdout({batched:function(s){outAppend(s+'\n')}});
+    pyodide.setStderr({batched:function(s){outAppend(s+'\n','err')}});
+    kSet('ready','内核就绪 · 本地执行');
+    outAppend('✅ 内核就绪，开始在浏览器本地执行。\n\n','dim');
+    return pyodide;
+  }catch(e){
+    pyLoading=false;
+    kSet('','内核加载失败');
+    outAppend('❌ 加载失败：'+e.message+'\n   请检查网络后点击「运行」重试。\n','err');
+    throw e;
+  }
+}
+pyRunBtn.addEventListener('click',async function(){
+  pyRunBtn.disabled=true;
+  try{
+    var py=await ensurePyodide();
+    kSet('run','执行中…');
+    outClear();
+    var t0=performance.now();
+    await py.runPythonAsync(editor.value);
+    var ms=Math.round(performance.now()-t0);
+    outAppend('\n⏱ 执行完成，耗时 '+ms+' ms（浏览器本地 · 无服务器参与）\n','dim');
+    kSet('ready','内核就绪 · 本地执行');
+  }catch(e){
+    if(!/内核正在加载|加载失败/.test(e.message||'')){
+      outAppend('❌ '+(e.message||e)+'\n','err');
+      kSet('ready','内核就绪 · 本地执行');
+    }
+  }finally{
+    pyRunBtn.disabled=false;
+  }
+});
+
+/* ═══════════ Roadmap · 按目标选线 ═══════════ */
+var pchips=document.querySelectorAll('.pchip');
+var rnodes=document.querySelectorAll('.rn');
+pchips.forEach(function(ch){
+  ch.addEventListener('click',function(){
+    pchips.forEach(function(c){c.classList.remove('on')});
+    ch.classList.add('on');
+    var p=ch.dataset.path;
+    rnodes.forEach(function(n){
+      n.classList.toggle('dim', p!=='all' && n.dataset.path.split(' ').indexOf(p)===-1);
+    });
+  });
+});
+
+/* ═══════════ Dictionary · 检索过滤 ═══════════ */
+var dictQ=$('dictQ');
+var dchips=document.querySelectorAll('.dchip');
+var terms=document.querySelectorAll('#dictGrid .term');
+var dictCat='all';
+function filterDict(){
+  var q=(dictQ.value||'').trim().toLowerCase(), shown=0;
+  terms.forEach(function(t){
+    var okCat=(dictCat==='all'||t.dataset.cat===dictCat);
+    var okQ=!q||t.textContent.toLowerCase().indexOf(q)!==-1;
+    var on=okCat&&okQ;
+    t.hidden=!on;
+    if(on)shown++;
+  });
+  $('dictCount').textContent=shown+' 个术语';
+  $('dictEmpty').hidden=(shown>0);
+}
+dictQ.addEventListener('input',filterDict);
+dchips.forEach(function(c){
+  c.addEventListener('click',function(){
+    dchips.forEach(function(x){x.classList.remove('on')});
+    c.classList.add('on');
+    dictCat=c.dataset.cat;
+    filterDict();
+  });
+});
+
+/* ═══════════ Lesson · AI Hero 式课程 ═══════════ */
+var LESSONS=[
+ {t:'什么是智能体范式？',d:300,pro:false,
+  body:['<b>范式</b>就是组织"思考 → 行动 → 反馈"的固定套路。同一批模型、同一批工具，组织方式不同，效果天差地别。',
+        '三种主流范式：<b>ReAct</b>（边想边做）、<b>Plan-and-Execute</b>（先规划后执行）、<b>Reflexion</b>（从失败中学习）。本课把它们的循环结构逐一拆开。'],
+  code:'范式 = 组织思考与行动的套路\n\nReAct      : loop (Thought → Action → Observation)\nPlan&Exec  : Plan(all) → Execute(step×N) → Replan?\nReflexion  : Try → Fail → Reflect → Retry(带记忆)',
+  quiz:{q:'哪一种范式的核心机制是"把环境反馈喂回推理"？',opts:['固定流水线','ReAct','纯规划器'],a:1,
+        why:'ReAct 的 Observation 正是环境反馈，它让模型"看着改"。'}},
+ {t:'ReAct：推理与行动交替',d:480,pro:false,
+  body:['<b>Thought</b> 生成行动理由 → <b>Action</b> 调用工具 → <b>Observation</b> 回填上下文 → 循环，直到模型认为可以给出最终答案。',
+        '关键在第三步：反馈必须<b>写进上下文</b>，模型才能基于真实结果修正下一步，而不是凭空脑补。'],
+  code:'while not done:\n    thought = llm(history)          # 💭 我该做什么\n    action  = parse(thought)        # 🔧 tool(args)\n    obs     = run(action)           # 👁 环境返回\n    history += [thought, action, obs]\nanswer  = llm(history, mode="final")',
+  quiz:{q:'Observation 是由谁产生的？',opts:['模型自己推理得出','工具 / 环境执行后返回','下一轮 Thought 生成'],a:1,
+        why:'Observation 是工具的真实执行结果——它来自环境，不是模型生成。'}},
+ {t:'工具调用的完整链路',d:420,pro:false,
+  body:['模型从不"真的执行"任何东西：它只输出一段<b>结构化调用意图</b>（JSON），由<b>运行时</b>校验参数、执行工具、再把结果作为消息回填。',
+        '这条"意图 → 执行 → 回填"链路是所有框架的底座，也是沙箱（方案三）存在的理由：执行必须被隔离。'],
+  code:'model   → {"tool":"weather.get",\n           "args":{"city":"北京"}}\nruntime → 验参 → 执行工具\nresult  → {"temp":"16°C","aqi":42}\nruntime → result 回填为 tool 消息',
+  quiz:{q:'工具调用由谁真正执行？',opts:['模型本身','运行时 / 沙箱','必须由用户手动'],a:1,
+        why:'模型只产出意图；执行发生在运行时（生产环境通常是沙箱）。'}},
+ {t:'Plan-and-Execute：先规划后执行',d:600,pro:true,
+  body:['计划器一次性产出<b>完整步骤清单</b>，执行器逐步运行；检测到偏差时才触发重规划。',
+        '适合<b>长链路</b>任务：前置规划大幅减少中间推理轮次与上下文膨胀，代价是对突发变化的灵活性更低。'],
+  code:'plan = planner(goal)            # [step1..stepN]\nfor step in plan:\n    result = executor(step)\n    if deviate(result, step):\n        plan = replanner(plan, result)',
+  quiz:{q:'与 ReAct 相比，Plan-and-Execute 的主要优势是？',opts:['中间轮次更少、上下文更省','随机应变能力更强','完全不需要工具'],a:0,
+        why:'前置规划把"多轮试探"压缩成"一次规划 + 顺序执行"。'}},
+ {t:'Reflexion：从失败中学习',d:540,pro:true,
+  body:['失败轨迹不丢弃：<b>语言化反思</b>（哪里错了、下次怎么改）写回记忆，下一轮带着反思重试。',
+        '它把"试错"变成显式的上下文资产——不训练模型，却能显著提升多轮任务成功率。'],
+  code:'result, trace = agent(goal)\nif failed(result):\n    memo = reflect(trace)       # 哪里错 / 怎么改\n    memory += memo\n    retry(goal, memory=memory)',
+  quiz:{q:'Reflexion 的反思结果存放在哪里？',opts:['模型权重（微调）','记忆 / 上下文','必须用外部数据库'],a:1,
+        why:'反思是文本记忆，写回上下文即可生效，无需训练。'}},
+ {t:'范式选型：如何组合',d:360,pro:true,
+  body:['经验法则：<b>快而浅 → ReAct</b>；<b>长链路 → Plan-and-Execute</b>；<b>允许多次尝试 → Reflexion</b>。',
+        '生产系统常常组合：P&E 做骨架、ReAct 做单步执行、Reflexion 做失败兜底——第 13–15 章综合项目会反复用到这套组合。'],
+  code:'travel_assistant(goal):\n  plan  = PE_skeleton(goal)     # 10+ 步骤\n  steps = [react_run(s) for s in plan]\n  if failed: reflexion_retry(memory)',
+  quiz:{q:'旅行规划（10+ 个可预分解步骤）首选什么骨架？',opts:['纯 ReAct 循环','Plan-and-Execute','只用 Reflexion'],a:1,
+        why:'长链路且步骤可预分解 → 先规划后执行的收益最大。'}}
+];
+var lsState={cur:0,done:{}};
+try{
+  var lsSaved=JSON.parse(localStorage.getItem('hap.lesson.v1')||'null');
+  if(lsSaved&&lsSaved.done){lsState.done=lsSaved.done; lsState.cur=Math.min(lsSaved.cur||0,LESSONS.length-1)}
+}catch(e){}
+function lsSave(){try{localStorage.setItem('hap.lesson.v1',JSON.stringify({done:lsState.done,cur:lsState.cur}))}catch(e){}}
+function fmt(s){s=Math.max(0,Math.round(s)); return Math.floor(s/60)+':'+('0'+(s%60)).slice(-2)}
+
+var lsPlaying=false, lsTimer=null, lsElapsed=0, lsDur=1, lsUnlocked=false;
+function lsPStop(){lsPlaying=false; if(lsTimer){clearInterval(lsTimer); lsTimer=null} $('pBig').innerHTML=ic('play'); $('pSm').innerHTML=ic('play'); refreshIcons()}
+function lsPTick(){
+  lsElapsed+=0.5;
+  if(lsElapsed>=lsDur){lsElapsed=lsDur; lsPStop()}
+  $('pFill').style.width=(lsElapsed/lsDur*100)+'%';
+  $('pTime').textContent=fmt(lsElapsed)+' / '+fmt(lsDur);
+}
+function lsPToggle(){
+  if(lsPlaying){lsPStop(); return}
+  lsPlaying=true; $('pBig').innerHTML=ic('pause'); $('pSm').innerHTML=ic('pause');
+  refreshIcons();
+  lsTimer=setInterval(lsPTick,500);
+}
+$('pBig').addEventListener('click',lsPToggle);
+$('pSm').addEventListener('click',lsPToggle);
+
+var lsSel=-1, lsAnswered=false;
+function renderLesson(i){
+  lsPStop(); lsElapsed=0;
+  var L=LESSONS[i]; lsState.cur=i; lsSave();
+  lsDur=L.d;
+  $('pFill').style.width='0%'; $('pTime').textContent='0:00 / '+fmt(L.d);
+  $('lsTitle').textContent=(i+1)+'. '+L.t;
+  $('lsMeta').innerHTML='<span>'+ic('clock')+' '+Math.round(L.d/60)+' min</span><span>'+(L.pro?ic('lock')+' PRO 课时':ic('sparkles')+' 免费课时')+'</span><span>第 4 章 · 经典范式</span>';
+  if(!$('view-lesson').hidden&&('#/lesson/'+(i+1))!==location.hash){history.replaceState(null,'','#/lesson/'+(i+1))}
+  $('lsBody').innerHTML=L.body.map(function(p){return '<p>'+p+'</p>'}).join('');
+  $('lsCode').textContent=L.code;
+  $('qTitle').textContent=L.quiz.q;
+  lsSel=-1; lsAnswered=(lsState.done[i]===true);
+  var qo=$('qOpts'); qo.innerHTML='';
+  L.quiz.opts.forEach(function(o,oi){
+    var b=document.createElement('button'); b.type='button'; b.className='q-opt'; b.textContent=o;
+    b.addEventListener('click',function(){
+      if(lsAnswered)return;
+      lsSel=oi;
+      qo.querySelectorAll('.q-opt').forEach(function(x,j){x.classList.toggle('sel',j===lsSel)});
+    });
+    qo.appendChild(b);
+  });
+  var fb=$('qFb'); fb.textContent=''; fb.className='q-fb';
+  var sub=$('qSubmit'); sub.disabled=lsAnswered; sub.textContent=lsAnswered?'已完成 ✓':'提交答案';
+  if(lsAnswered){
+    Array.prototype.forEach.call(qo.children,function(x,j){x.disabled=true; if(j===L.quiz.a)x.classList.add('ok')});
+    fb.textContent='✓ 已完成 · '+L.quiz.why; fb.className='q-fb good';
+  }
+  $('lsLock').hidden=!(L.pro&&!lsUnlocked);
+  $('lsPrev').disabled=(i===0);
+  $('lsNext').disabled=(i===LESSONS.length-1);
+  renderLsList(); renderCourseProgress();
+  refreshIcons();
+}
+function renderLsList(){
+  var box=$('lsList'); box.innerHTML='';
+  LESSONS.forEach(function(L,i){
+    var b=document.createElement('button'); b.type='button';
+    b.className='ls-item'+(i===lsState.cur?' now':'')+(lsState.done[i]?' done':'');
+    b.setAttribute('role','listitem');
+    b.innerHTML='<span class="ls-i-idx">'+(lsState.done[i]?'✓':(i+1))+'</span>'
+      +'<div class="ls-i-main"><div class="ls-i-t">'+L.t+'</div>'
+      +'<div class="ls-i-d">'+Math.round(L.d/60)+' min'+(lsState.done[i]?' · 已完成':'')+'</div></div>'
+      +'<span class="ls-i-b '+(L.pro?'pro':'free')+'">'+(L.pro?'PRO':'FREE')+'</span>';
+    b.addEventListener('click',function(){renderLesson(i)});
+    box.appendChild(b);
+  });
+}
+function renderCourseProgress(){
+  var n=Object.keys(lsState.done).length;
+  $('cCount').textContent=n+' / '+LESSONS.length;
+  $('cFill').style.width=(n/LESSONS.length*100)+'%';
+}
+$('qSubmit').addEventListener('click',function(){
+  if(lsAnswered)return;
+  var L=LESSONS[lsState.cur];
+  if(lsSel<0){$('qFb').textContent='先选择一个选项'; $('qFb').className='q-fb'; return}
+  var opts=$('qOpts').querySelectorAll('.q-opt');
+  if(lsSel===L.quiz.a){
+    lsAnswered=true; lsState.done[lsState.cur]=true; lsSave();
+    opts.forEach(function(x,j){x.disabled=true; if(j===L.quiz.a)x.classList.add('ok')});
+    $('qFb').textContent='✓ 正确！已标记完成 · '+L.quiz.why; $('qFb').className='q-fb good';
+    this.disabled=true; this.textContent='已完成 ✓';
+    renderLsList(); renderCourseProgress();
+  }else{
+    opts[lsSel].classList.remove('sel'); opts[lsSel].classList.add('err');
+    $('qFb').innerHTML='✗ 不对，再想想。<span class="why">提示：'+L.quiz.why+'</span>'; $('qFb').className='q-fb bad';
+    lsSel=-1;
+  }
+});
+$('lsUnlock').addEventListener('click',function(){
+  lsUnlocked=true; $('lsLock').hidden=true;
+  this.textContent='POC 演示 · 已临时预览'; this.disabled=true;
+});
+$('lsPrev').addEventListener('click',function(){ if(lsState.cur>0)renderLesson(lsState.cur-1) });
+$('lsNext').addEventListener('click',function(){ if(lsState.cur<LESSONS.length-1)renderLesson(lsState.cur+1) });
+renderLesson(lsState.cur);
+
+/* ═══════════ Use-Case · 案例过滤 ═══════════ */
+var ucChips=document.querySelectorAll('.dchip[data-uc]');
+var ucTerms=document.querySelectorAll('#ucGrid .term');
+ucChips.forEach(function(c){
+  c.addEventListener('click',function(){
+    ucChips.forEach(function(x){x.classList.remove('on')});
+    c.classList.add('on');
+    var uc=c.dataset.uc, shown=0;
+    ucTerms.forEach(function(t){
+      var on=(uc==='all'||t.dataset.uc===uc);
+      t.hidden=!on;
+      if(on)shown++;
+    });
+    $('ucCount').textContent=shown+' 个精选案例';
+  });
+});
+
+/* ═══════════ Persona 画像 → 差异化 roadmap ═══════════ */
+var PERSONAS={
+  p1:{name:'职场效率族',line:'tool',
+      order:['tool','capstone','graduate','base','build','advanced'],
+      banner:'已按「职场效率族」定制：工具课与真实案例置顶，纯原理章节已收起。',
+      hero:{view:'uc',label:'第一个任务：5 分钟交出一份周报'}},
+  p2:{name:'潜力新手',line:'base',
+      order:['tool','base','build','advanced','capstone','graduate'],
+      banner:'已按「潜力新手」定制：先工具热身再进原理；构建线的 Notebook 全部免 Key，改一行代码就能跑。',
+      hero:{view:'lab',label:'第一个任务：改一行代码，亲眼看循环变化'}},
+  p3:{name:'纯工具用户',line:'tool',
+      order:['tool','graduate'],
+      banner:'纯工具模式：只保留工具课与毕业挑战，原理与代码章节已全部隐藏。',
+      hero:{view:'lesson',label:'第一个任务：让 WorkBuddy 直接交付一份文档'}},
+  p4:{name:'输出导向',line:'apply',
+      order:['capstone','graduate','tool','base','build','advanced'],
+      banner:'输出导向模式：案例库与毕业设计置顶 —— 先选作品，课程按需反查。',
+      hero:{view:'uc',label:'第一个任务：选定目标作品，反向点亮课程'}}
+};
+var DEFAULT_ORDER=['tool','base','build','advanced','capstone','graduate'];
+var persona=(function(){try{return JSON.parse(localStorage.getItem('hap.persona')||'null')}catch(e){return null}})();
+function savePersona(){try{localStorage.setItem('hap.persona',JSON.stringify(persona))}catch(e){}}
+function applyPersona(){
+  var conf=persona?PERSONAS[persona]:null;
+  var vm=$('view-roadmap');
+  var stages=Array.prototype.slice.call(vm.querySelectorAll('.stage'));
+  if(conf){
+    var frag=document.createDocumentFragment();
+    stages.forEach(function(s){s.hidden=(conf.order.indexOf(s.dataset.stage)===-1)});
+    conf.order.forEach(function(key){
+      var s=vm.querySelector('.stage[data-stage="'+key+'"]');
+      if(s)frag.appendChild(s);
+    });
+    vm.insertBefore(frag, vm.querySelector('.rm-head').nextSibling);
+    var chip=document.querySelector('.pchip[data-path="'+conf.line+'"]');
+    if(chip)chip.click();
+    $('personaBanner').hidden=false;
+    $('personaBannerText').textContent=conf.banner;
+    var hero=$('personaHero');
+    hero.textContent=conf.hero.label;
+    hero.dataset.goto=conf.hero.view;
+    $('personaChipText').textContent=conf.name;
+  }else{
+    stages.forEach(function(s){s.hidden=false});
+    var frag=document.createDocumentFragment();
+    DEFAULT_ORDER.forEach(function(key){
+      var s=vm.querySelector('.stage[data-stage="'+key+'"]');
+      if(s)frag.appendChild(s);
+    });
+    vm.insertBefore(frag, vm.querySelector('.rm-head').nextSibling);
+    $('personaBanner').hidden=true;
+    $('personaChipText').textContent='选择画像';
+  }
+  refreshIcons();
+}
+var pModal=$('personaModal');
+function openPModal(){pModal.hidden=false}
+function closePModal(){pModal.hidden=true}
+document.querySelectorAll('.p-opt').forEach(function(b){
+  b.addEventListener('click',function(){
+    persona=b.dataset.persona;
+    savePersona();applyPersona();closePModal();
+    showView('roadmap');
+  });
+});
+$('personaSkip').addEventListener('click',function(){persona=null;savePersona();applyPersona();closePModal()});
+$('personaChip').addEventListener('click',openPModal);
+$('personaSwitch').addEventListener('click',openPModal);
+applyPersona();
+if(!persona){setTimeout(openPModal,700)}
+
+/* ═══════════ hash 路由（deep-linking）═══════════ */
+function applyHash(){
+  var h=location.hash.replace(/^#\/?/,'');
+  if(!h)return;
+  var parts=h.split('/');
+  var names=['roadmap','lesson','slides','demo','lab','uc','dict'];
+  if(names.indexOf(parts[0])===-1)return;
+  showView(parts[0]);
+  if(parts[0]==='lesson'&&parts[1]){
+    var idx=parseInt(parts[1],10);
+    if(!isNaN(idx)&&idx>=1&&idx<=LESSONS.length)renderLesson(idx-1);
+  }
+}
+window.addEventListener('hashchange',applyHash);
+document.addEventListener('DOMContentLoaded',refreshIcons);
+applyHash();
+})();
+</script>
+</body>
+</html>

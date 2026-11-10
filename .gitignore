@@ -44,3 +44,44 @@ Thumbs.db
 to-be-review/
  artifacts/games/
  agent-learning-workbench/
+
+# nested clone metadata (never vendor another repo's .git)
+**/.git.bak/
+
+# crawled mirrors and site snapshots (markdown sources stay)
+agent-tutorials/agent-usecase/*
+!agent-tutorials/agent-usecase/markdown/
+!agent-tutorials/agent-usecase/markdown/**
+!agent-tutorials/agent-usecase/README.md
+!agent-tutorials/agent-usecase/update.py
+agent-tutorials/references/agentway/site-snapshot/
+
+# binaries and dumps that grow large
+*.mp4
+*.mov
+*.webm
+*.mkv
+*.avi
+*.zip
+*.7z
+*.rar
+*.iso
+*.dmg
+*.tar
+*.tgz
+*.tar.gz
+*.pack
+*.parquet
+*.sqlite
+*.sqlite3
+*.db
+*.woff
+*.woff2
+
+# individual assets over ~500KB
+agent-tutorials/references/aihero/internal/assets/image.jpg
+agent-tutorials/references/aihero/examples/vercel-ai-sdk/11-describe-images/image.jpg
+agent-tutorials/references/aihero/examples/_TODO/01-storm-TODO/image-1.png
+agent-tutorials/references/agency-agents-zh/assets/experts-gallery.png
+agent-tutorials/references/cs329z-chinese/html/offline.html
+agent-tutorials/references/cs329z-chinese/html/assets/course-data.js
