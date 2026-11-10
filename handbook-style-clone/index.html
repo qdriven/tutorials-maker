@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <title>样式克隆演示 · Handbook 风格</title>
+  <meta name="theme-color" content="#eef5f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111714" media="(prefers-color-scheme: dark)">
+  <!--
+    样式来自 sandbaseai/deepseek-harness-handbook（Apache-2.0）。
+    本页复用其 styles.css 原文件，仅替换内容，用于验证可克隆性。
+  -->
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到内容</a>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="首页">
+      <span class="brand-mark" aria-hidden="true">TM</span>
+      <span>样式克隆演示</span>
+    </a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="#tokens">设计令牌</a>
+      <a href="#components">组件</a>
+      <a href="#how">怎么复用</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="hero-text">
+        <p class="eyebrow">STYLE CLONE · PROOF</p>
+        <h1>这个页面就是答案：样式可以整体搬走。</h1>
+        <p>本页没有写一行 CSS。它直接链接 handbook 的 <code>styles.css</code> 原文件，HTML 结构复用其语义类名，换内容即为你的站点。</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#how">看复用步骤</a>
+          <a class="button secondary" href="https://github.com/sandbaseai/deepseek-harness-handbook" target="_blank" rel="noreferrer">源仓库（Apache-2.0）</a>
+        </div>
+      </div>
+      <div class="hero-figure">
+        <div class="evidence-strip">
+          <strong>1 个文件</strong>
+          <span>styles.css · 2981 行 · 全站唯一样式表</span>
+        </div>
+        <div class="evidence-strip">
+          <strong>17 个令牌</strong>
+          <span>:root 设计变量驱动明暗双主题</span>
+        </div>
+        <div class="evidence-strip">
+          <strong>0 个 webfont</strong>
+          <span>系统字体栈，无外部依赖</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="principle section-shell" id="tokens">
+      <div class="section-heading">
+        <p class="eyebrow">01 · 设计令牌</p>
+        <h2>视觉好的原因：一套收敛的设计系统</h2>
+      </div>
+      <div class="runtime-domains">
+        <section>
+          <small>色板</small>
+          <strong>低饱和绿</strong>
+          <span>背景 <code>#eef5f1</code>，强调 <code>#0d7c55</code>，暗色自动切换为 <code>#5fd0a0</code></span>
+        </section>
+        <section>
+          <small>形状</small>
+          <strong>柔和大圆角</strong>
+          <span><code>--radius: 14px</code>，阴影 <code>0 24px 70px</code> 低透明度长投影</span>
+        </section>
+        <section>
+          <small>排版</small>
+          <strong>系统字体</strong>
+          <span>正文 ui-sans-serif，代码 ui-monospace，零字体下载</span>
+        </section>
+        <section>
+          <small>响应式</small>
+          <strong>116 个断点</strong>
+          <span>明暗主题由 <code>prefers-color-scheme</code> 变量覆盖实现</span>
+        </section>
+      </div>
+    </section>
+
+    <section class="paths section-shell" id="components">
+      <div class="section-heading">
+        <p class="eyebrow">02 · 组件</p>
+        <h2>复用类名即得组件</h2>
+      </div>
+      <div class="path-index">
+        <section>
+          <small>HEADER</small>
+          <strong>site-header / brand / brand-mark</strong>
+          <span>本页顶部导航即原组件，改 logo 与链接即可</span>
+        </section>
+        <section>
+          <small>HERO</small>
+          <strong>hero / eyebrow / hero-actions</strong>
+          <span>首屏左文右卡布局，按钮分 primary / secondary 两级</span>
+        </section>
+        <section>
+          <small>CARDS</small>
+          <strong>runtime-domains / evidence-strip</strong>
+          <span>网格卡片与证据条，适合教程的要点陈列</span>
+        </section>
+        <section>
+          <small>TERMINAL</small>
+          <strong>command-panel / command-label</strong>
+          <span>带复制按钮的命令面板，教程站刚需</span>
+        </section>
+      </div>
+    </section>
+
+    <section class="quickstart section-shell" id="how">
+      <div class="section-heading">
+        <p class="eyebrow">03 · 怎么复用</p>
+        <h2>三个层次，按需取用</h2>
+      </div>
+      <div class="run-list">
+        <section>
+          <strong>整站 fork</strong>
+          <span>拷贝 <code>site/</code> 目录（HTML + styles.css + favicon），保留 Apache-2.0 许可与出处声明，替换全部内容。</span>
+        </section>
+        <section>
+          <strong>抽令牌</strong>
+          <span>只取 <code>:root</code> 的 17 个变量与字体栈，套进你自己的 CSS，得到同款气质。</span>
+        </section>
+        <section>
+          <strong>当模板</strong>
+          <span>保留 header / hero / section-shell / 卡片骨架，正文换你的教程内容（本页做法）。</span>
+        </section>
+      </div>
+      <div class="command-panel">
+        <span class="command-label">验证：本目录已可直接静态部署</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>样式源自 <a href="https://github.com/sandbaseai/deepseek-harness-handbook" target="_blank" rel="noreferrer">sandbaseai/deepseek-harness-handbook</a>（Apache-2.0）。内容为本仓演示，与原站无关。</p>
+  </footer>
+</body>
+</html>
