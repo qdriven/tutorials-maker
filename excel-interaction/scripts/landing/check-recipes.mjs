@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // check-recipes.mjs — landing 目录新鲜度校验（零依赖）。
-// 口径：重建一次聚合产物，与磁盘上的 recipes.json 逐字节比对——
-//   不一致 = 有人改了 courses/*.json 但没重跑聚合（landing 页会静默过期）→ FAIL。
+// 口径：重建一次聚合产物，与磁盘上的 recipes.json 比对——
+//   内容不一致 = 有人改了 courses/*.json 但没重跑聚合（landing 页会静默过期）→ FAIL。
+//   仅 generatedAt（生成日期戳）不参与比对——否则跨天必然误报，
+//   天天喊狼来了会训练人无视闸门（2026-11-11 review 修正）。
 // 同时校验：live 条目的 app 路径真实存在；todo 占位卡不与任何契约 id 冲突。
 // 用法：node scripts/landing/check-recipes.mjs   （全绿 exit 0）
 import { readFileSync, writeFileSync, rmSync, existsSync, statSync } from "node:fs";
@@ -22,9 +24,16 @@ if (!existsSync(OUT)) {
   const r = rebuild(ROOT);
   const fresh = readFileSync(OUT, "utf8");
   if (fresh === "\u0000PENDING\u0000") problems.push("rebuild 未写出文件（异常）");
-  else if (fresh !== onDisk) {
-    problems.push("recipes.json 已过期（courses/ 有变更未重跑聚合）——跑 pnpm recipes");
-    writeFileSync(OUT, onDisk); // 还原磁盘原样：校验不产生副作用
+  else {
+    // 归一化比对：剥掉 generatedAt 日期戳再比内容；JSON 解析失败退回逐字节
+    const norm = (s) => {
+      try { const o = JSON.parse(s); delete o.generatedAt; return JSON.stringify(o); }
+      catch { return s; }
+    };
+    if (norm(fresh) !== norm(onDisk)) {
+      problems.push("recipes.json 已过期（courses/ 有变更未重跑聚合）——跑 pnpm recipes");
+      writeFileSync(OUT, onDisk); // 还原磁盘原样：校验不产生副作用
+    }
   }
 }
 
