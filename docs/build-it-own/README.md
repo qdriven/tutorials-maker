@@ -5,15 +5,19 @@
 
 ## 收录项目
 
-| 项目 | 一句话 | 文档 |
+**一个项目一个目录**，目前收录：
+
+| 项目 | 一句话 | 目录 |
 | --- | --- | --- |
-| excel-interaction | 契约驱动的 Excel 实机教程工厂：一份 JSON 同时产出交互动画课 + 30 秒讲解视频 | [excel-interaction.md](excel-interaction.md) |
+| excel-interaction | 契约驱动的 Excel 实机教程工厂：一份 JSON 同时产出交互动画课 + 30 秒讲解视频 | [excel-interaction/](excel-interaction/README.md) |
 
-每个项目三件套：
+每个项目目录内固定三件套：
 
-- `<项目名>.md` —— 第一视角制作过程主文档（过程与结果、为了什么、怎么尝试、批量流水线）
-- `<项目名>-timeline.html` —— 时间线页面（零依赖，浏览器直接打开）
-- `<项目名>-slides.html` —— 演示幻灯片（reveal.js，浏览器直接打开）
+- `README.md` —— 第一视角制作过程主文档（过程与结果、为了什么、怎么尝试、批量流水线）
+- `timeline.html` —— 时间线页面（零依赖，浏览器直接打开）
+- `slides.html` —— 演示幻灯片（reveal.js，浏览器直接打开）
+
+新项目照此开目录：`docs/build-it-own/<项目名>/{README.md, timeline.html, slides.html}`。
 
 ## 约定
 

@@ -21,9 +21,9 @@
 
 「从零自己做出来」的项目，第一视角记录**为了什么 → 怎么做的 → 结果 → 怎么尝试 → 批量流水线**：
 
-- [excel-interaction 制作复盘](docs/build-it-own/excel-interaction.md) ·
-  [时间线](docs/build-it-own/excel-interaction-timeline.html) ·
-  [Slides](docs/build-it-own/excel-interaction-slides.html)
+- [excel-interaction 制作复盘](docs/build-it-own/excel-interaction/README.md) ·
+  [时间线](docs/build-it-own/excel-interaction/timeline.html) ·
+  [Slides](docs/build-it-own/excel-interaction/slides.html)
 
 ## excel-interaction 快速开始
 
@@ -36,4 +36,4 @@ pnpm showcase             # 全站展示层 → http://localhost:4174/src/standa
 ```
 
 详细构建方式见 [excel-interaction/README.md](excel-interaction/README.md) 与
-[docs/build-it-own/excel-interaction.md](docs/build-it-own/excel-interaction.md)。
+[docs/build-it-own/excel-interaction/README.md](docs/build-it-own/excel-interaction/README.md)。

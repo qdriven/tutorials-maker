@@ -1,10 +1,10 @@
 # excel-interaction · 我是怎么把 Excel 教程做成一条流水线的
 
 > 第一视角制作复盘。原始证据都在项目里：
-> 执行流水 [index-log](../../excel-interaction/docs/projects/index-log.md)（52 条，2026-11-08 → 11-10）、
-> 方法论 [build-method](../../excel-interaction/docs/build-method.md)、
-> 流水线构成 [pipeline](../../excel-interaction/docs/pipeline.md)。
-> 配套展示：[时间线页面](excel-interaction-timeline.html) · [演示幻灯片](excel-interaction-slides.html)
+> 执行流水 [index-log](../../../excel-interaction/docs/projects/index-log.md)（52 条，2026-11-08 → 11-10）、
+> 方法论 [build-method](../../../excel-interaction/docs/build-method.md)、
+> 流水线构成 [pipeline](../../../excel-interaction/docs/pipeline.md)。
+> 配套展示：[时间线页面](timeline.html) · [演示幻灯片](slides.html)
 
 ---
 
@@ -34,7 +34,7 @@ courses/<id>.json ──► apps/<id>/（交互动画课）──► out/<id>/<i
 
 ### 方法论先行（还没写一行功能代码之前）
 
-我把「怎么干活」先写进了 [build-method.md](../../excel-interaction/docs/build-method.md)，
+我把「怎么干活」先写进了 [build-method.md](../../../excel-interaction/docs/build-method.md)，
 三条纪律，后面 52 条执行流水全部照它走：
 
 1. **任务分解**：项目 → phase（对齐 build-checklist 的 9 个阶段）→ task（半天内可完成的最小交付）；
@@ -168,11 +168,11 @@ L2 冲刺也一样——P3 走查（3 次点击内能看片、练习验收能过
 
 issues #14–#20 跟踪中：onlyoffice 渲染扩展位、univer 构建源收编、PR/分支整理等；
 SQL × Excel 对照工作台已做可行性分析入档（planned）。详见
-[deferred.md](../../excel-interaction/docs/projects/phase-8/deferred.md) 与
-[pipeline.md 附录](../../excel-interaction/docs/pipeline.md)。
+[deferred.md](../../../excel-interaction/docs/projects/phase-8/deferred.md) 与
+[pipeline.md 附录](../../../excel-interaction/docs/pipeline.md)。
 
 ---
 
-**导航**：[项目 README](../../excel-interaction/README.md) · [文档中心](../../excel-interaction/docs/README.md) ·
-[执行流水](../../excel-interaction/docs/projects/index-log.md) · [scripts 用法](../../excel-interaction/scripts/README.md) ·
-[时间线](excel-interaction-timeline.html) · [Slides](excel-interaction-slides.html)
+**导航**：[项目 README](../../../excel-interaction/README.md) · [文档中心](../../../excel-interaction/docs/README.md) ·
+[执行流水](../../../excel-interaction/docs/projects/index-log.md) · [scripts 用法](../../../excel-interaction/scripts/README.md) ·
+[时间线](timeline.html) · [Slides](slides.html)
