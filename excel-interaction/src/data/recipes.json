@@ -1,6 +1,6 @@
 {
   "$comment": "landing 目录聚合（scripts/landing/build-recipes.mjs 产物，勿手改）：courses/*.json 自动投影 + 占位卡 + 合集卡。重跑 node scripts/landing/build-recipes.mjs 上架新课。",
-  "generatedAt": "2026-11-10",
+  "generatedAt": "2026-11-11",
   "stats": {
     "live": 44,
     "todo": 2,
