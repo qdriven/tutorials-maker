@@ -1,0 +1,98 @@
+{
+  "$comment": "图表课契约（批量转写）：从 excel-animation docs/excel/02-charts 簇状柱形图 篇转写（chart-batch 程序化生成）。模拟渲染边界见 templates/handsontable/README.md「图表模拟层」",
+  "id": "chart-column",
+  "fn": "簇状柱形图",
+  "title": "簇状柱形图比类别：月份对销售金额",
+  "category": "图表选型",
+  "level": "初级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/chart-column.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "月份表",
+        "cells": {
+          "A1": "月份",
+          "B1": "销售金额",
+          "A2": "一月",
+          "B2": 2120,
+          "A3": "二月",
+          "B3": 2690,
+          "A4": "三月",
+          "B4": 4810
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "A1:B4",
+      "menu": "选中数据区（含表头）",
+      "formula": "=B4",
+      "expect": "A1:B4 被选中（两列高亮）"
+    },
+    {
+      "step": 2,
+      "cell": "A1:B4",
+      "menu": "插入 → 簇状柱形图",
+      "formula": "=B4",
+      "expect": "图表菜单展开，簇状柱形图入口可见"
+    },
+    {
+      "step": 3,
+      "action": "chart",
+      "cell": "A1:B4",
+      "menu": "点击簇状柱形图",
+      "formula": "月份(横轴)=离散类别，销售金额(纵轴)=数值",
+      "expect": "画布渲染簇状柱形图：六月最高 4810，三月是三月的两倍多。"
+    },
+    {
+      "step": 4,
+      "action": "chart",
+      "cell": "A1:B4",
+      "menu": "读图",
+      "formula": "月份(横轴)=离散类别，销售金额(纵轴)=数值",
+      "expect": "读图结论标注：六月最高 4810，三月是三月的两倍多。"
+    }
+  ],
+  "chart": {
+    "type": "bar",
+    "title": "月份比类别",
+    "xAxis": "A2:A4",
+    "series": [
+      {
+        "name": "销售金额",
+        "values": "B2:B4"
+      }
+    ]
+  },
+  "formulaArgs": [
+    {
+      "part": "月份(横轴)",
+      "meaning": "月份(横轴)=离散类别"
+    },
+    {
+      "part": "销售金额(纵轴)",
+      "meaning": "销售金额(纵轴)=数值"
+    }
+  ],
+  "summary": {
+    "oneLiner": "簇状柱形图：比类别——几根柱子排在一起，谁高谁低一眼见分晓。",
+    "explain": "就像写 SQL：SELECT 月份, SUM(金额) GROUP BY 月份，按类别分组计数再画柱。",
+    "outro": "总结：比较类别高低用柱形图；类别名太长改用条形图。"
+  },
+  "checks": [
+    {
+      "cell": "B4",
+      "formula": "=B4",
+      "value": 4810
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "$comment": "L2 跨表+图表复合课（阶段 3）：跨表 SUM 公式块 + 折线图块（chart 数据在副表，chart.xAxis/series 用 表名!区域 语法，chart-layer/finish 已支持）。中文表名单引号。公式已过探针。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "luke-charts",
+  "fn": "跨表趋势图",
+  "title": "跨表趋势图：月度表求和 → 副表数据画折线",
+  "category": "场景实战",
+  "level": "高级",
+  "durationMin": 6,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/luke-charts.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "汇总",
+        "cells": {
+          "A1": "任务",
+          "B1": "结果",
+          "A2": "半年合计"
+        }
+      },
+      {
+        "name": "月度",
+        "cells": {
+          "A1": "月份",
+          "B1": "销售额",
+          "A2": "1月",
+          "B2": 980,
+          "A3": "2月",
+          "B3": 1120,
+          "A4": "3月",
+          "B4": 1050,
+          "A5": "4月",
+          "B5": 1360,
+          "A6": "5月",
+          "B6": 1640,
+          "A7": "6月",
+          "B7": 2190
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "B2",
+      "menu": "选中 B2",
+      "formula": "定位半年合计结果格",
+      "expect": "B2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "B2",
+      "menu": "输入框输入公式",
+      "formula": "=SUM('月度'!B2:B7)",
+      "expect": "B2 显示公式原文 =SUM('月度'!B2:B7)"
+    },
+    {
+      "step": 3,
+      "cell": "B2",
+      "menu": "回车确认",
+      "formula": "=SUM('月度'!B2:B7)",
+      "expect": "B2 显示 8340（月度表六个月一次加总）"
+    },
+    {
+      "step": 4,
+      "cell": "B2",
+      "menu": "选中 B2 查看编辑栏",
+      "formula": "=SUM('月度'!B2:B7)",
+      "expect": "编辑栏回显 =SUM('月度'!B2:B7)，B2 显示 8340"
+    },
+    {
+      "step": 5,
+      "cell": "B2",
+      "menu": "数据源在月度表（参考表）",
+      "formula": "月度!A2:B7 → 折线图",
+      "expect": "参考表「月度」可见 6 行数据（图表数据源）"
+    },
+    {
+      "step": 6,
+      "cell": "B2",
+      "menu": "插入 → 折线图",
+      "formula": "月度!A2:B7 → 折线图",
+      "expect": "图表菜单展开，折线图入口可见"
+    },
+    {
+      "step": 7,
+      "action": "chart",
+      "cell": "B2",
+      "menu": "点击折线图",
+      "formula": "月份(横轴)→销售额(纵轴)",
+      "expect": "画布渲染折线图：横轴 1月→6月（取自月度表），末点 2190"
+    },
+    {
+      "step": 8,
+      "action": "chart",
+      "cell": "B2",
+      "menu": "读图",
+      "formula": "月份(横轴)→销售额(纵轴)",
+      "expect": "读图结论标注：6 月达到 2190，连续第三个月上升"
+    }
+  ],
+  "chart": {
+    "type": "line",
+    "title": "半年销售趋势（数据：月度表）",
+    "xAxis": "月度!A2:A7",
+    "series": [
+      {
+        "name": "销售额",
+        "values": "月度!B2:B7"
+      }
+    ]
+  },
+  "formulaArgs": [
+    {
+      "part": "'月度'!B2:B7",
+      "meaning": "跨表求和区域：月度表销售额列（中文表名单引号）",
+      "step": 2
+    }
+  ],
+  "summary": {
+    "oneLiner": "跨表趋势图：先用跨表 SUM 算半年合计，再让副表（月度）的数据直接画进折线图。",
+    "explain": "就像报表分工：明细表存数据、汇总表出数、图表直接吃明细——改月度表，合计与图一起变。",
+    "outro": "总结：图表数据源可以跨表指定（表名!区域）；合计与图都从同一份月度数据派生，口径唯一。"
+  },
+  "checks": [
+    {
+      "cell": "B2",
+      "formula": "=SUM('月度'!B2:B7)",
+      "value": 8340
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

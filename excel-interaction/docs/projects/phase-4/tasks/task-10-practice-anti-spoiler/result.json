@@ -1,0 +1,48 @@
+{
+  "result_left_of_table": true,
+  "guide_panel_count": 0,
+  "folds_auto_step2": [
+    false,
+    true,
+    false,
+    false
+  ],
+  "folds_practice_initial": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "folds_after_peek": [
+    false,
+    true,
+    false,
+    false
+  ],
+  "folds_after_pass": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "pass_caption": "✓ 验收通过：E2 显示 王五，公式真算真回读，与契约一致",
+  "folds_auto_after_reload": [
+    false,
+    true,
+    false,
+    false
+  ],
+  "folds_after_seq_1_3": [
+    false,
+    false,
+    true,
+    false
+  ],
+  "folds_after_done": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "console_errors": []
+}

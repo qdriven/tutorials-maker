@@ -1,0 +1,90 @@
+{
+  "$comment": "试点契约：从 courses/seeds/vlookup-basic.md 提炼。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "vlookup-basic",
+  "title": "VLOOKUP 查找匹配：按工号自动查姓名",
+  "category": "查找引用",
+  "level": "初级",
+  "durationMin": 5,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/vlookup-basic.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "员工表",
+        "cells": {
+          "A1": "工号",
+          "B1": "姓名",
+          "C1": "部门",
+          "D1": "查询工号",
+          "E1": "查询姓名",
+          "A2": 1001,
+          "B2": "张三",
+          "C2": "销售部",
+          "D2": 1003,
+          "A3": 1002,
+          "B3": "李四",
+          "C3": "技术部",
+          "A4": 1003,
+          "B4": "王五",
+          "C4": "市场部",
+          "A5": 1004,
+          "B5": "赵六",
+          "C5": "销售部"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "E2",
+      "menu": "选中 E2",
+      "formula": "定位查询结果单元格",
+      "expect": "E2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "E2",
+      "menu": "输入框输入公式",
+      "formula": "=VLOOKUP(D2,A2:B5,2,0)",
+      "expect": "E2 显示公式原文 =VLOOKUP(D2,A2:B5,2,0)"
+    },
+    {
+      "step": 3,
+      "cell": "E2",
+      "menu": "回车确认",
+      "formula": "=VLOOKUP(D2,A2:B5,2,0)",
+      "expect": "E2 显示 王五"
+    },
+    {
+      "step": 4,
+      "cell": "E2",
+      "menu": "选中 E2 查看编辑栏",
+      "formula": "=VLOOKUP(D2,A2:B5,2,0)",
+      "expect": "编辑栏回显 =VLOOKUP(D2,A2:B5,2,0)，E2 显示 王五"
+    }
+  ],
+  "formulaArgs": [
+    { "part": "D2", "meaning": "查找值：要找的工号（在 D2）" },
+    { "part": "A2:B5", "meaning": "查找区域：首列是工号，第二列是姓名" },
+    { "part": "2", "meaning": "列序数：返回查找区域的第 2 列（姓名）" },
+    { "part": "0", "meaning": "匹配方式：0=精确匹配（必须写）" }
+  ],
+  "summary": {
+    "oneLiner": "VLOOKUP：拿一个值，去一个范围里查它在哪一行，取回那一行的另一列。",
+    "explain": "就像写 SQL：SELECT 姓名 FROM 员工表 WHERE 工号 = 1003，按工号查姓名。",
+    "outro": "总结：用关键字段找到那一行，取回其他字段。"
+  },
+  "checks": [
+    {
+      "cell": "E2",
+      "formula": "=VLOOKUP(D2,A2:B5,2,0)",
+      "value": "王五"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

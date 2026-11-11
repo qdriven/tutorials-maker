@@ -1,0 +1,506 @@
+[
+  {
+    "id": "free-excel",
+    "order": 1,
+    "title": "六步完整实战：中文零售运营分析",
+    "dir": "docs/excel/data/lessons/free-excel",
+    "files": [
+      {
+        "sheet": "原始数据",
+        "file": "raw.csv",
+        "rows": 24,
+        "columns": 12
+      },
+      {
+        "sheet": "订单索引",
+        "file": "invoice-index.csv",
+        "rows": 20,
+        "columns": 4
+      },
+      {
+        "sheet": "月度汇总",
+        "file": "summary.csv",
+        "rows": 5,
+        "columns": 4
+      },
+      {
+        "sheet": "分析结论",
+        "file": "report.csv",
+        "rows": 3,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "luke-charts",
+    "order": 2,
+    "title": "月度趋势：从汇总到折线图",
+    "dir": "docs/excel/data/lessons/luke-charts",
+    "files": [
+      {
+        "sheet": "月度数据",
+        "file": "monthly.csv",
+        "rows": 3,
+        "columns": 2
+      },
+      {
+        "sheet": "练习区",
+        "file": "practice.csv",
+        "rows": 3,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "alex-lookup",
+    "order": 3,
+    "title": "商品主数据：VLOOKUP 与 XLOOKUP",
+    "dir": "docs/excel/data/lessons/alex-lookup",
+    "files": [
+      {
+        "sheet": "商品表",
+        "file": "products.csv",
+        "rows": 5,
+        "columns": 5
+      },
+      {
+        "sheet": "查询练习",
+        "file": "practice.csv",
+        "rows": 3,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "dave-clean",
+    "order": 4,
+    "title": "订单清洗：空格、重复与查找",
+    "dir": "docs/excel/data/lessons/dave-clean",
+    "files": [
+      {
+        "sheet": "订单",
+        "file": "orders.csv",
+        "rows": 8,
+        "columns": 5
+      },
+      {
+        "sheet": "清洗任务",
+        "file": "practice.csv",
+        "rows": 3,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "rohan-questions",
+    "order": 5,
+    "title": "从业务问题倒推汇总公式",
+    "dir": "docs/excel/data/lessons/rohan-questions",
+    "files": [
+      {
+        "sheet": "订单",
+        "file": "orders.csv",
+        "rows": 8,
+        "columns": 5
+      },
+      {
+        "sheet": "问题清单",
+        "file": "practice.csv",
+        "rows": 3,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "maf-charts",
+    "order": 6,
+    "title": "市场结构：排序、条形图与占比",
+    "dir": "docs/excel/data/lessons/maf-charts",
+    "files": [
+      {
+        "sheet": "市场数据",
+        "file": "markets.csv",
+        "rows": 5,
+        "columns": 2
+      },
+      {
+        "sheet": "分析区",
+        "file": "practice.csv",
+        "rows": 2,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "power-query",
+    "order": 7,
+    "title": "合并查询：从商品表补全订单",
+    "dir": "docs/excel/data/lessons/power-query",
+    "files": [
+      {
+        "sheet": "订单",
+        "file": "orders.csv",
+        "rows": 3,
+        "columns": 5
+      },
+      {
+        "sheet": "商品表",
+        "file": "products.csv",
+        "rows": 5,
+        "columns": 5
+      }
+    ]
+  },
+  {
+    "id": "eda-outliers",
+    "order": 8,
+    "title": "探索数据：平均值、极值与异常复核",
+    "dir": "docs/excel/data/lessons/eda-outliers",
+    "files": [
+      {
+        "sheet": "订单",
+        "file": "orders.csv",
+        "rows": 10,
+        "columns": 2
+      },
+      {
+        "sheet": "探索任务",
+        "file": "practice.csv",
+        "rows": 4,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "plans",
+    "order": 9,
+    "title": "方案比较：用量变化后选哪个套餐",
+    "dir": "docs/excel/data/lessons/plans",
+    "files": [
+      {
+        "sheet": "方案",
+        "file": "plans.csv",
+        "rows": 3,
+        "columns": 4
+      },
+      {
+        "sheet": "比较区",
+        "file": "practice.csv",
+        "rows": 5,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "portfolio-dashboard",
+    "order": 10,
+    "title": "Apple 小型看板：指标与三表校验",
+    "dir": "docs/excel/data/lessons/portfolio-dashboard",
+    "files": [
+      {
+        "sheet": "利润表",
+        "file": "income.csv",
+        "rows": 4,
+        "columns": 2
+      },
+      {
+        "sheet": "资产负债表",
+        "file": "balance.csv",
+        "rows": 4,
+        "columns": 2
+      },
+      {
+        "sheet": "现金流量表",
+        "file": "cash.csv",
+        "rows": 6,
+        "columns": 2
+      },
+      {
+        "sheet": "看板",
+        "file": "dashboard.csv",
+        "rows": 4,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "two-way-lookup",
+    "order": 11,
+    "title": "双向查找：按商品与月份取数",
+    "dir": "docs/excel/data/lessons/two-way-lookup",
+    "files": [
+      {
+        "sheet": "销售矩阵",
+        "file": "matrix.csv",
+        "rows": 3,
+        "columns": 4
+      },
+      {
+        "sheet": "查询区",
+        "file": "practice.csv",
+        "rows": 5,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "dynamic-arrays",
+    "order": 12,
+    "title": "动态数组：筛选、去重与排序",
+    "dir": "docs/excel/data/lessons/dynamic-arrays",
+    "files": [
+      {
+        "sheet": "订单",
+        "file": "orders.csv",
+        "rows": 6,
+        "columns": 3
+      },
+      {
+        "sheet": "动态结果",
+        "file": "practice.csv",
+        "rows": 3,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "text-date",
+    "order": 13,
+    "title": "文本与日期：拆分客户资料并生成月份",
+    "dir": "docs/excel/data/lessons/text-date",
+    "files": [
+      {
+        "sheet": "客户资料",
+        "file": "customers.csv",
+        "rows": 2,
+        "columns": 6
+      }
+    ]
+  },
+  {
+    "id": "kpi-format",
+    "order": 14,
+    "title": "KPI 预警：把达成率转成可行动的状态",
+    "dir": "docs/excel/data/lessons/kpi-format",
+    "files": [
+      {
+        "sheet": "经营看板",
+        "file": "dashboard.csv",
+        "rows": 3,
+        "columns": 5
+      }
+    ]
+  },
+  {
+    "id": "dirty-data",
+    "order": 15,
+    "title": "脏数据清洗：金额、文本与类型转换",
+    "dir": "docs/excel/data/lessons/dirty-data",
+    "files": [
+      {
+        "sheet": "脏数据",
+        "file": "dirty.csv",
+        "rows": 3,
+        "columns": 4
+      }
+    ]
+  },
+  {
+    "id": "inventory-reorder",
+    "order": 16,
+    "title": "库存补货：用补货点与建议量管理缺货",
+    "dir": "docs/excel/data/lessons/inventory-reorder",
+    "files": [
+      {
+        "sheet": "库存表",
+        "file": "inventory.csv",
+        "rows": 3,
+        "columns": 8
+      }
+    ]
+  },
+  {
+    "id": "supply-quality",
+    "order": 17,
+    "title": "供应链质量：缺陷率与单位运输成本",
+    "dir": "docs/excel/data/lessons/supply-quality",
+    "files": [
+      {
+        "sheet": "供应商",
+        "file": "suppliers.csv",
+        "rows": 3,
+        "columns": 6
+      },
+      {
+        "sheet": "分析区",
+        "file": "analysis.csv",
+        "rows": 3,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "customer-rfm",
+    "order": 18,
+    "title": "客户 RFM：找出需要重点维护的客户",
+    "dir": "docs/excel/data/lessons/customer-rfm",
+    "files": [
+      {
+        "sheet": "客户订单",
+        "file": "orders.csv",
+        "rows": 7,
+        "columns": 4
+      },
+      {
+        "sheet": "客户汇总",
+        "file": "summary.csv",
+        "rows": 3,
+        "columns": 5
+      }
+    ]
+  },
+  {
+    "id": "retail-operations-free-excel",
+    "order": 1,
+    "title": "六步完整实战：真实零售运营分析",
+    "dir": "docs/excel/data/lessons/retail-operations-free-excel",
+    "files": [
+      {
+        "sheet": "原始数据",
+        "file": "raw.csv",
+        "rows": 500,
+        "columns": 12
+      },
+      {
+        "sheet": "发票索引",
+        "file": "invoice-index.csv",
+        "rows": 461,
+        "columns": 4
+      },
+      {
+        "sheet": "月度汇总",
+        "file": "summary.csv",
+        "rows": 5,
+        "columns": 4
+      },
+      {
+        "sheet": "分析结论",
+        "file": "report.csv",
+        "rows": 3,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "chart-line",
+    "order": 0,
+    "title": "折线图",
+    "dir": "docs/excel/data/lessons/chart-line",
+    "files": [
+      {
+        "sheet": "折线图",
+        "file": "chart.csv",
+        "rows": 6,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "chart-column",
+    "order": 0,
+    "title": "簇状柱形图",
+    "dir": "docs/excel/data/lessons/chart-column",
+    "files": [
+      {
+        "sheet": "簇状柱形图",
+        "file": "chart.csv",
+        "rows": 4,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "chart-bar",
+    "order": 0,
+    "title": "条形图",
+    "dir": "docs/excel/data/lessons/chart-bar",
+    "files": [
+      {
+        "sheet": "条形图",
+        "file": "chart.csv",
+        "rows": 5,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "chart-pie",
+    "order": 0,
+    "title": "饼图／环形图",
+    "dir": "docs/excel/data/lessons/chart-pie",
+    "files": [
+      {
+        "sheet": "饼图／环形图",
+        "file": "chart.csv",
+        "rows": 2,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "chart-scatter",
+    "order": 0,
+    "title": "XY 散点图",
+    "dir": "docs/excel/data/lessons/chart-scatter",
+    "files": [
+      {
+        "sheet": "XY 散点图",
+        "file": "chart.csv",
+        "rows": 10,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "chart-histogram",
+    "order": 0,
+    "title": "直方图",
+    "dir": "docs/excel/data/lessons/chart-histogram",
+    "files": [
+      {
+        "sheet": "直方图",
+        "file": "chart.csv",
+        "rows": 5,
+        "columns": 2
+      }
+    ]
+  },
+  {
+    "id": "chart-combo",
+    "order": 0,
+    "title": "组合图",
+    "dir": "docs/excel/data/lessons/chart-combo",
+    "files": [
+      {
+        "sheet": "组合图",
+        "file": "chart.csv",
+        "rows": 6,
+        "columns": 3
+      }
+    ]
+  },
+  {
+    "id": "chart-stacked",
+    "order": 0,
+    "title": "堆积柱形图",
+    "dir": "docs/excel/data/lessons/chart-stacked",
+    "files": [
+      {
+        "sheet": "堆积柱形图",
+        "file": "chart.csv",
+        "rows": 3,
+        "columns": 3
+      }
+    ]
+  }
+]

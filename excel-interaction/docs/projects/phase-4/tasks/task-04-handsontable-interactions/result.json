@@ -1,0 +1,19 @@
+{
+  "echo_click_B2": "张三",
+  "echo_click_E2": "=VLOOKUP(D2,A2:B5,2,0)",
+  "selection": [
+    "A2",
+    "B5"
+  ],
+  "fill_handle_visible": true,
+  "editor_after_type": "=SUM(",
+  "editor_after_range": "=SUM(A2:B5",
+  "editor_after_click": "=SUM(A2:B5D2",
+  "suggest_visible": true,
+  "suggest_items": [
+    "VLOOKUP"
+  ],
+  "editor_after_tab": "=VLOOKUP(",
+  "practice_caption": "✓ 验收通过：E2 显示 王五，公式真算真回读，与契约一致",
+  "console_errors": []
+}

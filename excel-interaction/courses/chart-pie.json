@@ -1,0 +1,96 @@
+{
+  "$comment": "图表课契约（批量转写）：从 excel-animation docs/excel/02-charts 饼图／环形图 篇转写（chart-batch 程序化生成）。模拟渲染边界见 templates/handsontable/README.md「图表模拟层」",
+  "id": "chart-pie",
+  "fn": "饼图",
+  "title": "饼图／环形图看占比：渠道对销售额",
+  "category": "图表选型",
+  "level": "初级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/chart-pie.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "渠道表",
+        "cells": {
+          "A1": "渠道",
+          "B1": "销售额",
+          "A2": "线上",
+          "B2": 3410,
+          "A3": "门店",
+          "B3": 1880
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "A1:B3",
+      "menu": "选中数据区（含表头）",
+      "formula": "=B3",
+      "expect": "A1:B3 被选中（两列高亮）"
+    },
+    {
+      "step": 2,
+      "cell": "A1:B3",
+      "menu": "插入 → 饼图／环形图",
+      "formula": "=B3",
+      "expect": "图表菜单展开，饼图／环形图入口可见"
+    },
+    {
+      "step": 3,
+      "action": "chart",
+      "cell": "A1:B3",
+      "menu": "点击饼图／环形图",
+      "formula": "渠道(分类)=扇形，销售额(数值)=扇形大小",
+      "expect": "画布渲染饼图／环形图：线上占 64.5%，门店占 35.5%——线上是主要渠道。"
+    },
+    {
+      "step": 4,
+      "action": "chart",
+      "cell": "A1:B3",
+      "menu": "读图",
+      "formula": "渠道(分类)=扇形，销售额(数值)=扇形大小",
+      "expect": "读图结论标注：线上占 64.5%，门店占 35.5%——线上是主要渠道。"
+    }
+  ],
+  "chart": {
+    "type": "pie",
+    "title": "渠道看占比",
+    "xAxis": "A2:A3",
+    "series": [
+      {
+        "name": "销售额",
+        "values": "B2:B3"
+      }
+    ]
+  },
+  "formulaArgs": [
+    {
+      "part": "渠道(分类)",
+      "meaning": "渠道(分类)=扇形"
+    },
+    {
+      "part": "销售额(数值)",
+      "meaning": "销售额(数值)=扇形大小"
+    }
+  ],
+  "summary": {
+    "oneLiner": "饼图：看占比——单系列非负值，每块扇形占整个圆的百分比。",
+    "explain": "就像写 SQL：SELECT 渠道, SUM(销售额) GROUP BY 渠道，算每渠道占总量的比例。",
+    "outro": "总结：占比用饼图；类别太多或值有负数就别用，改柱形。"
+  },
+  "checks": [
+    {
+      "cell": "B3",
+      "formula": "=B3",
+      "value": 1880
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

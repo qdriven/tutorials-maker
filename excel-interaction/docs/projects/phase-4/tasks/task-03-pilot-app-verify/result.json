@@ -1,0 +1,10 @@
+{
+  "readValue_E2": "王五",
+  "getFormula_E2": "=VLOOKUP(D2,A2:B5,2,0)",
+  "practice_caption": "✓ 验收通过：E2 显示 王五，公式真算真回读，与契约一致",
+  "practice_debug": {
+    "f": "=VLOOKUP(D2,A2:B5,2,0)",
+    "v": "王五"
+  },
+  "console_errors": []
+}

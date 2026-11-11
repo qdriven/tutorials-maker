@@ -1,0 +1,176 @@
+{
+  "$comment": "L2 A 类场景课（A 类场景课（3 块 12 步；TEXT 环节 blocked 记档）；素材 docs/excel/05-workspace-lessons/13-text-date.md。）公式已过 HyperFormula 终验探针（aclass-gen 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "text-date",
+  "fn": "文本拆分",
+  "title": "文本拆分三件套：LEFT 定名 → MID 取号 → RIGHT 截区",
+  "category": "文本清理",
+  "level": "中级",
+  "durationMin": 6,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/text-date.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "客户资料",
+        "cells": {
+          "A1": "原始记录",
+          "B1": "客户姓名",
+          "C1": "手机号",
+          "D1": "地区",
+          "A2": "张三|13800138000|上海",
+          "A3": "李四|13900139000|北京",
+          "F1": "拆分任务",
+          "G1": "结果",
+          "F2": "① 姓名（第1段）",
+          "F3": "② 手机号（第2段）",
+          "F4": "③ 地区（末段）"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "G2",
+      "menu": "选中 G2",
+      "formula": "定位G2 结果格",
+      "expect": "G2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "G2",
+      "menu": "输入框输入公式",
+      "formula": "=LEFT(A2,FIND(\"|\",A2)-1)",
+      "expect": "G2 显示公式原文 =LEFT(A2,FIND(\"|\",A2)-1)"
+    },
+    {
+      "step": 3,
+      "cell": "G2",
+      "menu": "回车确认",
+      "formula": "=LEFT(A2,FIND(\"|\",A2)-1)",
+      "expect": "G2 显示 张三（第一个 | 之前的部分）"
+    },
+    {
+      "step": 4,
+      "cell": "G2",
+      "menu": "选中 G2 查看编辑栏",
+      "formula": "=LEFT(A2,FIND(\"|\",A2)-1)",
+      "expect": "编辑栏回显 =LEFT(A2,FIND(\"|\",A2)-1)，G2 显示 张三"
+    },
+    {
+      "step": 5,
+      "cell": "G3",
+      "menu": "选中 G3",
+      "formula": "定位G3 结果格",
+      "expect": "G3 被选中，输入框激活"
+    },
+    {
+      "step": 6,
+      "cell": "G3",
+      "menu": "输入框输入公式",
+      "formula": "=MID(A2,FIND(\"|\",A2)+1,11)",
+      "expect": "G3 显示公式原文 =MID(A2,FIND(\"|\",A2)+1,11)"
+    },
+    {
+      "step": 7,
+      "cell": "G3",
+      "menu": "回车确认",
+      "formula": "=MID(A2,FIND(\"|\",A2)+1,11)",
+      "expect": "G3 显示 13800138000（中段 11 位手机号）"
+    },
+    {
+      "step": 8,
+      "cell": "G3",
+      "menu": "选中 G3 查看编辑栏",
+      "formula": "=MID(A2,FIND(\"|\",A2)+1,11)",
+      "expect": "编辑栏回显 =MID(A2,FIND(\"|\",A2)+1,11)，G3 显示 13800138000"
+    },
+    {
+      "step": 9,
+      "cell": "G4",
+      "menu": "选中 G4",
+      "formula": "定位G4 结果格",
+      "expect": "G4 被选中，输入框激活"
+    },
+    {
+      "step": 10,
+      "cell": "G4",
+      "menu": "输入框输入公式",
+      "formula": "=RIGHT(A2,LEN(A2)-FIND(\"|\",A2,FIND(\"|\",A2)+1))",
+      "expect": "G4 显示公式原文 =RIGHT(A2,LEN(A2)-FIND(\"|\",A2,FIND(\"|\",A2)+1))"
+    },
+    {
+      "step": 11,
+      "cell": "G4",
+      "menu": "回车确认",
+      "formula": "=RIGHT(A2,LEN(A2)-FIND(\"|\",A2,FIND(\"|\",A2)+1))",
+      "expect": "G4 显示 上海（第 2 个 | 之后的末段）"
+    },
+    {
+      "step": 12,
+      "cell": "G4",
+      "menu": "选中 G4 查看编辑栏",
+      "formula": "=RIGHT(A2,LEN(A2)-FIND(\"|\",A2,FIND(\"|\",A2)+1))",
+      "expect": "编辑栏回显 =RIGHT(A2,LEN(A2)-FIND(\"|\",A2,FIND(\"|\",A2)+1))，G4 显示 上海"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "FIND(\"|\",A2)",
+      "meaning": "定位第一个分隔符位置（3）——拆分的基准",
+      "step": 2
+    },
+    {
+      "part": "LEFT(",
+      "meaning": "从左取 3−1=2 个字符 → 张三",
+      "step": 2
+    },
+    {
+      "part": "FIND(\"|\",A2)+1",
+      "meaning": "从第一个 | 后一位起（4）",
+      "step": 6
+    },
+    {
+      "part": "MID(",
+      "meaning": "固定取 11 位——手机号定长 11",
+      "step": 6
+    },
+    {
+      "part": "FIND(\"|\",A2,FIND(\"|\",A2)+1)",
+      "meaning": "带起始位的 FIND：定位第 2 个 |（15）",
+      "step": 10
+    },
+    {
+      "part": "RIGHT(",
+      "meaning": "从右取 LEN−15=2 个字符 → 上海（末段不定长，用 LEN 差）",
+      "step": 10
+    }
+  ],
+  "summary": {
+    "oneLiner": "文本拆分三件套：FIND 定位分隔符、LEFT/MID/RIGHT 按位截取——'张三|手机|上海'一条记录拆成三个可筛选字段。",
+    "explain": "就像 SQL：SPLIT(col, '|') 的手工版——先 FIND 找位置，再按位置 LEFT/MID/RIGHT 截。",
+    "outro": "总结：FIND 是拆分基准、定长用 MID、不定长用 LEN 差配 RIGHT——三招拆完管道数据。"
+  },
+  "checks": [
+    {
+      "cell": "G2",
+      "formula": "=LEFT(A2,FIND(\"|\",A2)-1)",
+      "value": "张三"
+    },
+    {
+      "cell": "G3",
+      "formula": "=MID(A2,FIND(\"|\",A2)+1,11)",
+      "value": "13800138000"
+    },
+    {
+      "cell": "G4",
+      "formula": "=RIGHT(A2,LEN(A2)-FIND(\"|\",A2,FIND(\"|\",A2)+1))",
+      "value": "上海"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

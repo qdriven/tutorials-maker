@@ -1,0 +1,451 @@
+/* theme.css — 三套主题 token（templates/README.md 的 token 表），不得发明第四套 */
+:root {
+  --font-ui: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Noto Sans CJK SC", sans-serif;
+  --font-mono: "SFMono-Regular", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  --radius: 4px;
+  --radius-control: 3px;
+}
+
+/* kimi · 格数同款（默认盘；token 值取自格数 theme-kimi.css / kimi.png 色条）
+ * 视觉语汇：cream 纸面 + 墨线小圆角、无阴影无渐变；
+ * 金（表头带/步码/总结框）作填充，蓝（选区/链接/当前步）作强调。 */
+:root, #lesson[data-theme="kimi"] {
+  --bg: #f8f8ea;            /* 纸面 cream */
+  --panel: #fcfcf2;         /* 卡片 surface */
+  --sheet: #fefdf6;         /* 表格纸面 */
+  --band: #efefdf;          /* 行列头灰带 */
+  --fg: #363e40;            /* 墨 ink */
+  --soft: #6c7678;          /* muted */
+  --line: rgba(54, 62, 64, 0.16);
+  --accent: #48699b;        /* 蓝：选区/链接/当前步 */
+  --accent-strong: #36547f;
+  --accent-soft: #e4e9f1;
+  --gold: #ffca34;          /* 金：表头带/步码/总结框 */
+  --gold-soft: #fbe9ac;
+  --code-bg: #363e40; --code-fg: #f8f8ea;
+  --formula-bg: #e6ebf3; --formula-fg: #36547f;
+  --edit-bg: #fffdf4;       /* 单元格编辑底 */
+  --radius: 4px;
+  --radius-control: 3px;
+}
+
+/* green · Excel 绿（:has 抬到 html——#formula-suggest 挂在 body 上须吃得到主题变量） */
+#lesson[data-theme="green"], html:has(#lesson[data-theme="green"]) {
+  --bg: #f2f4f3;            /* 浅灰白 */
+  --panel: #ffffff;
+  --sheet: #ffffff;
+  --band: #e9eeeb;
+  --fg: #2f3b34;            /* 深灰 */
+  --soft: #5c6b62;
+  --line: rgba(47, 59, 52, 0.18);
+  --accent: #217346;        /* 品牌绿 */
+  --accent-strong: #185c37;
+  --accent-soft: #e2ede8;
+  --gold: #c8862a;
+  --gold-soft: #f3e3c3;
+  --code-bg: #2f3b34; --code-fg: #f2f4f3;
+  --formula-bg: #eaf2ee; --formula-fg: #217346;
+  --edit-bg: #ffffff;
+  --radius: 8px;
+  --radius-control: 6px;
+}
+
+/* vivid · flashcard teal 纸面系（第三套主题，2026-11-10）
+ * token 提取自 examples/flashcard 的 vivid-dsh 色板（--paper/--ink/--teal 词汇）：
+ * 青纸面 + 深青墨字 + 主青强调；高亮填充位（表头带/步码）用 teal-light；
+ * 圆角中档 6/4；附 vivid 扩展 token（新拟态柔影/红点，作用域自用不入共享契约）。 */
+#lesson[data-theme="vivid"], html:has(#lesson[data-theme="vivid"]) {
+  --bg: #e9f1f2;            /* 纸面 paper */
+  --panel: #f4fafb;         /* 卡面（纸面提亮） */
+  --sheet: #f7fcfc;         /* 表格纸面 surface-inset */
+  --band: #dcebec;          /* 行列头带 surface-progress */
+  --fg: #014e60;            /* 深青墨 ink */
+  --soft: #436e7d;          /* muted ink-3 */
+  --line: #d6e7e9;
+  --accent: #019b98;        /* 主青 teal：选区/链接/当前步 */
+  --accent-strong: #017a78; /* teal-deep */
+  --accent-soft: #d5f7f5;   /* teal-soft */
+  --gold: #55ccc9;          /* 高亮填充位 = teal-light（表头带/步码/总结框） */
+  --gold-soft: #eefbfa;     /* teal-wash */
+  --code-bg: #014e60; --code-fg: #e9f1f2;
+  --formula-bg: #d5f7f5; --formula-fg: #017a78;
+  --edit-bg: #ffffff;
+  --radius: 6px;
+  --radius-control: 4px;
+  /* vivid 扩展（作用域自用）：新拟态柔影 / 红点强调 */
+  --shadow-soft: 9px 10px 22px rgb(1 78 96 / 0.055), -7px -7px 18px rgb(255 255 255 / 0.86);
+  --hot: #dd0025;
+}
+
+
+/* Handsontable ht-theme-main 变量映射（同主题联动）。
+ * 落点必须是 .ht-theme-main 本体：vendor 主题把 --ht-* 直接声明在该根上，
+ * 祖先层（如 [data-theme]）映射会被元素自身声明盖掉（task-12 踩坑）。 */
+[data-theme] .ht-theme-main {
+  --ht-font-family: var(--font-ui);
+  --ht-font-size: 12.5px;
+  --ht-font-weight: 500;
+  --ht-background-color: var(--sheet);
+  --ht-foreground-color: var(--fg);
+  --ht-foreground-secondary-color: var(--soft);
+  --ht-border-color: color-mix(in srgb, var(--fg) 14%, transparent);
+  --ht-cell-horizontal-border-color: color-mix(in srgb, var(--fg) 13%, transparent);
+  --ht-cell-vertical-border-color: color-mix(in srgb, var(--fg) 13%, transparent);
+
+  --ht-header-background-color: var(--band);
+  --ht-header-foreground-color: var(--soft);
+  --ht-header-font-weight: 700;
+  --ht-header-active-background-color: var(--fg);
+  --ht-header-active-foreground-color: var(--bg);
+  --ht-header-highlighted-background-color: var(--accent-soft);
+  --ht-header-highlighted-foreground-color: var(--accent-strong);
+
+  --ht-row-header-even-background-color: var(--band);
+  --ht-row-header-odd-background-color: color-mix(in srgb, var(--band) 88%, var(--fg));
+  --ht-header-row-background-color: var(--band);
+  --ht-header-row-foreground-color: var(--soft);
+  --ht-header-row-active-background-color: var(--gold);
+  --ht-header-row-active-foreground-color: var(--fg);
+
+  --ht-cell-selection-background-color: color-mix(in srgb, var(--accent) 15%, transparent);
+  --ht-cell-selection-border-color: var(--accent);
+  --ht-cell-selection-handle-background-color: var(--accent);
+  --ht-cell-selection-handle-border-color: var(--bg);
+  --ht-accent-color: var(--accent);
+
+  --ht-cell-editor-background-color: var(--edit-bg);
+  --ht-cell-editor-border-color: var(--accent);
+  --ht-cell-editor-border-width: 1px;
+
+  --ht-border-radius: 0;
+  --ht-input-border-radius: 0;
+  --ht-button-border-radius: 0;
+}
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-ui);
+}
+
+#lesson {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 300px 1fr; /* 布局换边（task-10）：步骤面板在左、表格在右 */
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "head head"
+    "result table"
+    "caption caption";
+  gap: 12px;
+  padding: 12px;
+  box-sizing: border-box;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+#lesson-head { grid-area: head; display: flex; align-items: center; justify-content: space-between; }
+#lesson-title { font-size: 18px; margin: 0; }
+#controls button {
+  font-family: var(--font-ui);
+  border: 1px solid var(--fg);
+  background: var(--panel);
+  color: var(--fg);
+  padding: 6px 12px;
+  margin-left: 8px;
+  cursor: pointer;
+  border-radius: var(--radius-control);
+}
+#controls button:hover { border-color: var(--accent); color: var(--accent); }
+/* 主按钮（▶ 自动播放）：墨底纸字（格数 .run 同款），hover 转蓝 */
+#btn-play { background: var(--fg); color: var(--bg); }
+#btn-play:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+#table-area {
+  grid-area: table;
+  background: var(--panel);
+  border: 1.5px solid var(--fg);
+  border-radius: var(--radius);
+  overflow-y: auto; /* 图表课：表格下方渲染图表层，允许纵向滚动（overflow:hidden 会裁掉） */
+  display: flex;
+  flex-direction: column;
+  min-height: 340px;
+}
+
+/* 图表课（data-chart=1）：约束表格高度给图表层留视野——
+ * HT 撑满容器会把图表挤到折叠线下（实测截帧暴露）；图表在视野内是教学本体 */
+#lesson[data-chart="1"] #grid {
+  flex: none;
+  height: 300px;
+}
+#lesson[data-chart="1"] #table-area {
+  min-height: 0;
+}
+.chart-layer {
+  scroll-margin: 12px;
+}
+
+#formula-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+/* fx 格：墨线小方框（格数 cell-ref 同款） */
+#fx {
+  border: 1px solid var(--fg);
+  background: var(--sheet);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-style: normal;
+  padding: 1px 7px;
+  border-radius: 2px;
+  min-width: 30px;
+  text-align: center;
+}
+#formula-echo { min-height: 18px; color: var(--formula-fg); }
+#formula-echo.typing::after {
+  content: "▋";
+  animation: caret 0.5s steps(1) infinite; /* 仅光标闪烁；画面状态仍由状态机驱动 */
+}
+@keyframes caret { 50% { opacity: 0; } }
+
+#grid { flex: 1; }
+
+/* 表头带（格数金底表头）：契约 data 第 1 行约定为表头行（contract-schema） */
+#grid td.cell-head {
+  background: var(--gold);
+  color: var(--fg);
+  font-weight: 700;
+  text-align: center;
+}
+
+#result-area {
+  grid-area: result;
+  background: var(--panel);
+  border: 1.5px solid var(--fg);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+/* 验收框逐步展示（task-07）：当前步四要素+参数逐位，大字号逐条 */
+#step-detail {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+#step-detail .sd-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+#step-detail .sd-row { display: flex; gap: 8px; font-size: 13px; line-height: 1.7; }
+#step-detail .sd-k { flex: 0 0 3.2em; color: var(--soft); }
+#step-detail .sd-v { flex: 1; word-break: break-all; }
+#step-detail .sd-v code { font-family: var(--font-mono); font-size: 12px; }
+#step-detail .sd-arg .sd-v code { color: var(--accent); }
+/* 逐参数高亮（Lesson.focusParam）：当前口播参数行金底加粗，随块推进 */
+#step-detail .sd-arg.is-focus { background: var(--gold-soft); border-radius: var(--radius); padding: 2px 6px; margin: 0 -6px; }
+#step-detail .sd-arg.is-focus .sd-k { color: var(--fg); font-weight: 700; }
+/* 鼠标编排（Lesson.mouse）：页内光标层——轨迹缓动 + 点击脉冲，抓窗/渲染都入画 */
+#mouse-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 99;
+  pointer-events: none;
+  opacity: 0;
+}
+#mouse-cursor.on { opacity: 1; }
+#mouse-cursor svg { display: block; filter: drop-shadow(0 1px 1px rgba(54, 62, 64, 0.35)); }
+#mouse-cursor .mc-ripple {
+  position: absolute;
+  left: -6px;
+  top: -6px;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0;
+}
+#mouse-cursor.clicking .mc-ripple { animation: mc-click 320ms ease-out; }
+@keyframes mc-click {
+  0% { opacity: 0.9; transform: scale(0.4); }
+  100% { opacity: 0; transform: scale(1.6); }
+}
+#step-detail .sd-hint { color: var(--soft); font-size: 12px; line-height: 1.7; }
+#step-detail .sd-soft { color: var(--soft); font-size: 12px; line-height: 1.6; }
+/* 开篇/收尾总结框（task-11）：金左条 + 金调底；done 总结框墨线加重 */
+#step-detail .sd-sum {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  margin: 6px 0 10px;
+  background: color-mix(in srgb, var(--gold-soft) 45%, transparent);
+}
+#step-detail .sd-sum.sd-outro {
+  border-color: var(--fg);
+  border-left-color: var(--gold);
+  background: color-mix(in srgb, var(--gold-soft) 75%, transparent);
+}
+/* 全步折叠面板（task-09）：4 步常驻，当前步展开、其余折叠，点标题切换 */
+#step-detail .sd-fold {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  margin: 6px 0;
+  padding: 0 8px;
+}
+#step-detail .sd-fold summary {
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  list-style-position: inside;
+}
+#step-detail .sd-fold[open] summary {
+  border-bottom: 1px solid var(--line);
+}
+#step-detail .sd-fold.current {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 55%, transparent);
+}
+#step-detail .sd-fold.current summary { color: var(--accent-strong); }
+#step-detail .sd-fold-body { padding: 6px 0; font-size: 12px; line-height: 1.7; }
+#step-detail .sd-fold-body code { font-family: var(--font-mono); font-size: 11px; }
+/* 步码：金底墨字小方章（格数 brand chip 同款） */
+#step-detail .sd-step-no {
+  flex: 0 0 18px; height: 18px; border-radius: 2px;
+  background: var(--gold); color: var(--fg);
+  border: 1px solid var(--fg);
+  font-size: 11px; font-weight: 700; text-align: center; line-height: 16px;
+  box-sizing: border-box;
+}
+#result-expect { font-size: 13px; color: var(--soft); }
+#result-value {
+  font-size: 32px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--accent);
+  min-height: 40px;
+}
+#result-formula { font-family: var(--font-mono); font-size: 12px; color: var(--soft); word-break: break-all; }
+
+/* 字幕条：墨底纸字（格数 code 块同款） */
+#caption-bar {
+  grid-area: caption;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 14px;
+  min-height: 22px;
+}
+
+/* 动效词汇（motion-spec）：focus / typeIn / flash / panelStep；确定性、有限时长 */
+.hl-focus { animation: hl-focus 300ms ease-out 1; }
+@keyframes hl-focus {
+  from { box-shadow: inset 0 0 0 3px var(--accent); }
+  to   { box-shadow: inset 0 0 0 0 transparent; }
+}
+.hl-flash { animation: hl-flash 400ms ease-out 1; }
+@keyframes hl-flash {
+  from { background: color-mix(in srgb, var(--accent) 30%, transparent); }
+  to   { background: transparent; }
+}
+.panelStep { animation: panelStep 200ms ease-out 1; }
+@keyframes panelStep {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ③ 点选插引用的区域高亮 */
+#table-area .point-range {
+  background: color-mix(in srgb, var(--accent) 18%, transparent) !important;
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+/* ④ 函数建议弹层：墨线无阴影（挂在 body 上，吃 :root/:has 的主题变量） */
+#formula-suggest {
+  position: fixed;
+  z-index: 1000;
+  min-width: 180px;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--panel);
+  color: var(--fg);
+  border: 1px solid var(--fg);
+  border-radius: var(--radius-control);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+#formula-suggest .suggest-item {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+#formula-suggest .suggest-item.active {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* ---------- 图表模拟层（chart-layer.js）：契约 chart 步骤在表格下方渲染 ----------
+ * 格数语汇：墨线小圆角框 + cream 纸面 + 金标题条；确定性绘制无动画循环（motion-spec）。 */
+.chart-layer {
+  margin-top: 12px;
+  background: var(--sheet);
+  border: 1.5px solid var(--fg);
+  border-radius: var(--radius-control);
+  padding: 10px 12px 6px;
+}
+.chart-layer .cl-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fg);
+  border-bottom: 1px solid var(--line, rgba(54, 62, 64, 0.16));
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+}
+.chart-layer canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.chart-layer.hl-flash {
+  animation: chart-flash 400ms steps(2, end) 1;
+}
+@keyframes chart-flash {
+  0% { box-shadow: inset 0 0 0 3px var(--gold); }
+  100% { box-shadow: inset 0 0 0 0 transparent; }
+}
+
+/* ---------- 跨表参考表（阶段 3）：非主表静态展示，教学看被引用的数据 ---------- */
+.ref-sheet {
+  margin-top: 12px;
+  background: var(--sheet);
+  border: 1.5px dashed var(--fg);
+  border-radius: var(--radius-control);
+  padding: 10px 12px 8px;
+}
+.ref-sheet .cl-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fg);
+  border-bottom: 1px solid var(--line, rgba(54, 62, 64, 0.16));
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+.ref-sheet table { border-collapse: collapse; font-size: 13px; }
+.ref-sheet th, .ref-sheet td {
+  border: 1px solid var(--line, rgba(54, 62, 64, 0.16));
+  padding: 4px 12px;
+  text-align: left;
+}
+.ref-sheet th { background: var(--gold-soft, #fbe9ac); font-weight: 700; }
+.ref-sheet td { background: var(--sheet); font-family: var(--font-mono); }

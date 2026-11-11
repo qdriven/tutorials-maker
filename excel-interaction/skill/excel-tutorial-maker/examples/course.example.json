@@ -1,0 +1,76 @@
+{
+  "$comment": "课程契约示例：一份 json 同时驱动动画课（excel-tutorial-maker）与讲解视频（excel-desktop-recorder）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "sum-basic",
+  "title": "SUM 汇总：三个月销售求和",
+  "level": "初级",
+  "durationMin": 5,
+  "theme": "green",
+  "engine": "handsontable",
+  "seed": "seeds/sum-basic.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "月度数据",
+        "cells": {
+          "A1": "月份",
+          "B1": "销售额",
+          "A2": "1月",
+          "B2": 1200,
+          "A3": "2月",
+          "B3": 1500,
+          "A4": "3月",
+          "B4": 900
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "B5",
+      "menu": "选中 B5",
+      "formula": "定位汇总单元格",
+      "expect": "B5 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "B5",
+      "menu": "输入框输入公式",
+      "formula": "=SUM(B2:B4)",
+      "expect": "B5 显示公式原文 =SUM(B2:B4)"
+    },
+    {
+      "step": 3,
+      "cell": "B5",
+      "menu": "回车确认",
+      "formula": "=SUM(B2:B4)",
+      "expect": "B5 显示 3600"
+    },
+    {
+      "step": 4,
+      "cell": "B5",
+      "menu": "双击查看公式",
+      "formula": "=SUM(B2:B4)",
+      "expect": "单元格回显 =SUM(B2:B4)"
+    }
+  ],
+  "formulaArgs": [
+    { "part": "B2:B4", "meaning": "求和区域：B2 到 B4 的销售额" }
+  ],
+  "summary": {
+    "oneLiner": "SUM：把一片范围里的数字加起来，得到总和。",
+    "explain": "就像写 SQL：SELECT SUM(销售额) FROM 月度数据。",
+    "outro": "总结：给 SUM 一个范围，它把范围里的数字全部加总。"
+  },
+  "checks": [
+    {
+      "cell": "B5",
+      "formula": "=SUM(B2:B4)",
+      "value": 3600
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 800
+  }
+}

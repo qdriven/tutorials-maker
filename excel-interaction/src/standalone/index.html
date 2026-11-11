@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>无废话 Excel 教程</title>
+  <!-- 格数同款视觉语汇（cream 纸面 / 墨线 / 金填充 / 蓝强调），与模板 theme.css 同 token 体系 -->
+  <link rel="stylesheet" href="showcase.css" />
+</head>
+<body>
+  <!-- 站点统一导航（home / 教程站 / 构建流程 三页互达） -->
+  <nav class="site-nav">
+    <span class="sn-brand">格数</span>
+    <a href="/src/standalone/home.html">🏠 目录</a>
+    <a class="active" href="/src/standalone/index.html">📚 教程站</a>
+    <a href="/src/standalone/build-flow.html">🧱 构建流程</a>
+  </nav>
+  <div id="layout">
+    <aside id="sidebar">
+      <div class="brand">
+        <h1>无废话 Excel 教程</h1>
+        <p class="sub">一个函数一节课 · 动画 + 讲解 + 练习 · 30 秒讲清</p>
+      </div>
+      <nav id="course-list" aria-label="课程"></nav>
+      <nav id="demo-links" aria-label="演示视频"></nav>
+      <nav id="doc-links" aria-label="参考文档"></nav>
+      <p class="side-foot">清单：<a href="#" id="reg-view">src/data/tutorials.json</a> · 校验 <code>pnpm verify:showcase</code></p>
+    </aside>
+
+    <main id="main"></main>
+  </div>
+
+  <!-- 快速预览层（task-21）：文档 markdown 渲染 / JSON HTML 渲染器 / 视频内嵌播放 -->
+  <div id="preview" aria-hidden="true">
+    <div class="pv-panel" role="dialog" aria-modal="true" aria-label="快速预览">
+      <div class="pv-head">
+        <span class="pv-title"></span>
+        <span class="pv-acts">
+          <a class="pv-raw" href="#" target="_blank" rel="noopener">新窗口打开原文</a>
+          <button class="pv-close" type="button" aria-label="关闭预览">✕ 关闭</button>
+        </span>
+      </div>
+      <div class="pv-body"></div>
+    </div>
+  </div>
+
+  <script src="md.js"></script>
+  <script src="catalog.js"></script>
+  <script src="showcase.js"></script>
+</body>
+</html>

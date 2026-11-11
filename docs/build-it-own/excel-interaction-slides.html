@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>excel-interaction · 制作过程复盘</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/theme/moon.css">
+<style>
+  .reveal h1, .reveal h2, .reveal h3 { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; text-transform: none; }
+  .reveal h1 { font-size: 1.8em; }
+  .reveal h2 { font-size: 1.3em; }
+  .reveal p, .reveal li { font-size: 0.72em; line-height: 1.6; }
+  .reveal table { font-size: 0.6em; }
+  .reveal code { font-size: 0.85em; }
+  .flow { font-family: monospace; font-size: 0.62em !important; background: rgba(0,0,0,.35);
+          padding: 14px 18px; border-radius: 10px; display: inline-block; text-align: left; white-space: pre; }
+  .metric { color: #4fd1c5; font-weight: bold; }
+  .small { font-size: 0.55em !important; color: #8b98b8; }
+  .reveal .progress { color: #4fd1c5; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section data-background-gradient="linear-gradient(to bottom right, #1a1a2e, #16213e)">
+  <h1>无废话 Excel 教程</h1>
+  <h3>契约驱动的实机教程工厂 · 三天复盘</h3>
+  <p class="small">excel-interaction · 2026-11-08 → 11-10 · 52 条执行流水</p>
+  <aside class="notes">第一视角制作复盘：为了什么、怎么做的、做出了什么、怎么批量。</aside>
+</section>
+
+<section>
+  <h2>为了什么</h2>
+  <ul>
+    <li class="fragment">Excel 教程<b>看一遍记不住，敲一遍才学得会</b></li>
+    <li class="fragment">截图长文 / 纯视频都给不了「实机感」</li>
+    <li class="fragment">想要：真表格真算真验收 · 每函数一节课 30 秒 · <b>可批量的流水线</b></li>
+  </ul>
+  <p class="small fragment">约束：从零新做不搬旧实现，全程文档化——过程本身也是交付物。</p>
+</section>
+
+<section>
+  <h2>核心思路：一份契约，三个产物</h2>
+  <div class="flow">courses/&lt;id&gt;.json（唯一事实源）
+   ├─► apps/&lt;id&gt;/          交互动画课（练习 + 验收）
+   ├─► out/&lt;id&gt;.mp4        30s 无废话讲解视频（TTS 有声）
+   └─► showcase 登记        全站展示层</div>
+  <p class="small fragment">核心约束：改课程只改 JSON，不动代码。</p>
+</section>
+
+<section>
+  <h2>方法论先行（写功能之前）</h2>
+  <ul>
+    <li class="fragment"><b>任务分解</b>：项目 → phase（9 阶段）→ task（半天粒度）</li>
+    <li class="fragment"><b>task 三件套</b>：task.md 计划（验证点先于动手）/ verify.md 证据 / output.md 交接</li>
+    <li class="fragment"><b>index-log append-only</b>：按实践顺序记 52 条，错了补更正不删旧条</li>
+    <li class="fragment"><b>数字说话</b>：版本号 · 路径 · 退出码，FAIL 也记</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Day 1 · 11-08 打地基 → 试点出课</h2>
+  <ul>
+    <li class="fragment">环境探测 + 修 3 个 Windows 坑（spawn EINVAL / 假阴性 / 假阳性）</li>
+    <li class="fragment">phase-0…8 连跑：环境 → 骨架 → 技能 → 契约 → 流水线 → 出课 → 出片 → 展示 → 收尾</li>
+    <li class="fragment"><b>10 个用户反馈闭环 task</b>：IME 全角转换 / formulaArgs / 防剧透 / 总结框…</li>
+    <li class="fragment">全部改<b>契约与共享 lesson.js</b>，不改单课代码</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Day 2 · 11-09 扩展引擎 → 收口</h2>
+  <ul>
+    <li class="fragment">三引擎齐：<b>handsontable</b>（默认）/ <b>univer</b>（跨表真算）/ <b>onlyoffice</b>（FILTER·透视·图表）</li>
+    <li class="fragment">新引擎 = 只写一个 engine.js（mount / setFormula / readValue / focusCell）</li>
+    <li class="fragment">出片三路径同 plan 互为校验：渲染式 · 录屏式 · 抓窗式</li>
+    <li class="fragment">遗留 issue 化 #14–#20 · PR #13 合并 main</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Day 3 · 11-10 L2 + 批量 + 站点化</h2>
+  <ul>
+    <li class="fragment">L2 冲刺：<b>9 门复合/压轴课</b>，P3 走查通过才解锁批量</li>
+    <li class="fragment">A 类 7 场景程序化转正（aclass-gen）· 抓窗式 <b>10 门真机出片</b></li>
+    <li class="fragment">onlyoffice 四 API 实测 8/8 · univer 金底表头带</li>
+    <li class="fragment">三页互达 · 卡片墙 · 共享资产去重 · 90s 全站导览视频</li>
+  </ul>
+</section>
+
+<section>
+  <h2>批量流水线：怎么从 1 门铺到 44 门</h2>
+  <ul>
+    <li class="fragment"><b>五个生成器</b>（scripts/batch/）：func-batch · chart-batch · l2-gen · capstone-gen · aclass-gen</li>
+    <li class="fragment"><b>契约同构</b>是批量前提：同一批字段块填场景差异，check-manifest 逐份校验</li>
+    <li class="fragment"><b>节奏模型</b>：holdMs = max(minHold, speech + gap)——口播是下限，30s 口径天然达标</li>
+    <li class="fragment"><b>QC 闸门</b>：流断言 + 片长漂移 &lt;5% + 抽帧比对，过不了不进 showcase</li>
+    <li class="fragment"><b>回归</b>：pnpm verify + 真浏览器 36/36 才算批量完成</li>
+  </ul>
+</section>
+
+<section>
+  <h2>批量的节奏教训</h2>
+  <ul>
+    <li class="fragment"><b>试点 1 课端到端 → 核心课 → 全量</b>，单课验收标准立住再铺开</li>
+    <li class="fragment">批量前先清「每课都交税」的遗留项，否则返工 ×N</li>
+    <li class="fragment">走查闸门（3 次点击内看片 · 练习验收过）通过才解锁批量转写</li>
+  </ul>
+  <p class="small fragment">来源：redo-plan.md · sprint-l2-composite-lessons.md</p>
+</section>
+
+<section>
+  <h2>结果</h2>
+  <table>
+    <tr><td>课程契约</td><td class="metric">44 门</td></tr>
+    <tr><td>交互动画课</td><td class="metric">44 个 apps</td></tr>
+    <tr><td>成品视频</td><td class="metric">47 支 mp4（≤30s 有声，QC 全过）</td></tr>
+    <tr><td>执行流水</td><td class="metric">52 条 · 三天</td></tr>
+    <tr><td>全量回归</td><td class="metric">36/36</td></tr>
+    <tr><td>契约单源铁证</td><td class="metric">formulaArgs 一处写三处用（卡片/口播/高亮）</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>怎么尝试</h2>
+  <div class="flow">cd excel-interaction
+node scripts/check.mjs      # 环境体检
+pnpm verify                 # 契约 + 清单 + 环境全自检
+pnpm serve                  # http://localhost:4173/&lt;id&gt;/index.html
+pnpm showcase               # http://localhost:4174/src/standalone/index.html
+
+# 新课四步：写契约 JSON → pnpm generate
+#          → pnpm plan / video / qc → pnpm verify 登记</div>
+</section>
+
+<section data-background-gradient="linear-gradient(to bottom right, #16213e, #1a1a2e)">
+  <h2>下一步</h2>
+  <ul>
+    <li>遗留 issues #14–#20（onlyoffice 扩展位 · univer 构建源 · PR 整理）</li>
+    <li>SQL × Excel 对照工作台（已入档 planned）</li>
+  </ul>
+  <p class="small">时间线 <a href="excel-interaction-timeline.html">timeline</a> ·
+     复盘 <a href="excel-interaction.md">doc</a> ·
+     <a href="../../excel-interaction/README.md">项目 README</a></p>
+  <aside class="notes">按 S 看演讲者备注；方向键翻页，Esc 看总览。</aside>
+</section>
+
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4/plugin/notes/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    transition: 'slide',
+    slideNumber: true,
+    plugins: [ RevealNotes ]
+  });
+</script>
+</body>
+</html>

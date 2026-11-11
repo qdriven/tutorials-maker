@@ -1,0 +1,84 @@
+{
+  "$comment": "函数课契约（批量三转写）：素材取自 excel-animation docs/excel，公式已过 HyperFormula 终验探针（func-batch 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "and",
+  "fn": "AND",
+  "title": "AND 组合判断：两个条件同时成立",
+  "category": "逻辑判断",
+  "level": "初级",
+  "durationMin": 3,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/and.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "看板",
+        "cells": {
+          "A1": "指标",
+          "B1": "实际",
+          "C1": "目标",
+          "D1": "达标且超额",
+          "A2": "销售额",
+          "B2": 1200,
+          "C2": 1000
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "D2",
+      "menu": "选中 D2",
+      "formula": "定位结果单元格",
+      "expect": "D2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "D2",
+      "menu": "输入框输入公式",
+      "formula": "=AND(B2>=C2,B2>=1000)",
+      "expect": "D2 显示公式原文 =AND(B2>=C2,B2>=1000)"
+    },
+    {
+      "step": 3,
+      "cell": "D2",
+      "menu": "回车确认",
+      "formula": "=AND(B2>=C2,B2>=1000)",
+      "expect": "D2 显示 true"
+    },
+    {
+      "step": 4,
+      "cell": "D2",
+      "menu": "选中 D2 查看编辑栏",
+      "formula": "=AND(B2>=C2,B2>=1000)",
+      "expect": "编辑栏回显 =AND(B2>=C2,B2>=1000)，D2 显示 true"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "B2>=C2",
+      "meaning": "条件1：实际不低于目标"
+    },
+    {
+      "part": "B2>=1000",
+      "meaning": "条件2：实际也达到绝对线"
+    }
+  ],
+  "summary": {
+    "oneLiner": "AND：所有条件都为真才返回 TRUE——一票否决的组合判断。",
+    "explain": "就像 SQL：WHERE 实际>=目标 AND 实际>=1000，两个门槛都要过。",
+    "outro": "总结：AND 全真才真、OR 一真就真；和 IF 组合把判断变成标签。"
+  },
+  "checks": [
+    {
+      "cell": "D2",
+      "formula": "=AND(B2>=C2,B2>=1000)",
+      "value": true
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

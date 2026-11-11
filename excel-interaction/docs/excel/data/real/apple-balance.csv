@@ -1,0 +1,28 @@
+key,item,sourceLabel,fy2024,fy2025,note,total
+cash,现金及现金等价物,Cash and cash equivalents,29943,35934,与现金流量表期末余额一致,false
+securities_current,流动有价证券,Marketable securities,35228,18763,,false
+accounts_receivable,应收账款净额,"Accounts receivable, net",33410,39777,,false
+vendor_receivable,供应商非贸易应收款,Vendor non-trade receivables,32833,33180,,false
+inventory,存货,Inventories,7286,5718,,false
+other_current_assets,其他流动资产,Other current assets,14287,14585,,false
+current_assets,流动资产合计,Total current assets,152987,147957,上述流动资产之和,true
+securities_noncurrent,非流动有价证券,Marketable securities,91479,77723,,false
+ppe,固定资产净额,"Property, plant and equipment, net",45680,49834,,false
+other_noncurrent_assets,其他非流动资产,Other non-current assets,74834,83727,,false
+noncurrent_assets,非流动资产合计,Total non-current assets,211993,211284,上述非流动资产之和,true
+total_assets,资产总计,Total assets,364980,359241,流动＋非流动资产,true
+accounts_payable,应付账款,Accounts payable,68960,69860,,false
+other_current_liabilities,其他流动负债,Other current liabilities,78304,66387,,false
+deferred_revenue,递延收入,Deferred revenue,8249,9055,,false
+commercial_paper,商业票据,Commercial paper,9967,7979,采用与流动负债合计一致的主表行,false
+current_debt,一年内到期长期债务,Term debt,10912,12350,,false
+current_liabilities,流动负债合计,Total current liabilities,176392,165631,上述流动负债之和,true
+noncurrent_debt,非流动长期债务,Term debt,85750,78328,,false
+other_noncurrent_liabilities,其他非流动负债,Other non-current liabilities,45888,41549,,false
+noncurrent_liabilities,非流动负债合计,Total non-current liabilities,131638,119877,长期债务＋其他非流动负债,true
+total_liabilities,负债合计,Total liabilities,308030,285508,流动＋非流动负债,true
+common_stock,普通股及资本公积,Common stock and additional paid-in capital,83276,93568,,false
+accumulated_deficit,累计亏损,Accumulated deficit,-19154,-14264,负号保留；不是“未分配利润为正”,false
+aoci,其他综合收益累计损失,Accumulated other comprehensive loss,-7172,-5571,负号保留,false
+total_equity,股东权益合计,Total shareholders’ equity,56950,73733,普通股及资本公积＋累计亏损＋其他综合收益,true
+total_liab_equity,负债和股东权益总计,Total liabilities and shareholders’ equity,364980,359241,应等于资产总计,true

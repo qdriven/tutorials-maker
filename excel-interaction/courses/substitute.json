@@ -1,0 +1,84 @@
+{
+  "$comment": "函数课契约（批量三转写）：素材取自 excel-animation docs/excel，公式已过 HyperFormula 终验探针（func-batch 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "substitute",
+  "fn": "SUBSTITUTE",
+  "title": "SUBSTITUTE 文本替换：批量改编号前缀",
+  "category": "文本清理",
+  "level": "初级",
+  "durationMin": 3,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/substitute.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "编号表",
+        "cells": {
+          "A1": "原始编号",
+          "B1": "规范编号",
+          "A2": "SO-1001"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "B2",
+      "menu": "选中 B2",
+      "formula": "定位结果单元格",
+      "expect": "B2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "B2",
+      "menu": "输入框输入公式",
+      "formula": "=SUBSTITUTE(A2,\"SO-\",\"订单\")",
+      "expect": "B2 显示公式原文 =SUBSTITUTE(A2,\"SO-\",\"订单\")"
+    },
+    {
+      "step": 3,
+      "cell": "B2",
+      "menu": "回车确认",
+      "formula": "=SUBSTITUTE(A2,\"SO-\",\"订单\")",
+      "expect": "B2 显示 订单1001"
+    },
+    {
+      "step": 4,
+      "cell": "B2",
+      "menu": "选中 B2 查看编辑栏",
+      "formula": "=SUBSTITUTE(A2,\"SO-\",\"订单\")",
+      "expect": "编辑栏回显 =SUBSTITUTE(A2,\"SO-\",\"订单\")，B2 显示 订单1001"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "A2",
+      "meaning": "原文本：要改写的原始编号"
+    },
+    {
+      "part": "\"SO-\"",
+      "meaning": "旧文本：要被替换掉的部分"
+    },
+    {
+      "part": "\"订单\"",
+      "meaning": "新文本：替换成的内容"
+    }
+  ],
+  "summary": {
+    "oneLiner": "SUBSTITUTE：把文本里的一段字精确替换成另一段——批量改写不求人。",
+    "explain": "就像 SQL：REPLACE('SO-1001','SO-','订单')，按内容替换。",
+    "outro": "总结：SUBSTITUTE 按内容替换；按位置截取用 LEFT/MID，先定位用 FIND。"
+  },
+  "checks": [
+    {
+      "cell": "B2",
+      "formula": "=SUBSTITUTE(A2,\"SO-\",\"订单\")",
+      "value": "订单1001"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

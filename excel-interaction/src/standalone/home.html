@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>无废话 Excel 教程 · 操作速查</title>
+  <!-- 格数同款视觉语汇（cream 纸面 / 墨线 / 金填充 / 蓝强调），token 与 showcase.css 同源 -->
+  <link rel="stylesheet" href="showcase.css" />
+  <style>
+    /* ---------- landing 专属布局（复用 token，不重定义色板） ---------- */
+    body.landing { display: flex; flex-direction: column; align-items: center; }
+
+    #home-main { width: 100%; max-width: 1080px; padding: 0 28px 60px; }
+
+    /* hero：品牌区 —— 一句话说清这是什么的字典 */
+    .hero {
+      border-bottom: 1.5px solid var(--fg);
+      padding: 34px 0 22px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .hero h1 { font-size: 28px; margin: 0 0 8px; }
+    .hero h1 .brand-gold {
+      display: inline-block;
+      background: var(--gold);
+      border: 1.5px solid var(--fg);
+      border-radius: var(--radius);
+      padding: 1px 9px;
+      margin-right: 8px;
+    }
+    .hero .tagline { margin: 0; color: var(--soft); font-size: 14px; line-height: 1.8; }
+    .hero-stats { color: var(--soft); font-size: 12px; text-align: right; line-height: 1.9; }
+    .hero-stats b { color: var(--fg); font-size: 16px; font-family: var(--font-mono); }
+
+    /* 搜索框：墨线边框，聚焦转蓝 */
+    .search-row { margin: 22px 0 0; position: relative; display: flex; align-items: center; gap: 10px; }
+    .search-row input {
+      flex: 1;
+      width: auto;
+      font: 15px/1.6 var(--font-ui);
+      color: var(--fg);
+      background: var(--sheet);
+      border: 1.5px solid var(--fg);
+      border-radius: var(--radius);
+      padding: 11px 14px 11px 40px;
+      outline: none;
+    }
+    .search-row input:focus { border-color: var(--accent); background: #fff; }
+    .search-row .search-icon {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--soft); font-size: 14px; pointer-events: none;
+    }
+    .search-row .hit-count {
+      color: var(--soft); font-size: 11px; background: var(--band);
+      border: 1px solid var(--line); border-radius: 3px; padding: 2px 8px;
+      white-space: nowrap;
+    }
+
+    /* 分类 tab：任务动词；金底 = 选中（与 showcase 侧栏 active 同语汇） */
+    .cat-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 6px; }
+    .cat-tab {
+      font-size: 13px;
+      color: var(--fg);
+      background: var(--panel);
+      border: 1.5px solid var(--fg);
+      border-radius: var(--radius);
+      padding: 6px 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cat-tab:hover { background: var(--accent-soft); color: var(--accent-strong); }
+    .cat-tab.active { background: var(--gold); font-weight: 700; }
+    .cat-tab .n { color: var(--soft); font-family: var(--font-mono); font-size: 11px; margin-left: 5px; }
+    .cat-tab.active .n { color: var(--fg); }
+
+    /* 卡片墙 */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: var(--sheet);
+      border: 1.5px solid var(--fg);
+      border-radius: var(--radius);
+      padding: 16px 16px 12px;
+      min-height: 128px;
+    }
+    .card-head { display: flex; align-items: baseline; gap: 8px; }
+    .card-fn {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--accent-strong);
+    }
+    .card-cat {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 1px 7px;
+      background: var(--band);
+    }
+    .card-oneliner { margin: 9px 0 4px; font-size: 13px; line-height: 1.75; }
+    .card-meta { margin-top: auto; padding-top: 8px; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--soft); }
+    .card-meta .lvl { border: 1px solid var(--line); border-radius: 3px; padding: 1px 6px; }
+
+    /* 操作钮：蓝强调实钮（▶ 视频）+ 墨线描钮（✋练习） */
+    .btn {
+      font-size: 12px;
+      text-decoration: none;
+      border-radius: 3px;
+      padding: 4px 10px;
+      cursor: pointer;
+      border: 1.5px solid var(--fg);
+      color: var(--fg);
+      background: var(--panel);
+    }
+    .btn:hover { background: var(--accent-soft); color: var(--accent-strong); border-color: var(--accent); }
+    .btn.primary { background: var(--accent); border-color: var(--accent-strong); color: #fff; font-weight: 700; }
+    .btn.primary:hover { background: var(--accent-strong); }
+    .card-meta .spacer { flex: 1; }
+    .card-meta .fmt { font-family: var(--font-mono); font-size: 11px; }
+
+    /* 占位卡（待生产）：虚线墨线 + 降透明，语义「预告」 */
+    .card.todo { background: transparent; border-style: dashed; opacity: 0.72; }
+    .card.todo .card-fn { color: var(--soft); }
+    .card.todo .card-meta { justify-content: space-between; }
+    .todo-tag {
+      font-size: 11px; color: var(--soft);
+      border: 1px dashed var(--soft); border-radius: 3px; padding: 1px 7px;
+    }
+
+    /* 合集卡（E 类）：跨分类的组合学习入口——墨线框 + 金条头，成员课作 chip 链接 */
+    .col-card {
+      background: var(--panel);
+      border: 1.5px solid var(--fg);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-top: 14px;
+    }
+    .col-head { display: flex; align-items: baseline; gap: 10px; }
+    .col-title { font-size: 15px; font-weight: 700; }
+    .col-badge {
+      font-size: 11px; color: var(--fg); background: var(--gold);
+      border: 1px solid var(--fg); border-radius: 3px; padding: 1px 8px;
+    }
+    .col-desc { margin: 8px 0 10px; font-size: 13px; line-height: 1.75; color: var(--fg); }
+    .col-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .col-chip {
+      font-family: var(--font-mono); font-size: 12px; text-decoration: none;
+      color: var(--accent-strong); background: var(--sheet);
+      border: 1.5px solid var(--fg); border-radius: 3px; padding: 4px 10px;
+    }
+    .col-chip:hover { background: var(--gold); color: var(--fg); }
+    .col-chip .n { color: var(--soft); font-family: var(--font-ui); margin-left: 5px; }
+
+    /* ---------- 视图切换 / 列表视图 / 分页 / 构建入口（2026-11-10 目录组件） ---------- */
+    .view-toggle {
+      display: inline-flex; border: 1.5px solid var(--fg); border-radius: var(--radius-control);
+      overflow: hidden; white-space: nowrap;
+    }
+    .view-toggle button {
+      border: 0; background: transparent; padding: 9px 12px; font-size: 12.5px;
+      cursor: pointer; color: var(--fg); font-family: var(--font-ui);
+    }
+    .view-toggle button + button { border-left: 1.5px solid var(--fg); }
+    .view-toggle button.active { background: var(--gold); font-weight: 700; }
+
+    /* 列表视图：一行 = 函数名 | 分类 | 元信息 | 一句话 | 动作 */
+    .grid.list { display: flex; flex-direction: column; gap: 8px; }
+    .row {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--sheet); border: 1.5px solid var(--fg);
+      border-radius: var(--radius); padding: 10px 14px;
+    }
+    .row.todo { border-style: dashed; opacity: 0.72; background: transparent; }
+    .row-fn { font-weight: 700; font-size: 14px; min-width: 76px; }
+    .row-cat {
+      font-size: 11px; background: var(--gold); border: 1px solid var(--fg);
+      border-radius: 3px; padding: 1px 8px; white-space: nowrap;
+    }
+    .row-meta { font-size: 12px; color: var(--soft); white-space: nowrap; }
+    .row-desc {
+      flex: 1; min-width: 0; font-size: 13px; color: var(--fg);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .row-act { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+
+    /* 分页（Catalog 共享控件） */
+    .pager { display: flex; justify-content: center; align-items: center; gap: 6px; margin: 18px 0 6px; }
+    .pg-btn {
+      min-width: 32px; padding: 6px 10px; border: 1.5px solid var(--fg);
+      background: var(--sheet); border-radius: var(--radius-control);
+      font-size: 13px; font-family: var(--font-mono); cursor: pointer; color: var(--fg);
+    }
+    .pg-btn.active { background: var(--gold); font-weight: 700; }
+    .pg-btn:disabled { opacity: 0.35; cursor: default; }
+    .pg-gap { color: var(--soft); padding: 0 2px; }
+
+    /* 如何构建入口卡（→ build-flow.html 流程浏览器） */
+    .build-entry {
+      display: flex; align-items: center; gap: 14px; margin: 14px 0 4px;
+      padding: 13px 18px; background: var(--panel); border: 1.5px solid var(--fg);
+      border-radius: var(--radius); text-decoration: none; color: var(--fg);
+    }
+    .build-entry:hover { background: var(--gold-soft, #fbe9ac); }
+    .be-icon { font-size: 22px; }
+    .be-main { display: flex; flex-direction: column; }
+    .be-main b { font-size: 15px; }
+    .be-main i { font-style: normal; font-size: 12.5px; color: var(--soft); margin-top: 2px; }
+    .be-arrow { margin-left: auto; font-size: 18px; color: var(--soft); }
+    .build-entry:hover .be-arrow { color: var(--fg); }
+
+    /* ---------- 推荐 · HOT 特别卡 + 清单分隔（2026-11-10） ---------- */
+    .sec-sub { font-size: 15px; font-weight: 700; margin: 22px 0 12px; }
+    .rec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 14px; }
+    .rec-card {
+      position: relative; display: flex; flex-direction: column; gap: 7px;
+      background: var(--sheet); border: 2px solid var(--fg); border-radius: 6px;
+      padding: 16px 16px 13px; color: var(--fg); text-decoration: none;
+      box-shadow: 3px 3px 0 var(--gold-soft);
+    }
+    a.rec-card:hover { background: var(--gold-soft); }
+    .rec-badge {
+      position: absolute; top: -12px; left: 14px;
+      font-size: 11px; font-weight: 700; padding: 2px 11px;
+      border: 1.5px solid var(--fg); border-radius: 3px;
+    }
+    .rec-badge.recommend { background: var(--gold); color: var(--fg); }
+    .rec-badge.hot { background: var(--fg); color: var(--gold); }
+    .rec-title { font-size: 15px; font-weight: 700; line-height: 1.5; }
+    .rec-meta { font-size: 11.5px; color: var(--soft); }
+    .rec-desc { margin: 0; font-size: 12.5px; color: var(--soft); line-height: 1.75; flex: 1; }
+    .rec-go { color: var(--accent-strong); font-weight: 700; font-size: 12.5px; }
+    .rec-card .col-chips { margin-top: 2px; }
+
+    /* 清单分隔标题（推荐区与教程清单之间） */
+    .sec-divider {
+      display: flex; align-items: center; gap: 14px;
+      margin: 30px 0 2px; font-size: 16px; font-weight: 700;
+    }
+    .sec-divider::after { content: ""; flex: 1; border-top: 1.5px dashed var(--fg); }
+
+    /* 空态 / 页脚 */
+    .empty { margin: 60px 0; text-align: center; color: var(--soft); font-size: 14px; line-height: 2; }
+    .home-foot {
+      width: 100%; max-width: 1080px; margin-top: auto; padding: 14px 28px 22px;
+      border-top: 1px solid var(--line); color: var(--soft); font-size: 11.5px; line-height: 1.9;
+    }
+    .home-foot code { font-family: var(--font-mono); }
+    .home-foot a { color: var(--accent-strong); }
+
+    /* 视频内嵌播放层（与 showcase 的 pv 层同语汇，独立实现保持零依赖） */
+    #video-layer {
+      position: fixed; inset: 0; z-index: 60;
+      display: none; align-items: center; justify-content: center;
+      background: rgba(54, 62, 64, 0.55);
+    }
+    #video-layer.open { display: flex; }
+    .vl-panel {
+      background: var(--sheet); border: 1.5px solid var(--fg); border-radius: var(--radius);
+      width: min(720px, 92vw); overflow: hidden;
+    }
+    .vl-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; border-bottom: 1.5px solid var(--fg); background: var(--panel);
+      font-size: 13px; font-weight: 700;
+    }
+    .vl-head button { font-size: 12px; border: 1px solid var(--fg); background: var(--panel); border-radius: 3px; padding: 3px 10px; cursor: pointer; }
+    .vl-head button:hover { background: var(--accent-soft); }
+    .vl-body video { display: block; width: 100%; max-height: 70vh; background: var(--code-bg); }
+
+    @media (max-width: 720px) {
+      .hero { padding-top: 24px; }
+      .hero-stats { text-align: left; }
+      #home-main { padding: 0 16px 40px; }
+    }
+  </style>
+</head>
+<body class="landing">
+  <!-- 站点统一导航（home / 教程站 / 构建流程 三页互达） -->
+  <nav class="site-nav">
+    <span class="sn-brand">格数</span>
+    <a class="active" href="/src/standalone/home.html">🏠 目录</a>
+    <a href="/src/standalone/index.html">📚 教程站</a>
+    <a href="/src/standalone/build-flow.html">🧱 构建流程</a>
+  </nav>
+  <main id="home-main">
+    <header class="hero">
+      <div>
+        <h1><span class="brand-gold">格数</span>无废话 Excel 教程</h1>
+        <p class="tagline">不知道某个操作怎么做？搜函数名或场景，30 秒视频看懂，点练习动手做。<br />一个函数一节课：一句话说清做什么，动画演示 + 分步讲解 + 实机练习。</p>
+      </div>
+      <div class="hero-stats" id="hero-stats"></div>
+    </header>
+
+    <div class="search-row">
+      <span class="search-icon">🔍</span>
+      <input id="q" type="search" placeholder="搜函数名或场景：vlookup、求和、计数、条件、错误…" autocomplete="off" />
+      <span class="hit-count" id="hit-count"></span>
+      <span class="view-toggle" id="view-toggle" role="group" aria-label="视图切换">
+        <button type="button" data-view="card" title="卡片视图">▦ 卡片</button>
+        <button type="button" data-view="list" title="列表视图">☰ 列表</button>
+      </span>
+    </div>
+
+    <!-- 推荐 · HOT：3 合集（推荐）+ 3 随机热门课（hot），两行特别卡 -->
+    <section id="recommend" aria-label="推荐"></section>
+
+    <!-- 如何构建（流水线说明入口）：五步流程条 + 点步骤打开对应文档 -->
+    <a class="build-entry" href="/src/standalone/build-flow.html">
+      <span class="be-icon">🧱</span>
+      <span class="be-main"><b>如何构建这个动画视频流水线</b><i>流水线说明 · 点击步骤打开对应文档</i></span>
+      <span class="be-arrow">→</span>
+    </a>
+
+    <!-- 教程清单（分隔标题 + 分类筛选 + 卡片/列表 + 分页） -->
+    <div class="sec-divider">📚 教程清单</div>
+    <nav class="cat-tabs" id="cat-tabs" aria-label="分类"></nav>
+    <section class="grid" id="grid"></section>
+    <nav class="pager" id="pager" aria-label="分页"></nav>
+    <div class="empty" id="empty" hidden>没有匹配的操作<br /><span style="font-size:12px">换个词试试：查找 / 求和 / 计数 / 判断 / 清理</span></div>
+  </main>
+
+  <footer class="home-foot">
+    目录聚合：<code>src/data/recipes.json</code>（<code>scripts/landing/build-recipes.mjs</code> 自动生成，勿手改）·
+    新课上架：生成课重跑聚合脚本 · 清单校验 <code>pnpm verify:showcase</code> ·
+    完整课程站：<a href="/src/standalone/index.html">showcase</a>
+  </footer>
+
+  <!-- 视频内嵌播放层 -->
+  <div id="video-layer" aria-hidden="true">
+    <div class="vl-panel" role="dialog" aria-modal="true">
+      <div class="vl-head"><span id="vl-title"></span><button type="button" id="vl-close">✕ 关闭</button></div>
+      <div class="vl-body"><video id="vl-video" controls playsinline></video></div>
+    </div>
+  </div>
+
+  <script src="/src/standalone/catalog.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var DATA = null;
+      var state = {
+        q: "", cat: "全部",
+        view: (function () { try { return localStorage.getItem("xl-home-view") === "list" ? "list" : "card"; } catch (e) { return "card"; } })(),
+        page: 1,
+      };
+      var PAGE_SIZE = { card: 12, list: 18 }; /* 双视图各自分页密度 */
+
+      function esc(s) {
+        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+      }
+
+      fetch("/src/data/recipes.json")
+        .then(function (r) { return r.json(); })
+        .then(function (d) { DATA = d; renderStats(); renderTabs(); renderRecommend(); render(); })
+        .catch(function () {
+          document.getElementById("grid").innerHTML =
+            '<div class="empty">recipes.json 加载失败——先跑 <code>node scripts/landing/build-recipes.mjs</code></div>';
+        });
+
+      function allRecipes() {
+        var out = [];
+        DATA.categories.forEach(function (c) { out = out.concat(c.recipes); });
+        return out;
+      }
+
+      function renderStats() {
+        var s = DATA.stats;
+        document.getElementById("hero-stats").innerHTML =
+          "在架 <b>" + s.live + "</b> 门 · 待产 <b>" + s.todo + "</b> 门<br />公式真算 · 逐课验收 · " + DATA.generatedAt + " 更新";
+      }
+
+      function renderTabs() {
+        var cats = ["全部"].concat(DATA.categories.map(function (c) { return c.category; }));
+        var el = document.getElementById("cat-tabs");
+        el.innerHTML = cats.map(function (c) {
+          var n = c === "全部" ? allRecipes().length : DATA.categories.filter(function (x) { return x.category === c; })[0].recipes.length;
+          return '<button class="cat-tab' + (state.cat === c ? " active" : "") + '" data-cat="' + esc(c) + '" type="button">' +
+            esc(c) + '<span class="n">' + n + "</span></button>";
+        }).join("");
+        el.querySelectorAll(".cat-tab").forEach(function (b) {
+          b.addEventListener("click", function () { state.cat = b.getAttribute("data-cat"); state.page = 1; renderTabs(); render(); });
+        });
+      }
+
+      /* 推荐 · HOT（2026-11-10 用户需求）：3 合集（★推荐）+ 3 随机热门课（🔥HOT）
+       * = 6 张特别卡两行；下方教程清单以分隔标题独立成区。
+       * 随机仅属目录展示层（与课程内容确定性无关，出片管线不依赖本页）。 */
+      function renderRecommend() {
+        var host = document.getElementById("recommend");
+        var cols = (DATA && DATA.collections) || [];
+        var byId = {};
+        allRecipes().forEach(function (r) { byId[r.id] = r; });
+
+        /* 随机 3 门 hot：live 且已出片 */
+        var pool = allRecipes().filter(function (r) { return r.status === "live" && r.mp4; });
+        var hot = pool.slice().sort(function () { return Math.random() - 0.5; }).slice(0, 3);
+
+        var cards = "";
+        cols.forEach(function (c) {
+          var chips = c.lessons.map(function (id) {
+            var m = byId[id];
+            if (!m) return "";
+            return '<a class="col-chip" href="' + esc(m.app) + '">' + esc(m.fn) +
+              '<span class="n">' + m.durationMin + "′</span></a>";
+          }).join("");
+          cards += '<div class="rec-card">' +
+            '<span class="rec-badge recommend">★ 推荐</span>' +
+            '<div class="rec-title">🧩 ' + esc(c.title) + "</div>" +
+            '<div class="rec-meta">' + esc(c.category) + "</div>" +
+            '<p class="rec-desc">' + esc(c.desc) + "</p>" +
+            '<div class="col-chips">' + chips + "</div>" +
+            "</div>";
+        });
+        hot.forEach(function (r) {
+          cards += '<a class="rec-card" href="' + esc(r.app) + '">' +
+            '<span class="rec-badge hot">🔥 HOT</span>' +
+            '<div class="rec-title">' + esc(r.fn) + "</div>" +
+            '<div class="rec-meta">' + esc(r.category) + " · " + esc(r.level) + " · " + r.durationMin + " 分钟</div>" +
+            '<p class="rec-desc">' + esc(r.oneLiner) + "</p>" +
+            '<span class="rec-meta rec-go">▶ 30 秒讲解 · ✋ 练习 →</span>' +
+            "</a>";
+        });
+        host.innerHTML = '<div class="sec-sub">✨ 推荐 · HOT</div><div class="rec-grid">' + cards + "</div>";
+      }
+
+      function match(r) {
+        if (state.cat !== "全部" && r.category !== state.cat) return false;
+        var q = state.q.trim().toLowerCase();
+        if (!q) return true;
+        return [r.fn, r.oneLiner, r.category, r.explain, r.id]
+          .join(" ").toLowerCase().indexOf(q) >= 0;
+      }
+
+      /* 卡片视图条目（原 render 内联抽出，供双视图复用） */
+      function cardHTML(r) {
+        if (r.status === "todo" || r.status === "blocked") {
+          var tag = r.status === "blocked" ? (r.note || "引擎边界") : "待生产";
+          return '<article class="card todo">' +
+            '<div class="card-head"><span class="card-fn">' + esc(r.fn) + '</span><span class="card-cat">' + esc(r.category) + "</span></div>" +
+            '<p class="card-oneliner">' + esc(r.oneLiner) + "</p>" +
+            (r.note ? '<p class="card-oneliner" style="color:var(--soft);font-size:12px">' + esc(r.note) + "</p>" : "") +
+            '<div class="card-meta"><span class="todo-tag">' + esc(tag) + '</span><span class="fmt">' + esc(r.id) + '</span></div>' +
+            "</article>";
+        }
+        var videoBtn = r.mp4
+          ? '<button class="btn primary" data-video="' + esc(r.mp4) + '" data-title="' + esc(r.fn + " · 30 秒讲解") + '" type="button">▶ 30 秒</button>'
+          : '<span class="fmt" title="出片后自动亮起">▶ 视频待出片</span>';
+        return '<article class="card">' +
+          '<div class="card-head"><span class="card-fn">' + esc(r.fn) + '</span><span class="card-cat">' + esc(r.category) + "</span></div>" +
+          '<p class="card-oneliner">' + esc(r.oneLiner) + "</p>" +
+          '<div class="card-meta">' +
+            '<span class="lvl">' + esc(r.level) + "</span><span>" + r.durationMin + " 分钟</span>" +
+            '<span class="spacer"></span>' + videoBtn +
+            '<a class="btn" href="' + esc(r.app) + '">✋ 练习</a>' +
+          "</div>" +
+          "</article>";
+      }
+
+      /* 列表视图条目：一行 = 函数名 | 分类 | 元信息 | 一句话 | 动作（card/list 双视图，2026-11-10） */
+      function rowHTML(r) {
+        if (r.status === "todo" || r.status === "blocked") {
+          var tag = r.status === "blocked" ? (r.note || "引擎边界") : "待生产";
+          return '<article class="row todo">' +
+            '<span class="row-fn">' + esc(r.fn) + "</span>" +
+            '<span class="row-cat">' + esc(r.category) + "</span>" +
+            '<span class="row-desc">' + esc(r.oneLiner) + "</span>" +
+            '<span class="todo-tag">' + esc(tag) + "</span>" +
+            "</article>";
+        }
+        var vBtn = r.mp4
+          ? '<button class="btn primary" data-video="' + esc(r.mp4) + '" data-title="' + esc(r.fn + " · 30 秒讲解") + '" type="button">▶ 30 秒</button>'
+          : '<span class="fmt" title="出片后自动亮起">▶ 待出片</span>';
+        return '<article class="row">' +
+          '<span class="row-fn">' + esc(r.fn) + "</span>" +
+          '<span class="row-cat">' + esc(r.category) + "</span>" +
+          '<span class="row-meta">' + esc(r.level) + " · " + r.durationMin + " 分钟</span>" +
+          '<span class="row-desc">' + esc(r.oneLiner) + "</span>" +
+          '<span class="row-act">' + vBtn + '<a class="btn" href="' + esc(r.app) + '">✋ 练习</a></span>' +
+          "</article>";
+      }
+
+      function render() {
+        var list = allRecipes().filter(match);
+        document.getElementById("hit-count").textContent = list.length ? list.length + " 条" : "";
+        document.getElementById("empty").hidden = list.length > 0;
+
+        /* 分页（Catalog 共享组件）：搜索/分类变化已在事件侧重置 page=1 */
+        var pg = Catalog.paginate(list, state.page, PAGE_SIZE[state.view]);
+        state.page = pg.page;
+
+        var grid = document.getElementById("grid");
+        grid.className = "grid" + (state.view === "list" ? " list" : "");
+        grid.innerHTML = pg.slice.map(state.view === "list" ? rowHTML : cardHTML).join("");
+        document.getElementById("pager").innerHTML = Catalog.pagerHTML(pg, "hp");
+
+        // ▶ 内嵌播放（demo 条目存在时）；✋ 为直链（app 页自带完整练习流程）
+        grid.querySelectorAll("[data-video]").forEach(function (b) {
+          b.addEventListener("click", function () { openVideo(b.getAttribute("data-video"), b.getAttribute("data-title")); });
+        });
+      }
+
+      /* ---------- 视频层 ---------- */
+      var layer = document.getElementById("video-layer");
+      var video = document.getElementById("vl-video");
+      function openVideo(src, title) {
+        document.getElementById("vl-title").textContent = title;
+        video.src = src;
+        layer.classList.add("open");
+        layer.setAttribute("aria-hidden", "false");
+        video.play().catch(function () {}); /* 手势门控内，允许直接有声播放 */
+      }
+      function closeVideo() {
+        video.pause(); video.removeAttribute("src"); video.load();
+        layer.classList.remove("open");
+        layer.setAttribute("aria-hidden", "true");
+      }
+      document.getElementById("vl-close").addEventListener("click", closeVideo);
+      layer.addEventListener("click", function (e) { if (e.target === layer) closeVideo(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeVideo(); });
+
+      /* ---------- 搜索 ---------- */
+      var qEl = document.getElementById("q");
+      qEl.addEventListener("input", function () { state.q = qEl.value; state.page = 1; render(); });
+
+      /* ---------- 视图切换（card/list）：偏好持久化 ---------- */
+      var vt = document.getElementById("view-toggle");
+      function syncView() {
+        vt.querySelectorAll("button").forEach(function (b) {
+          b.classList.toggle("active", b.getAttribute("data-view") === state.view);
+        });
+      }
+      vt.addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-view]");
+        if (!b) return;
+        state.view = b.getAttribute("data-view");
+        state.page = 1;
+        try { localStorage.setItem("xl-home-view", state.view); } catch (err) {}
+        syncView();
+        render();
+      });
+      syncView();
+
+      /* ---------- 分页（Catalog 共享控件，事件委托） ---------- */
+      document.getElementById("pager").addEventListener("click", function (e) {
+        var p = Catalog.pagerClick(e.target, "hp", state.page);
+        if (p == null) return;
+        state.page = p;
+        render();
+        document.getElementById("grid").scrollIntoView({ block: "start", behavior: "smooth" });
+      });
+    })();
+  </script>
+</body>
+</html>

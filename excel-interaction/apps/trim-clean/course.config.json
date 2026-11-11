@@ -1,0 +1,110 @@
+{
+  "$comment": "recipe 契约：从 courses/seeds/trim-clean.md 提炼，转写自 excel-animation docs/excel/03-formulas/trim-clean.md（探针已验证 TRIM(CLEAN) 真算去空格）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "trim-clean",
+  "fn": "TRIM＋CLEAN",
+  "title": "TRIM＋CLEAN 清理文本：把带空格的地区洗干净",
+  "category": "文本清理",
+  "level": "初级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/trim-clean.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "订单表",
+        "cells": {
+          "A1": "订单号",
+          "B1": "地区",
+          "C1": "渠道",
+          "D1": "销售额",
+          "A2": "SO-1001",
+          "B2": " 华东 ",
+          "C2": "线上",
+          "D2": 960,
+          "A3": "SO-1002",
+          "B3": "华北",
+          "C3": "门店",
+          "D3": 400,
+          "A4": "SO-1003",
+          "B4": "华东",
+          "C4": "线上",
+          "D4": 800,
+          "A5": "SO-1004",
+          "B5": "华南",
+          "C5": "线上",
+          "D5": 840,
+          "A6": "SO-1005",
+          "B6": "华北",
+          "C6": "门店",
+          "D6": 1200,
+          "A7": "SO-1006",
+          "B7": "华东 ",
+          "C7": "门店",
+          "D7": 240,
+          "A8": "SO-1007",
+          "B8": "华南",
+          "C8": "线上",
+          "D8": 750,
+          "A9": "清洗结果"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "B9",
+      "menu": "选中 B9",
+      "formula": "定位清洗结果单元格",
+      "expect": "B9 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "B9",
+      "menu": "输入框输入公式",
+      "formula": "=TRIM(CLEAN(B2))",
+      "expect": "B9 显示公式原文 =TRIM(CLEAN(B2))"
+    },
+    {
+      "step": 3,
+      "cell": "B9",
+      "menu": "回车确认",
+      "formula": "=TRIM(CLEAN(B2))",
+      "expect": "B9 显示 华东（空格已洗净，可与\"华东\"匹配）"
+    },
+    {
+      "step": 4,
+      "cell": "B9",
+      "menu": "选中 B9 查看编辑栏",
+      "formula": "=TRIM(CLEAN(B2))",
+      "expect": "编辑栏回显 =TRIM(CLEAN(B2))，B9 显示 华东"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "CLEAN(B2)",
+      "meaning": "内层：去掉不可打印字符（网页复制常见）"
+    },
+    {
+      "part": "TRIM(",
+      "meaning": "外层：去掉首尾空格，连续多空格压成一个——CLEAN 在内 TRIM 在外"
+    }
+  ],
+  "summary": {
+    "oneLiner": "TRIM＋CLEAN：去掉文本前后的空格和不可见字符——\" 华东 \"和\"华东\"从此是同一个值。",
+    "explain": "就像写 SQL：SELECT TRIM(地区) FROM 订单，清洗后再 GROUP BY 才不会拆成两组。",
+    "outro": "总结：CLEAN 在内去不可见字符，TRIM 在外去空格；清洗做在汇总前，一个空格都不留。"
+  },
+  "checks": [
+    {
+      "cell": "B9",
+      "formula": "=TRIM(CLEAN(B2))",
+      "value": "华东"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

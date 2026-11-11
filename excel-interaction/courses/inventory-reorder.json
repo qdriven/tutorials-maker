@@ -1,0 +1,183 @@
+{
+  "$comment": "L2 A 类场景课（A 类场景课（3 块 12 步，链式）；素材 docs/excel/05-workspace-lessons/16-inventory-reorder.md。）公式已过 HyperFormula 终验探针（aclass-gen 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "inventory-reorder",
+  "fn": "补货模型",
+  "title": "库存补货模型三步：补货点 → 建议量 → 状态",
+  "category": "场景实战",
+  "level": "中级",
+  "durationMin": 6,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/inventory-reorder.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "库存",
+        "cells": {
+          "A1": "商品",
+          "B1": "当前库存",
+          "C1": "日均销量",
+          "D1": "补货周期",
+          "E1": "安全天数",
+          "F1": "补货点",
+          "G1": "建议补货量",
+          "H1": "状态",
+          "A2": "咖啡豆",
+          "B2": 80,
+          "C2": 12,
+          "D2": 5,
+          "E2": 3,
+          "A3": "精品茶",
+          "B3": 200,
+          "C3": 8,
+          "D3": 4,
+          "E3": 2,
+          "A4": "手冲壶",
+          "B4": 40,
+          "C4": 6,
+          "D4": 7,
+          "E4": 3
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "F2",
+      "menu": "选中 F2",
+      "formula": "定位F2 结果格",
+      "expect": "F2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "F2",
+      "menu": "输入框输入公式",
+      "formula": "=C2*(D2+E2)",
+      "expect": "F2 显示公式原文 =C2*(D2+E2)"
+    },
+    {
+      "step": 3,
+      "cell": "F2",
+      "menu": "回车确认",
+      "formula": "=C2*(D2+E2)",
+      "expect": "F2 显示 96（补货点 = 12×8，周期内要备的货）"
+    },
+    {
+      "step": 4,
+      "cell": "F2",
+      "menu": "选中 F2 查看编辑栏",
+      "formula": "=C2*(D2+E2)",
+      "expect": "编辑栏回显 =C2*(D2+E2)，F2 显示 96"
+    },
+    {
+      "step": 5,
+      "cell": "G2",
+      "menu": "选中 G2",
+      "formula": "定位G2 结果格",
+      "expect": "G2 被选中，输入框激活"
+    },
+    {
+      "step": 6,
+      "cell": "G2",
+      "menu": "输入框输入公式",
+      "formula": "=MAX(0,F2-B2)",
+      "expect": "G2 显示公式原文 =MAX(0,F2-B2)"
+    },
+    {
+      "step": 7,
+      "cell": "G2",
+      "menu": "回车确认",
+      "formula": "=MAX(0,F2-B2)",
+      "expect": "G2 显示 16（缺 16 件；MAX 保证不为负）"
+    },
+    {
+      "step": 8,
+      "cell": "G2",
+      "menu": "选中 G2 查看编辑栏",
+      "formula": "=MAX(0,F2-B2)",
+      "expect": "编辑栏回显 =MAX(0,F2-B2)，G2 显示 16"
+    },
+    {
+      "step": 9,
+      "cell": "H2",
+      "menu": "选中 H2",
+      "formula": "定位H2 结果格",
+      "expect": "H2 被选中，输入框激活"
+    },
+    {
+      "step": 10,
+      "cell": "H2",
+      "menu": "输入框输入公式",
+      "formula": "=IF(G2>0,\"补货\",\"观察\")",
+      "expect": "H2 显示公式原文 =IF(G2>0,\"补货\",\"观察\")"
+    },
+    {
+      "step": 11,
+      "cell": "H2",
+      "menu": "回车确认",
+      "formula": "=IF(G2>0,\"补货\",\"观察\")",
+      "expect": "H2 显示 补货（16>0，咖啡豆需补）"
+    },
+    {
+      "step": 12,
+      "cell": "H2",
+      "menu": "选中 H2 查看编辑栏",
+      "formula": "=IF(G2>0,\"补货\",\"观察\")",
+      "expect": "编辑栏回显 =IF(G2>0,\"补货\",\"观察\")，H2 显示 补货"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "C2",
+      "meaning": "日均销量 12",
+      "step": 2
+    },
+    {
+      "part": "(D2+E2)",
+      "meaning": "补货周期 5 + 安全天数 3 = 8 天覆盖期",
+      "step": 2
+    },
+    {
+      "part": "F2-B2",
+      "meaning": "补货点 96 − 库存 80 = 16（缺口）",
+      "step": 6
+    },
+    {
+      "part": "MAX(0,",
+      "meaning": "兜底：库存充足时差为负，强制 ≥0——不出现'补 −112'",
+      "step": 6
+    },
+    {
+      "part": "G2>0",
+      "meaning": "条件：引用第②块建议量——大于 0 才补货",
+      "step": 10
+    }
+  ],
+  "summary": {
+    "oneLiner": "补货模型三步：日均×(周期+安全天)算补货点、MAX(0,缺口)算建议量、IF 出状态——规则写成可更新公式。",
+    "explain": "就像库存策略：reorder_point = daily_sales * (lead_time + safety_days)，order_qty = max(0, rp - stock)。",
+    "outro": "总结：补货点是模型、建议量带兜底、状态从量推导——三格公式，数据变了全自动。"
+  },
+  "checks": [
+    {
+      "cell": "F2",
+      "formula": "=C2*(D2+E2)",
+      "value": 96
+    },
+    {
+      "cell": "G2",
+      "formula": "=MAX(0,F2-B2)",
+      "value": 16
+    },
+    {
+      "cell": "H2",
+      "formula": "=IF(G2>0,\"补货\",\"观察\")",
+      "value": "补货"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

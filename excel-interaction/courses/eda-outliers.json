@@ -1,0 +1,215 @@
+{
+  "$comment": "L2 A 类场景课（A 类场景课（4 块 16 步）；素材 docs/excel/05-workspace-lessons/08-eda-outliers.md。）公式已过 HyperFormula 终验探针（aclass-gen 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "eda-outliers",
+  "fn": "数据探索",
+  "title": "数据探索四查：平均 → 极值 → 空值 → 异常复核",
+  "category": "场景实战",
+  "level": "中级",
+  "durationMin": 8,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/eda-outliers.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "订单",
+        "cells": {
+          "A1": "订单号",
+          "B1": "金额 GBP",
+          "A2": "A01",
+          "B2": 120,
+          "A3": "A02",
+          "B3": 350,
+          "A4": "A03",
+          "B4": 80,
+          "A5": "A04",
+          "B5": 500,
+          "A6": "A05",
+          "B6": 1200,
+          "A7": "A06",
+          "B7": 90,
+          "A8": "A07",
+          "A9": "A08",
+          "B9": 240,
+          "A10": "A09",
+          "B10": 4000,
+          "A11": "A10",
+          "B11": 160,
+          "D1": "探索任务",
+          "E1": "结果",
+          "D2": "① 平均金额",
+          "D3": "② 最大金额",
+          "D4": "③ 空值数量",
+          "D5": "④ A09 复核"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "E2",
+      "menu": "选中 E2",
+      "formula": "定位E2 结果格",
+      "expect": "E2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "E2",
+      "menu": "输入框输入公式",
+      "formula": "=ROUND(AVERAGE(B2:B11),2)",
+      "expect": "E2 显示公式原文 =ROUND(AVERAGE(B2:B11),2)"
+    },
+    {
+      "step": 3,
+      "cell": "E2",
+      "menu": "回车确认",
+      "formula": "=ROUND(AVERAGE(B2:B11),2)",
+      "expect": "E2 显示 748.89（9 个非空值平均，空值不参与）"
+    },
+    {
+      "step": 4,
+      "cell": "E2",
+      "menu": "选中 E2 查看编辑栏",
+      "formula": "=ROUND(AVERAGE(B2:B11),2)",
+      "expect": "编辑栏回显 =ROUND(AVERAGE(B2:B11),2)，E2 显示 748.89"
+    },
+    {
+      "step": 5,
+      "cell": "E3",
+      "menu": "选中 E3",
+      "formula": "定位E3 结果格",
+      "expect": "E3 被选中，输入框激活"
+    },
+    {
+      "step": 6,
+      "cell": "E3",
+      "menu": "输入框输入公式",
+      "formula": "=MAX(B2:B11)",
+      "expect": "E3 显示公式原文 =MAX(B2:B11)"
+    },
+    {
+      "step": 7,
+      "cell": "E3",
+      "menu": "回车确认",
+      "formula": "=MAX(B2:B11)",
+      "expect": "E3 显示 4000（A09 是极端值，复核对象）"
+    },
+    {
+      "step": 8,
+      "cell": "E3",
+      "menu": "选中 E3 查看编辑栏",
+      "formula": "=MAX(B2:B11)",
+      "expect": "编辑栏回显 =MAX(B2:B11)，E3 显示 4000"
+    },
+    {
+      "step": 9,
+      "cell": "E4",
+      "menu": "选中 E4",
+      "formula": "定位E4 结果格",
+      "expect": "E4 被选中，输入框激活"
+    },
+    {
+      "step": 10,
+      "cell": "E4",
+      "menu": "输入框输入公式",
+      "formula": "=COUNTBLANK(B2:B11)",
+      "expect": "E4 显示公式原文 =COUNTBLANK(B2:B11)"
+    },
+    {
+      "step": 11,
+      "cell": "E4",
+      "menu": "回车确认",
+      "formula": "=COUNTBLANK(B2:B11)",
+      "expect": "E4 显示 1（A07 是空行，不是 0 元订单）"
+    },
+    {
+      "step": 12,
+      "cell": "E4",
+      "menu": "选中 E4 查看编辑栏",
+      "formula": "=COUNTBLANK(B2:B11)",
+      "expect": "编辑栏回显 =COUNTBLANK(B2:B11)，E4 显示 1"
+    },
+    {
+      "step": 13,
+      "cell": "E5",
+      "menu": "选中 E5",
+      "formula": "定位E5 结果格",
+      "expect": "E5 被选中，输入框激活"
+    },
+    {
+      "step": 14,
+      "cell": "E5",
+      "menu": "输入框输入公式",
+      "formula": "=IF(B10>1000,\"重点复核\",\"常规\")",
+      "expect": "E5 显示公式原文 =IF(B10>1000,\"重点复核\",\"常规\")"
+    },
+    {
+      "step": 15,
+      "cell": "E5",
+      "menu": "回车确认",
+      "formula": "=IF(B10>1000,\"重点复核\",\"常规\")",
+      "expect": "E5 显示 重点复核（4000>1000，按规则标记）"
+    },
+    {
+      "step": 16,
+      "cell": "E5",
+      "menu": "选中 E5 查看编辑栏",
+      "formula": "=IF(B10>1000,\"重点复核\",\"常规\")",
+      "expect": "编辑栏回显 =IF(B10>1000,\"重点复核\",\"常规\")，E5 显示 重点复核"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "B2:B11",
+      "meaning": "区域：10 笔金额——A07 空单元格被 AVERAGE 跳过（不按 0 算）",
+      "step": 2
+    },
+    {
+      "part": "B2:B11",
+      "meaning": "区域：最大值是复核线索，不是自动判错",
+      "step": 6
+    },
+    {
+      "part": "B2:B11",
+      "meaning": "区域：只数真正空的单元格——空值与 0 含义不同",
+      "step": 10
+    },
+    {
+      "part": "B10>1000",
+      "meaning": "条件：A09 金额 4000 > 1000（业务规则：超额需复核）",
+      "step": 14
+    }
+  ],
+  "summary": {
+    "oneLiner": "数据探索四查：AVERAGE 看集中、MAX 找极值、COUNTBLANK 数空行、IF 按规则标异常——动手分析前的四个标准动作。",
+    "explain": "就像 SQL 四连：AVG/MAX 聚合 + COUNT(NULL) 查缺失 + CASE WHEN 打复核标记。",
+    "outro": "总结：先平均看轮廓、再极值找线索、空值单独数、规则化复核——探索的固定起手式。"
+  },
+  "checks": [
+    {
+      "cell": "E2",
+      "formula": "=ROUND(AVERAGE(B2:B11),2)",
+      "value": 748.89
+    },
+    {
+      "cell": "E3",
+      "formula": "=MAX(B2:B11)",
+      "value": 4000
+    },
+    {
+      "cell": "E4",
+      "formula": "=COUNTBLANK(B2:B11)",
+      "value": 1
+    },
+    {
+      "cell": "E5",
+      "formula": "=IF(B10>1000,\"重点复核\",\"常规\")",
+      "value": "重点复核"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

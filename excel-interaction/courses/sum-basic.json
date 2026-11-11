@@ -1,0 +1,78 @@
+{
+  "$comment": "第二门课契约（验证契约通用性）：从 courses/seeds/sum-basic.md 提炼。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "sum-basic",
+  "title": "SUM 求和：把一片区域加总",
+  "category": "求和统计",
+  "level": "初级",
+  "durationMin": 3,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/sum-basic.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "月度数据",
+        "cells": {
+          "A1": "月份",
+          "B1": "销售额",
+          "C1": "合计",
+          "A2": "1月",
+          "B2": 1200,
+          "A3": "2月",
+          "B3": 1500,
+          "A4": "3月",
+          "B4": 900
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "C2",
+      "menu": "选中 C2",
+      "formula": "定位合计单元格",
+      "expect": "C2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "C2",
+      "menu": "输入框输入公式",
+      "formula": "=SUM(B2:B4)",
+      "expect": "C2 显示公式原文 =SUM(B2:B4)"
+    },
+    {
+      "step": 3,
+      "cell": "C2",
+      "menu": "回车确认",
+      "formula": "=SUM(B2:B4)",
+      "expect": "C2 显示 3600"
+    },
+    {
+      "step": 4,
+      "cell": "C2",
+      "menu": "选中 C2 查看编辑栏",
+      "formula": "=SUM(B2:B4)",
+      "expect": "编辑栏回显 =SUM(B2:B4)，C2 显示 3600"
+    }
+  ],
+  "formulaArgs": [
+    { "part": "B2:B4", "meaning": "求和区域：要加总的销售额单元格（B2 到 B4）" }
+  ],
+  "summary": {
+    "oneLiner": "SUM：把一片区域里的数字全部加起来，得到一个总数。",
+    "explain": "就像写 SQL：SELECT SUM(销售额) FROM 月度数据，把整列加总。",
+    "outro": "总结：给 SUM 一个区域，它把区域里的数字全部加总成一个数。"
+  },
+  "checks": [
+    {
+      "cell": "C2",
+      "formula": "=SUM(B2:B4)",
+      "value": 3600
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

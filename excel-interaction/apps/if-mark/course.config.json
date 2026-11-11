@@ -1,0 +1,91 @@
+{
+  "$comment": "recipe 契约：从 courses/seeds/if-mark.md 提炼，转写自 excel-animation docs/excel/03-formulas/if.md（采用原始『大额订单』用例，单公式聚焦）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "if-mark",
+  "title": "IF 按条件标记：给销售额贴大额标签",
+  "category": "逻辑判断",
+  "level": "初级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/if-mark.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "订单表",
+        "cells": {
+          "A1": "订单号",
+          "B1": "销售额",
+          "C1": "等级",
+          "A2": "SO-1001",
+          "B2": 960,
+          "A3": "SO-1002",
+          "B3": 400,
+          "A4": "SO-1003",
+          "B4": 1760,
+          "A5": "SO-1004",
+          "B5": 1200
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "C2",
+      "menu": "选中 C2",
+      "formula": "定位标记单元格",
+      "expect": "C2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "C2",
+      "menu": "输入框输入公式",
+      "formula": "=IF(B2>=1000,\"大额订单\",\"常规订单\")",
+      "expect": "C2 显示公式原文 =IF(B2>=1000,\"大额订单\",\"常规订单\")"
+    },
+    {
+      "step": 3,
+      "cell": "C2",
+      "menu": "回车确认",
+      "formula": "=IF(B2>=1000,\"大额订单\",\"常规订单\")",
+      "expect": "C2 显示 常规订单（960 未到线）"
+    },
+    {
+      "step": 4,
+      "cell": "C2",
+      "menu": "选中 C2 查看编辑栏",
+      "formula": "=IF(B2>=1000,\"大额订单\",\"常规订单\")",
+      "expect": "编辑栏回显 =IF(B2>=1000,\"大额订单\",\"常规订单\")，C2 显示 常规订单"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "B2>=1000",
+      "meaning": "判断条件：布尔表达式，真或假"
+    },
+    {
+      "part": "\"大额订单\"",
+      "meaning": "条件为真时的返回值"
+    },
+    {
+      "part": "\"常规订单\"",
+      "meaning": "条件为假时的返回值——三段缺一不可"
+    }
+  ],
+  "summary": {
+    "oneLiner": "IF：判断一个条件，真就返回第一个值，假就返回第二个值——三段结构缺一不可。",
+    "explain": "就像写 SQL：SELECT CASE WHEN 销售额>=1000 THEN '大额订单' ELSE '常规订单' END，逐行判断贴标签。",
+    "outro": "总结：IF 三段——条件、真值、假值；先算比率再判断时用 IFERROR 兜底。"
+  },
+  "checks": [
+    {
+      "cell": "C2",
+      "formula": "=IF(B2>=1000,\"大额订单\",\"常规订单\")",
+      "value": "常规订单"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

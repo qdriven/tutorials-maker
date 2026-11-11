@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Excel 交互课</title>
+  <!-- 预构建包（构建源 out/univer-build scratch → dist/，生成时随模板拷入，离线可跑） -->
+  <link rel="stylesheet" href="univer/dist/univer-kit.css" />
+  <script src="univer/dist/univer-kit.js"></script>
+  <!-- 模板实现 -->
+  <link rel="stylesheet" href="theme.css" />
+</head>
+<body>
+  <!-- 两区一条 DOM 契约（skill/excel-tutorial-maker/templates/README.md） -->
+  <main id="lesson" data-theme="kimi" data-engine="univer">
+    <header id="lesson-head">
+      <h1 id="lesson-title">Excel 交互课</h1>
+      <nav id="controls">
+        <button id="btn-play" type="button">▶ 自动播放</button>
+        <button id="btn-next" type="button">⏭ 下一步</button>
+        <button id="btn-practice" type="button">✍ 手动练习</button>
+        <button id="btn-reset" type="button">↺ 重置</button>
+      </nav>
+    </header>
+
+    <aside id="result-area" aria-label="结果区">
+      <div id="step-detail"></div>
+      <div id="result-expect"></div>
+      <div id="result-value" data-result></div>
+      <div id="result-formula"></div>
+    </aside>
+
+    <section id="table-area" aria-label="表格区">
+      <div id="formula-bar"><span id="fx">fx</span><span id="formula-echo"></span></div>
+      <div id="grid"></div>
+    </section>
+
+    <div id="caption-bar" aria-live="polite"></div>
+  </main>
+
+  <script src="univer/engine.js"></script>
+  <script src="lesson.js"></script>
+</body>
+</html>

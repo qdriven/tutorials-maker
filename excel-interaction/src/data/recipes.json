@@ -1,0 +1,643 @@
+{
+  "$comment": "landing 目录聚合（scripts/landing/build-recipes.mjs 产物，勿手改）：courses/*.json 自动投影 + 占位卡 + 合集卡。重跑 node scripts/landing/build-recipes.mjs 上架新课。",
+  "generatedAt": "2026-11-10",
+  "stats": {
+    "live": 44,
+    "todo": 2,
+    "total": 46,
+    "collections": 3
+  },
+  "categories": [
+    {
+      "category": "查找引用",
+      "recipes": [
+        {
+          "id": "index-match",
+          "fn": "INDEX＋MATCH",
+          "category": "查找引用",
+          "oneLiner": "INDEX＋MATCH：MATCH 找到在第几行，INDEX 取那一行的值——向左向右都自由。",
+          "explain": "就像写 SQL：SELECT 单价 FROM 商品表 WHERE SKU = 'P-104'，但行列解耦、列序不再重要。",
+          "level": "中级",
+          "durationMin": 5,
+          "status": "live",
+          "app": "/apps/index-match/index.html",
+          "mp4": "/src/standalone/public/showcase/index-match.mp4"
+        },
+        {
+          "id": "vlookup-basic",
+          "fn": "VLOOKUP",
+          "category": "查找引用",
+          "oneLiner": "VLOOKUP：拿一个值，去一个范围里查它在哪一行，取回那一行的另一列。",
+          "explain": "就像写 SQL：SELECT 姓名 FROM 员工表 WHERE 工号 = 1003，按工号查姓名。",
+          "level": "初级",
+          "durationMin": 5,
+          "status": "live",
+          "app": "/apps/vlookup-basic/index.html",
+          "mp4": "/src/standalone/public/showcase/vlookup-basic.mp4"
+        },
+        {
+          "id": "xlookup",
+          "fn": "XLOOKUP",
+          "category": "查找引用",
+          "oneLiner": "XLOOKUP：拿一个值去一列里找，取回同一行另一列的值——查不到就返回你写的兜底值。",
+          "explain": "就像写 SQL：SELECT 商品 FROM 商品表 WHERE SKU = 'P-103'，查不到返回默认值。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/xlookup/index.html",
+          "mp4": "/src/standalone/public/showcase/xlookup.mp4"
+        }
+      ]
+    },
+    {
+      "category": "求和统计",
+      "recipes": [
+        {
+          "id": "average",
+          "fn": "AVERAGE",
+          "category": "求和统计",
+          "oneLiner": "AVERAGE：把一片区域的数字加起来再除以个数，得到平均水平。",
+          "explain": "就像写 SQL：SELECT AVG(销售额) FROM 订单，整列取平均。",
+          "level": "初级",
+          "durationMin": 3,
+          "status": "live",
+          "app": "/apps/average/index.html",
+          "mp4": "/src/standalone/public/showcase/average.mp4"
+        },
+        {
+          "id": "max",
+          "fn": "MAX",
+          "category": "求和统计",
+          "oneLiner": "MAX：在一串数字里挑出最大的那个——极值一眼看到。",
+          "explain": "就像写 SQL：SELECT MAX(销售额) FROM 订单，找峰值。",
+          "level": "初级",
+          "durationMin": 3,
+          "status": "live",
+          "app": "/apps/max/index.html",
+          "mp4": "/src/standalone/public/showcase/max.mp4"
+        },
+        {
+          "id": "min",
+          "fn": "MIN",
+          "category": "求和统计",
+          "oneLiner": "MIN：在一串数字里挑出最小的那个——谷值同样重要。",
+          "explain": "就像写 SQL：SELECT MIN(销售额) FROM 订单，找谷值。",
+          "level": "初级",
+          "durationMin": 3,
+          "status": "live",
+          "app": "/apps/min/index.html",
+          "mp4": "/src/standalone/public/showcase/min.mp4"
+        },
+        {
+          "id": "oo-test",
+          "fn": "onlyoffice",
+          "category": "求和统计",
+          "oneLiner": "SUM：把一片区域里的数字全部加起来，得到一个总数。",
+          "explain": "就像写 SQL：SELECT SUM(销售额) FROM 月度数据，把整列加总。",
+          "level": "初级",
+          "durationMin": 3,
+          "status": "live",
+          "app": "/apps/oo-test/index.html",
+          "mp4": "/src/standalone/public/showcase/oo-test.mp4"
+        },
+        {
+          "id": "round",
+          "fn": "ROUND",
+          "category": "求和统计",
+          "oneLiner": "ROUND：四舍五入到指定位数——报表数字的最后一步。",
+          "explain": "就像 SQL：ROUND(1234.567,1) → 1234.6，展示口径统一。",
+          "level": "初级",
+          "durationMin": 3,
+          "status": "live",
+          "app": "/apps/round/index.html",
+          "mp4": "/src/standalone/public/showcase/round.mp4"
+        },
+        {
+          "id": "sum-basic",
+          "fn": "SUM",
+          "category": "求和统计",
+          "oneLiner": "SUM：把一片区域里的数字全部加起来，得到一个总数。",
+          "explain": "就像写 SQL：SELECT SUM(销售额) FROM 月度数据，把整列加总。",
+          "level": "初级",
+          "durationMin": 3,
+          "status": "live",
+          "app": "/apps/sum-basic/index.html",
+          "mp4": "/src/standalone/public/showcase/sum-basic.mp4"
+        }
+      ]
+    },
+    {
+      "category": "条件求和",
+      "recipes": [
+        {
+          "id": "sumifs",
+          "fn": "SUMIFS",
+          "category": "条件求和",
+          "oneLiner": "SUMIFS：只把满足条件的行加起来——求和区域在前，条件区域和条件成对跟在后面。",
+          "explain": "就像写 SQL：SELECT SUM(销售额) FROM 订单 WHERE 地区='华东' AND 渠道='线上'，条件汇总一条公式完成。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/sumifs/index.html",
+          "mp4": "/src/standalone/public/showcase/sumifs.mp4"
+        }
+      ]
+    },
+    {
+      "category": "条件统计",
+      "recipes": [
+        {
+          "id": "averageif",
+          "fn": "AVERAGEIF",
+          "category": "条件统计",
+          "oneLiner": "AVERAGEIF：只把符合条件的行拿来求平均——条件版 AVERAGE。",
+          "explain": "就像写 SQL：SELECT AVG(销售额) FROM 订单 WHERE 地区='华东'。",
+          "level": "中级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/averageif/index.html",
+          "mp4": "/src/standalone/public/showcase/averageif.mp4"
+        },
+        {
+          "id": "maxifs",
+          "fn": "MAXIFS",
+          "category": "条件统计",
+          "oneLiner": "MAXIFS：先按条件筛行，再从剩下的数里取最大——条件版 MAX。",
+          "explain": "就像写 SQL：SELECT MAX(销售额) FROM 订单 WHERE 地区='华北'。",
+          "level": "中级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/maxifs/index.html",
+          "mp4": "/src/standalone/public/showcase/maxifs.mp4"
+        }
+      ]
+    },
+    {
+      "category": "计数统计",
+      "recipes": [
+        {
+          "id": "countifs",
+          "fn": "COUNTIFS",
+          "category": "计数统计",
+          "oneLiner": "COUNTIFS：数出同时满足多个条件的行数——条件区域和条件成对写，几个条件写几对。",
+          "explain": "就像写 SQL：SELECT COUNT(*) FROM 订单 WHERE 地区='华北' AND 销售额>=1000，数的是行数。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/countifs/index.html",
+          "mp4": "/src/standalone/public/showcase/countifs.mp4"
+        }
+      ]
+    },
+    {
+      "category": "逻辑判断",
+      "recipes": [
+        {
+          "id": "and",
+          "fn": "AND",
+          "category": "逻辑判断",
+          "oneLiner": "AND：所有条件都为真才返回 TRUE——一票否决的组合判断。",
+          "explain": "就像 SQL：WHERE 实际>=目标 AND 实际>=1000，两个门槛都要过。",
+          "level": "初级",
+          "durationMin": 3,
+          "status": "live",
+          "app": "/apps/and/index.html",
+          "mp4": "/src/standalone/public/showcase/and.mp4"
+        },
+        {
+          "id": "if-mark",
+          "fn": "IF",
+          "category": "逻辑判断",
+          "oneLiner": "IF：判断一个条件，真就返回第一个值，假就返回第二个值——三段结构缺一不可。",
+          "explain": "就像写 SQL：SELECT CASE WHEN 销售额>=1000 THEN '大额订单' ELSE '常规订单' END，逐行判断贴标签。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/if-mark/index.html",
+          "mp4": "/src/standalone/public/showcase/if-mark.mp4"
+        },
+        {
+          "id": "iferror",
+          "fn": "IFERROR",
+          "category": "逻辑判断",
+          "oneLiner": "IFERROR：公式报错就返回你写的兜底值——除零、查不到，报表不再满屏 #。",
+          "explain": "就像写 SQL：COALESCE(实际/目标, 0)，算不出给默认值，可读性优先。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/iferror/index.html",
+          "mp4": "/src/standalone/public/showcase/iferror.mp4"
+        }
+      ]
+    },
+    {
+      "category": "文本清理",
+      "recipes": [
+        {
+          "id": "left",
+          "fn": "LEFT",
+          "category": "文本清理",
+          "oneLiner": "LEFT：从文本左边数几个字符取出来——定长字段拆分第一步。",
+          "explain": "就像 SQL：SUBSTR('张三|138...',1,2)，按位置截取。",
+          "level": "初级",
+          "durationMin": 3,
+          "status": "live",
+          "app": "/apps/left/index.html",
+          "mp4": "/src/standalone/public/showcase/left.mp4"
+        },
+        {
+          "id": "substitute",
+          "fn": "SUBSTITUTE",
+          "category": "文本清理",
+          "oneLiner": "SUBSTITUTE：把文本里的一段字精确替换成另一段——批量改写不求人。",
+          "explain": "就像 SQL：REPLACE('SO-1001','SO-','订单')，按内容替换。",
+          "level": "初级",
+          "durationMin": 3,
+          "status": "live",
+          "app": "/apps/substitute/index.html",
+          "mp4": "/src/standalone/public/showcase/substitute.mp4"
+        },
+        {
+          "id": "text-date",
+          "fn": "文本拆分",
+          "category": "文本清理",
+          "oneLiner": "文本拆分三件套：FIND 定位分隔符、LEFT/MID/RIGHT 按位截取——'张三|手机|上海'一条记录拆成三个可筛选字段。",
+          "explain": "就像 SQL：SPLIT(col, '|') 的手工版——先 FIND 找位置，再按位置 LEFT/MID/RIGHT 截。",
+          "level": "中级",
+          "durationMin": 6,
+          "status": "live",
+          "app": "/apps/text-date/index.html",
+          "mp4": "/src/standalone/public/showcase/text-date.mp4"
+        },
+        {
+          "id": "trim-clean",
+          "fn": "TRIM＋CLEAN",
+          "category": "文本清理",
+          "oneLiner": "TRIM＋CLEAN：去掉文本前后的空格和不可见字符——\" 华东 \"和\"华东\"从此是同一个值。",
+          "explain": "就像写 SQL：SELECT TRIM(地区) FROM 订单，清洗后再 GROUP BY 才不会拆成两组。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/trim-clean/index.html",
+          "mp4": "/src/standalone/public/showcase/trim-clean.mp4"
+        },
+        {
+          "id": "value",
+          "fn": "VALUE",
+          "category": "文本清理",
+          "oneLiner": "VALUE：把看起来像数字的文本转成真数字——文本不转，SUM 都不认。",
+          "explain": "就像 SQL：CAST('1200' AS INT)，类型转换后再参与计算。",
+          "level": "初级",
+          "durationMin": 3,
+          "status": "live",
+          "app": "/apps/value/index.html",
+          "mp4": "/src/standalone/public/showcase/value.mp4"
+        },
+        {
+          "id": "concat",
+          "fn": "TEXTJOIN／&",
+          "category": "文本清理",
+          "note": "引擎边界：HyperFormula 不支持 TEXTJOIN（探针 #NAME?）——待 onlyoffice 引擎实测后转正",
+          "oneLiner": "TEXTJOIN：把多格文本连成一句，自动跳过空格和空值。",
+          "status": "blocked",
+          "app": null,
+          "mp4": null
+        },
+        {
+          "id": "text-format",
+          "fn": "TEXT",
+          "category": "文本清理",
+          "note": "引擎边界：HyperFormula 格式串与 Excel 有偏差（探针 0.0%→0.9%）——待 onlyoffice 引擎实测后转正",
+          "oneLiner": "TEXT：把数字按格式变成文本——1234.5 显示成 1,234.50，报表口径统一。",
+          "status": "blocked",
+          "app": null,
+          "mp4": null
+        }
+      ]
+    },
+    {
+      "category": "图表选型",
+      "recipes": [
+        {
+          "id": "chart-bar",
+          "fn": "条形图",
+          "category": "图表选型",
+          "oneLiner": "条形图：做排名——横向条形从长到短排，类别多、名字长也看得清。",
+          "explain": "就像写 SQL：SELECT 地区, SUM(销售额) GROUP BY 地区 ORDER BY 2 DESC，排好序再画横条。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/chart-bar/index.html",
+          "mp4": "/src/standalone/public/showcase/chart-bar.mp4"
+        },
+        {
+          "id": "chart-column",
+          "fn": "簇状柱形图",
+          "category": "图表选型",
+          "oneLiner": "簇状柱形图：比类别——几根柱子排在一起，谁高谁低一眼见分晓。",
+          "explain": "就像写 SQL：SELECT 月份, SUM(金额) GROUP BY 月份，按类别分组计数再画柱。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/chart-column/index.html",
+          "mp4": "/src/standalone/public/showcase/chart-column.mp4"
+        },
+        {
+          "id": "chart-combo",
+          "fn": "组合图",
+          "category": "图表选型",
+          "oneLiner": "组合图：量率同看——柱形管数量（左轴），折线管比率（右轴），一张图两种口径。",
+          "explain": "就像写 SQL：SELECT 月份, SUM(金额), AVG(率) GROUP BY 月份，金额画柱、比率画线。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/chart-combo/index.html",
+          "mp4": "/src/standalone/public/showcase/chart-combo.mp4"
+        },
+        {
+          "id": "chart-histogram",
+          "fn": "直方图",
+          "category": "图表选型",
+          "oneLiner": "直方图：看分布——连续数值按区间分箱，每箱一根柱，看数据集中在哪段。",
+          "explain": "就像写 SQL：SELECT 分箱, COUNT(*) GROUP BY 分箱，按区间统计频数再画柱。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/chart-histogram/index.html",
+          "mp4": "/src/standalone/public/showcase/chart-histogram.mp4"
+        },
+        {
+          "id": "chart-line",
+          "fn": "折线图",
+          "category": "图表选型",
+          "oneLiner": "折线图：看趋势——一个有序时间字段加一个数值系列，连线看方向和拐点。",
+          "explain": "就像写 SQL：SELECT 月份, SUM(销售额) GROUP BY 月份 ORDER BY 月份，按时间排好再连线。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/chart-line/index.html",
+          "mp4": "/src/standalone/public/showcase/chart-line.mp4"
+        },
+        {
+          "id": "chart-pie",
+          "fn": "饼图",
+          "category": "图表选型",
+          "oneLiner": "饼图：看占比——单系列非负值，每块扇形占整个圆的百分比。",
+          "explain": "就像写 SQL：SELECT 渠道, SUM(销售额) GROUP BY 渠道，算每渠道占总量的比例。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/chart-pie/index.html",
+          "mp4": "/src/standalone/public/showcase/chart-pie.mp4"
+        },
+        {
+          "id": "chart-scatter",
+          "fn": "XY 散点图",
+          "category": "图表选型",
+          "oneLiner": "散点图：找关系——两个数值变量各占一轴，看点是聚在一起还是散开。",
+          "explain": "就像写 SQL：SELECT 折扣, 毛利率 FROM 订单，每行一个点，看两列怎么共变。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/chart-scatter/index.html",
+          "mp4": "/src/standalone/public/showcase/chart-scatter.mp4"
+        },
+        {
+          "id": "chart-stacked",
+          "fn": "堆积柱形图",
+          "category": "图表选型",
+          "oneLiner": "堆积柱形图：看构成变化——每根柱子分两段，总量和构成一起看。",
+          "explain": "就像写 SQL：SELECT 月份, 渠道, SUM(金额) GROUP BY 月份, 渠道，按渠道堆叠分段。",
+          "level": "初级",
+          "durationMin": 4,
+          "status": "live",
+          "app": "/apps/chart-stacked/index.html",
+          "mp4": "/src/standalone/public/showcase/chart-stacked.mp4"
+        }
+      ]
+    },
+    {
+      "category": "场景实战",
+      "recipes": [
+        {
+          "id": "apple-finance",
+          "fn": "三表勾稽",
+          "category": "场景实战",
+          "oneLiner": "三表勾稽：跨表减法复算毛利、三表相减验平衡、IF+ABS 自动判定——Apple FY2025 真实财报数字。",
+          "explain": "就像审计复核：每个数都要能从原始报表重新算出来，差额为 0 才叫勾稽通过。",
+          "level": "高级",
+          "durationMin": 7,
+          "status": "live",
+          "app": "/apps/apple-finance/index.html",
+          "mp4": "/src/standalone/public/showcase/apple-finance.mp4"
+        },
+        {
+          "id": "customer-rfm",
+          "fn": "RFM 分层",
+          "category": "场景实战",
+          "oneLiner": "RFM 分层：COUNTIFS 数频次、SUMIFS 加金额、MAXIFS 取最近、AND 合成标签——三维度逐步成型。",
+          "explain": "就像 SQL：按客户 GROUP BY 后 COUNT/SUM/MAX 三个聚合，最后 CASE WHEN 打分层标签。",
+          "level": "中级",
+          "durationMin": 8,
+          "status": "live",
+          "app": "/apps/customer-rfm/index.html",
+          "mp4": "/src/standalone/public/showcase/customer-rfm.mp4"
+        },
+        {
+          "id": "dave-clean",
+          "fn": "清洗三连",
+          "category": "场景实战",
+          "oneLiner": "清洗三连：先 TRIM+CLEAN 洗文本，再 COUNTIF 查重复，最后 XLOOKUP 抽查一条——每步都留可核对的产出。",
+          "explain": "就像数据管道的三道质检：洗字符 → 查重复 → 抽样复核，任何一环断裂下游全错。",
+          "level": "中级",
+          "durationMin": 8,
+          "status": "live",
+          "app": "/apps/dave-clean/index.html",
+          "mp4": "/src/standalone/public/showcase/dave-clean.mp4"
+        },
+        {
+          "id": "dirty-data",
+          "fn": "脏数据清洗",
+          "category": "场景实战",
+          "oneLiner": "脏数据四连：VALUE 转数、TRIM+CLEAN 洗空格、SUBSTITUTE 改编号、IF 打标签——每步产出喂下一步。",
+          "explain": "就像数据清洗流水线：类型修正 → 文本规范 → 编号统一 → 业务标记，链式依赖一步不能少。",
+          "level": "中级",
+          "durationMin": 8,
+          "status": "live",
+          "app": "/apps/dirty-data/index.html",
+          "mp4": "/src/standalone/public/showcase/dirty-data.mp4"
+        },
+        {
+          "id": "eda-outliers",
+          "fn": "数据探索",
+          "category": "场景实战",
+          "oneLiner": "数据探索四查：AVERAGE 看集中、MAX 找极值、COUNTBLANK 数空行、IF 按规则标异常——动手分析前的四个标准动作。",
+          "explain": "就像 SQL 四连：AVG/MAX 聚合 + COUNT(NULL) 查缺失 + CASE WHEN 打复核标记。",
+          "level": "中级",
+          "durationMin": 8,
+          "status": "live",
+          "app": "/apps/eda-outliers/index.html",
+          "mp4": "/src/standalone/public/showcase/eda-outliers.mp4"
+        },
+        {
+          "id": "free-excel",
+          "fn": "六步实战",
+          "category": "场景实战",
+          "oneLiner": "六步实战压缩：UPPER+TRIM 洗编码、IF+OR 判渠道、SUMIFS 条件汇总、跨表折线看趋势——一份数据走完全流程。",
+          "explain": "就像分析日报的四连招：清洗输入 → 标记口径 → 分组汇总 → 趋势呈现——每步产出都是下一步的地基。",
+          "level": "高级",
+          "durationMin": 9,
+          "status": "live",
+          "app": "/apps/free-excel/index.html",
+          "mp4": "/src/standalone/public/showcase/free-excel.mp4"
+        },
+        {
+          "id": "inventory-reorder",
+          "fn": "补货模型",
+          "category": "场景实战",
+          "oneLiner": "补货模型三步：日均×(周期+安全天)算补货点、MAX(0,缺口)算建议量、IF 出状态——规则写成可更新公式。",
+          "explain": "就像库存策略：reorder_point = daily_sales * (lead_time + safety_days)，order_qty = max(0, rp - stock)。",
+          "level": "中级",
+          "durationMin": 6,
+          "status": "live",
+          "app": "/apps/inventory-reorder/index.html",
+          "mp4": "/src/standalone/public/showcase/inventory-reorder.mp4"
+        },
+        {
+          "id": "luke-charts",
+          "fn": "跨表趋势图",
+          "category": "场景实战",
+          "oneLiner": "跨表趋势图：先用跨表 SUM 算半年合计，再让副表（月度）的数据直接画进折线图。",
+          "explain": "就像报表分工：明细表存数据、汇总表出数、图表直接吃明细——改月度表，合计与图一起变。",
+          "level": "高级",
+          "durationMin": 6,
+          "status": "live",
+          "app": "/apps/luke-charts/index.html",
+          "mp4": "/src/standalone/public/showcase/luke-charts.mp4"
+        },
+        {
+          "id": "maf-charts",
+          "fn": "排名条形图",
+          "category": "场景实战",
+          "oneLiner": "排名条形图：先 SUM 算前五合计，再把已排序的数据画成条形——排名一眼看清。",
+          "explain": "就像 SQL：SELECT 市场, SUM(销售额) GROUP BY 市场 ORDER BY 2 DESC，排好序再画横条。",
+          "level": "中级",
+          "durationMin": 6,
+          "status": "live",
+          "app": "/apps/maf-charts/index.html",
+          "mp4": "/src/standalone/public/showcase/maf-charts.mp4"
+        },
+        {
+          "id": "plans",
+          "fn": "套餐建模",
+          "category": "场景实战",
+          "oneLiner": "套餐建模：固定费+MAX(0,超额)×单价写成三档公式，MIN 找最低、INDEX+MATCH 挑名字——用量一改全表重算。",
+          "explain": "就像定价引擎：cost = base + max(0, usage - quota) * overage_rate，再 argmin 出最优方案。",
+          "level": "高级",
+          "durationMin": 8,
+          "status": "live",
+          "app": "/apps/plans/index.html",
+          "mp4": "/src/standalone/public/showcase/plans.mp4"
+        },
+        {
+          "id": "portfolio-dashboard",
+          "fn": "跨表看板",
+          "category": "场景实战",
+          "oneLiner": "跨表看板三连：单引号跨表直引、跨表区域 SUM、链式 IF 引用本表产出——看板与明细分表管理。",
+          "explain": "就像 BI 看板：明细表（利润表）独立维护，看板只管取数与判定——数据改一处，看板全刷新。",
+          "level": "高级",
+          "durationMin": 8,
+          "status": "live",
+          "app": "/apps/portfolio-dashboard/index.html",
+          "mp4": "/src/standalone/public/showcase/portfolio-dashboard.mp4"
+        },
+        {
+          "id": "power-query",
+          "fn": "合并查询",
+          "category": "场景实战",
+          "oneLiner": "合并查询三连：XLOOKUP 跨表把单价带进订单、计算列算销售额、IF+OR 打有效标记——用公式复现 Power Query 的 merge/custom/validate。",
+          "explain": "就像 SQL 三连：LEFT JOIN 商品表带价 → SELECT 数量*单价 新列 → WHERE 数量>0 校验。",
+          "level": "中级",
+          "durationMin": 7,
+          "status": "live",
+          "app": "/apps/power-query/index.html",
+          "mp4": "/src/standalone/public/showcase/power-query.mp4"
+        },
+        {
+          "id": "retail-ops",
+          "fn": "零售清洗链",
+          "category": "场景实战",
+          "oneLiner": "零售清洗链：IF+AND 判有效、UPPER+TRIM 洗编码、SUMIFS 按标记汇总、COUNTIFS 同口径计数——UCI 真实数据 10 行子集。",
+          "explain": "就像真实 ETL：先打有效标记（Valid 列），再让汇总与计数都吃这个标记——口径一处定义、处处复用。",
+          "level": "高级",
+          "durationMin": 8,
+          "status": "live",
+          "app": "/apps/retail-ops/index.html",
+          "mp4": "/src/standalone/public/showcase/retail-ops.mp4"
+        },
+        {
+          "id": "supply-quality",
+          "fn": "加权口径",
+          "category": "场景实战",
+          "oneLiner": "加权口径四算：SUM/SUM 算整体缺陷率与单位成本、AVERAGE 做简单对照、相减看口径差——比率必须按量加权。",
+          "explain": "就像 SQL：SUM(col)/SUM(col) 聚合比 vs AVG(ratio) 行均比——分组聚合前不能平均比率。",
+          "level": "高级",
+          "durationMin": 8,
+          "status": "live",
+          "app": "/apps/supply-quality/index.html",
+          "mp4": "/src/standalone/public/showcase/supply-quality.mp4"
+        },
+        {
+          "id": "two-way-lookup",
+          "fn": "二维查找",
+          "category": "场景实战",
+          "oneLiner": "二维查找三步：双 MATCH 定行列交叉取值、XLOOKUP 整行变体同解、IF 引用结果做阈值判断。",
+          "explain": "就像 SQL：行条件 + 列条件的二维 WHERE——INDEX(区,行,列) 是矩阵的坐标取值。",
+          "level": "高级",
+          "durationMin": 7,
+          "status": "live",
+          "app": "/apps/two-way-lookup/index.html",
+          "mp4": "/src/standalone/public/showcase/two-way-lookup.mp4"
+        }
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "id": "col-lookup-lab",
+      "title": "查找实验三题",
+      "category": "查找引用",
+      "desc": "同一张商品表三种查找动作：向右查（VLOOKUP 列序号）→ 免列号（XLOOKUP 数组分离）→ 反查自由（INDEX＋MATCH）。",
+      "lessons": [
+        "vlookup-basic",
+        "xlookup",
+        "index-match"
+      ],
+      "missing": []
+    },
+    {
+      "id": "col-conditional-sum",
+      "title": "条件汇总三件套",
+      "category": "条件求和",
+      "desc": "按条件算数的三板斧：SUMIFS 求和 → COUNTIFS 计数 → AVERAGEIF 求均——条件成对写，一套骨架。",
+      "lessons": [
+        "sumifs",
+        "countifs",
+        "averageif"
+      ],
+      "missing": []
+    },
+    {
+      "id": "col-kpi-judge",
+      "title": "KPI 判定三件套",
+      "category": "逻辑判断",
+      "desc": "把数字变结论的三级判断：IF 单条件打标 → AND 多条件合判 → IFERROR 出错兜底。",
+      "lessons": [
+        "if-mark",
+        "and",
+        "iferror"
+      ],
+      "missing": []
+    }
+  ]
+}

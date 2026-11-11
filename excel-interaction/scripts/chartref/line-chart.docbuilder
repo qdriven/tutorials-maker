@@ -1,0 +1,24 @@
+// line-chart.docbuilder — Document Builder 脚本（C 方案：真图表对象基线）。
+// 用 ONLYOFFICE Document Builder（docbuilder.exe，免 Docker headless）生成带真折线图对象的
+// xlsx，作为 chart-line 课的 QC 基线：断言「图表存在、类型 line、数据序列 = 契约」。
+// 运行：docbuilder.exe line-chart.docbuilder（产物 line-chart.xlsx 与本脚本同目录）
+// 数据与 courses/chart-line.json 契约一致（6 行月度销售，末值 2190）。
+var oWorksheet = Api.CreateSheet("月度收入");
+oWorksheet.GetRange("A1").SetValue("月份");
+oWorksheet.GetRange("B1").SetValue("销售额");
+var months = ["1月", "2月", "3月", "4月", "5月", "6月"];
+var values = [980, 1120, 1050, 1360, 1640, 2190];
+for (var i = 0; i < months.length; i++) {
+  oWorksheet.GetRange("A" + (i + 2)).SetValue(months[i]);
+  oWorksheet.GetRange("B" + (i + 2)).SetValue(values[i]);
+}
+oWorksheet.GetRange("A1:B7").Select();
+
+var oWorkbook = Api.GetWorkbook();
+var oChart = oWorkbook.AddChart(oWorksheet, "A1:B7", "line", true, 10, 40, 600, 320);
+if (oChart) {
+  oChart.SetTitle("月度销售额趋势", 12);
+}
+
+builder.SaveFile("xlsx", "line-chart.xlsx");
+builder.CloseFile();

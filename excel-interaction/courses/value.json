@@ -1,0 +1,76 @@
+{
+  "$comment": "函数课契约（批量三转写）：素材取自 excel-animation docs/excel，公式已过 HyperFormula 终验探针（func-batch 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "value",
+  "fn": "VALUE",
+  "title": "VALUE 文本转数：文本金额变成可算的数",
+  "category": "文本清理",
+  "level": "初级",
+  "durationMin": 3,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/value.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "金额表",
+        "cells": {
+          "A1": "文本金额",
+          "B1": "数值金额",
+          "A2": "1200"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "B2",
+      "menu": "选中 B2",
+      "formula": "定位结果单元格",
+      "expect": "B2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "B2",
+      "menu": "输入框输入公式",
+      "formula": "=VALUE(A2)",
+      "expect": "B2 显示公式原文 =VALUE(A2)"
+    },
+    {
+      "step": 3,
+      "cell": "B2",
+      "menu": "回车确认",
+      "formula": "=VALUE(A2)",
+      "expect": "B2 显示 1200"
+    },
+    {
+      "step": 4,
+      "cell": "B2",
+      "menu": "选中 B2 查看编辑栏",
+      "formula": "=VALUE(A2)",
+      "expect": "编辑栏回显 =VALUE(A2)，B2 显示 1200"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "A2",
+      "meaning": "文本形式的数字：看着像数，其实是文本（左对齐）"
+    }
+  ],
+  "summary": {
+    "oneLiner": "VALUE：把看起来像数字的文本转成真数字——文本不转，SUM 都不认。",
+    "explain": "就像 SQL：CAST('1200' AS INT)，类型转换后再参与计算。",
+    "outro": "总结：VALUE 转数字、TEXT 转文本；先看单元格类型，再决定转不转。"
+  },
+  "checks": [
+    {
+      "cell": "B2",
+      "formula": "=VALUE(A2)",
+      "value": 1200
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

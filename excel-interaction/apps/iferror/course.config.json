@@ -1,0 +1,90 @@
+{
+  "$comment": "recipe 契约：从 courses/seeds/iferror.md 提炼，转写自 excel-animation docs/excel/03-formulas/if.md IFERROR 分支（探针已验证正常值 0.92 与除零兜底 0）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "iferror",
+  "fn": "IFERROR",
+  "title": "IFERROR 错误兜底：公式报错不再满屏 #N/A",
+  "category": "逻辑判断",
+  "level": "初级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/iferror.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "看板",
+        "cells": {
+          "A1": "指标",
+          "B1": "实际",
+          "C1": "目标",
+          "D1": "达成率",
+          "A2": "销售额",
+          "B2": 92000,
+          "C2": 100000,
+          "A3": "订单量",
+          "B3": 120,
+          "C3": 0,
+          "A4": "客单价",
+          "B4": 640,
+          "C4": 0
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "D2",
+      "menu": "选中 D2",
+      "formula": "定位达成率单元格",
+      "expect": "D2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "D2",
+      "menu": "输入框输入公式",
+      "formula": "=IFERROR(B2/C2,0)",
+      "expect": "D2 显示公式原文 =IFERROR(B2/C2,0)"
+    },
+    {
+      "step": 3,
+      "cell": "D2",
+      "menu": "回车确认",
+      "formula": "=IFERROR(B2/C2,0)",
+      "expect": "D2 显示 0.92（正常算出，不用兜底）"
+    },
+    {
+      "step": 4,
+      "cell": "D2",
+      "menu": "选中 D2 查看编辑栏",
+      "formula": "=IFERROR(B2/C2,0)",
+      "expect": "编辑栏回显 =IFERROR(B2/C2,0)，D2 显示 0.92"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "B2/C2",
+      "meaning": "原公式：正常算就返回它的结果（92000÷100000=0.92）"
+    },
+    {
+      "part": "0",
+      "meaning": "兜底值：原公式报错（除零 #DIV/0!）时返回它，错误不再上屏"
+    }
+  ],
+  "summary": {
+    "oneLiner": "IFERROR：公式报错就返回你写的兜底值——除零、查不到，报表不再满屏 #。",
+    "explain": "就像写 SQL：COALESCE(实际/目标, 0)，算不出给默认值，可读性优先。",
+    "outro": "总结：先老实算，算不出给兜底；兜底值口径要写清楚，别一律替换成 0。"
+  },
+  "checks": [
+    {
+      "cell": "D2",
+      "formula": "=IFERROR(B2/C2,0)",
+      "value": 0.92
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

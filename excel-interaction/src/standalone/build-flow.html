@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>如何构建这个动画视频流水线 — 无废话 Excel 教程</title>
+  <link rel="stylesheet" href="showcase.css" />
+  <style>
+    /* build-flow — 构建流程浏览器（process bar 形式，2026-11-10 定稿）：
+     * 顶部横向流程条（小）+ 左侧 sidebar 竖向步骤 + 右侧 markdown 文档（默认第 1 步）。
+     * 弃 canvas 改 DOM（用户决策：样式与站点统一优先；点击出内容 DOM 更稳）。
+     * 全部样式走 showcase.css token（kimi 语汇：金底 active / 墨边 / 圆角 3px）。 */
+    body.bf { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-ui); }
+
+    .bf-head {
+      display: flex; align-items: baseline; gap: 14px;
+      padding: 15px 26px 12px; background: var(--panel);
+    }
+    .bf-head h1 { font-size: 17px; margin: 0; }
+    .bf-head .bf-hint { font-size: 12.5px; color: var(--soft); }
+
+    /* 顶部流程条（小，横向五步） */
+    .bf-bar {
+      display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
+      padding: 10px 26px 14px; background: var(--panel);
+      border-bottom: 1.5px solid var(--fg); overflow-x: auto;
+    }
+    .bf-step {
+      display: flex; align-items: center; gap: 7px; white-space: nowrap;
+      padding: 6px 12px; font-size: 12.5px; cursor: pointer;
+      background: var(--sheet); color: var(--fg);
+      border: 1.5px solid var(--fg); border-radius: 3px;
+      font-family: var(--font-ui);
+    }
+    .bf-step:hover { background: var(--accent-soft); }
+    .bf-step.visited { background: var(--gold-soft); }
+    .bf-step.active { background: var(--gold); font-weight: 700; }
+    .bf-step .n {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--fg); color: var(--bg); font-size: 11px; font-weight: 700;
+      font-family: var(--font-mono);
+    }
+    .bf-step.active .n { background: var(--fg); color: var(--gold); }
+    .bf-arrow { color: var(--soft); font-size: 13px; flex: none; }
+
+    /* 主区：左 sidebar 步骤 + 右文档 */
+    .bf-main { display: flex; min-height: calc(100vh - 150px); }
+    .bf-side {
+      width: 236px; min-width: 236px; background: var(--panel);
+      border-right: 1.5px solid var(--fg); padding: 14px 13px;
+    }
+    .bf-side .nav-title { margin-bottom: 8px; }
+    .bf-sstep {
+      display: flex; flex-direction: column; gap: 2px; width: 100%;
+      padding: 8px 10px; margin-bottom: 4px; text-align: left; cursor: pointer;
+      background: transparent; color: var(--fg);
+      border: 1px solid transparent; border-radius: 3px;
+      font-family: var(--font-ui); font-size: 13px;
+    }
+    .bf-sstep:hover { background: var(--accent-soft); }
+    .bf-sstep.visited { background: var(--gold-soft); }
+    .bf-sstep.active { background: var(--gold); border-color: var(--fg); font-weight: 700; }
+    .bf-sstep .d { font-size: 11px; color: var(--soft); font-weight: 400; }
+    .bf-sstep.active .d { color: var(--fg); }
+
+    /* 文档区 */
+    .bf-doc { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .bf-nav {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 26px; border-bottom: 1px solid var(--line);
+      background: var(--sheet); position: sticky; top: 41px; z-index: 5; /* 41px = site-nav 高 */
+    }
+    .bf-btn {
+      border: 1.5px solid var(--fg); background: var(--panel); color: var(--fg);
+      border-radius: 3px; padding: 6px 13px; font-size: 13px; cursor: pointer; font-family: var(--font-ui);
+    }
+    .bf-btn:hover { background: var(--gold-soft); }
+    .bf-btn:disabled { opacity: 0.35; cursor: default; }
+    .bf-step-label { font-size: 14px; font-weight: 700; }
+    .bf-path {
+      font-family: var(--font-mono); font-size: 11.5px; color: var(--soft);
+      background: var(--band); border: 1px solid var(--line); border-radius: 3px;
+      padding: 3px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 50%;
+    }
+    .bf-nav .spacer { flex: 1; }
+    .bf-body { padding: 20px 30px 60px; max-width: 980px; }
+    .bf-loading { color: var(--soft); font-size: 13px; padding: 18px 0; }
+    .bf-err { color: var(--soft); font-size: 13px; padding: 18px 0; }
+    .bf-doc .md { background: var(--sheet); border: 1.5px solid var(--fg); border-radius: 4px; padding: 20px 24px; }
+
+    @media (max-width: 900px) {
+      .bf-side { display: none; }
+      .bf-path { display: none; }
+    }
+  </style>
+</head>
+<body class="bf">
+  <!-- 站点统一导航（home / 教程站 / 构建流程 三页互达） -->
+  <nav class="site-nav">
+    <span class="sn-brand">格数</span>
+    <a href="/src/standalone/home.html">🏠 目录</a>
+    <a href="/src/standalone/index.html">📚 教程站</a>
+    <a class="active" href="/src/standalone/build-flow.html">🧱 构建流程</a>
+  </nav>
+
+  <header class="bf-head">
+    <h1>🧱 如何构建这个动画视频流水线</h1>
+    <span class="bf-hint">流水线说明 · 点击任一步骤打开对应文档（默认展示第 1 步）</span>
+  </header>
+
+  <!-- 顶部流程条（process bar：小，横向表示过程） -->
+  <nav class="bf-bar" id="bf-bar" aria-label="构建流程"></nav>
+
+  <main class="bf-main">
+    <!-- sidebar：同样展示五步（竖向） -->
+    <aside class="bf-side" id="bf-side">
+      <div class="nav-title">构建步骤</div>
+    </aside>
+
+    <section class="bf-doc">
+      <div class="bf-nav">
+        <button type="button" class="bf-btn" id="bf-prev">‹ 上一步</button>
+        <span class="bf-step-label" id="bf-label"></span>
+        <span class="bf-path" id="bf-path"></span>
+        <span class="spacer"></span>
+        <button type="button" class="bf-btn" id="bf-next">下一步 ›</button>
+      </div>
+      <div class="bf-body" id="bf-view">
+        <div class="bf-loading">正在加载文档 …</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="md.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      /* 流水线五步（节点 = 真实文档，文件存在性已核验 2026-11-10；步骤按用户要求精简，
+       * 全站不出现该类说法） */
+      var STEPS = [
+        { title: "环境准备", desc: "check / install 初始化", doc: "/scripts/README.md" },
+        { title: "生成动画课", desc: "new.mjs → apps/<id>", doc: "/skill/excel-tutorial-maker/templates/README.md" },
+        { title: "验收", desc: "质量校验 + 真浏览器回归", doc: "/docs/build-method.md" },
+        { title: "出片", desc: "plan → render → qc", doc: "/skill/excel-desktop-recorder/SKILL.md" },
+        { title: "上架展示", desc: "recipes → home / showcase", doc: "/docs/pipeline.md" },
+      ];
+
+      var bar = document.getElementById("bf-bar");
+      var side = document.getElementById("bf-side");
+      var view = document.getElementById("bf-view");
+      var labelEl = document.getElementById("bf-label");
+      var pathEl = document.getElementById("bf-path");
+      var btnPrev = document.getElementById("bf-prev");
+      var btnNext = document.getElementById("bf-next");
+
+      var cur = 0;          /* 默认第 1 步（用户需求：一页全部默认展示第一个过程） */
+      var visited = { 0: true };
+      var docToken = 0;
+
+      /* ---------- 顶部流程条（process bar） ---------- */
+      bar.innerHTML = STEPS.map(function (s, i) {
+        return (i > 0 ? '<span class="bf-arrow">→</span>' : "") +
+          '<button type="button" class="bf-step" data-i="' + i + '">' +
+          '<span class="n">' + (i + 1) + "</span>" + s.title + "</button>";
+      }).join("");
+
+      /* ---------- sidebar 竖向步骤 ---------- */
+      side.insertAdjacentHTML(
+        "beforeend",
+        STEPS.map(function (s, i) {
+          return '<button type="button" class="bf-sstep" data-i="' + i + '">' +
+            "<span>" + (i + 1) + ". " + s.title + "</span>" +
+            '<span class="d">' + s.desc + "</span></button>";
+        }).join("")
+      );
+
+      function syncSteps() {
+        bar.querySelectorAll(".bf-step").forEach(function (b, i) {
+          b.classList.toggle("active", i === cur);
+          b.classList.toggle("visited", i !== cur && !!visited[i]);
+        });
+        side.querySelectorAll(".bf-sstep").forEach(function (b, i) {
+          b.classList.toggle("active", i === cur);
+          b.classList.toggle("visited", i !== cur && !!visited[i]);
+        });
+      }
+
+      function selectStep(i) {
+        cur = i;
+        visited[i] = true;
+        syncSteps();
+        labelEl.textContent = "第 " + (i + 1) + " 步 · " + STEPS[i].title;
+        pathEl.textContent = STEPS[i].doc;
+        pathEl.title = STEPS[i].doc;
+        btnPrev.disabled = i <= 0;
+        btnNext.disabled = i >= STEPS.length - 1;
+
+        var token = ++docToken;
+        view.innerHTML = '<div class="bf-loading">正在加载 ' + STEPS[i].doc + " …</div>";
+        fetch(STEPS[i].doc)
+          .then(function (r) {
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            return r.text();
+          })
+          .then(function (text) {
+            if (token !== docToken) return; /* 已被更新的点击取代 */
+            view.innerHTML = '<article class="md">' + MD.render(text) + "</article>";
+          })
+          .catch(function (err) {
+            if (token !== docToken) return;
+            view.innerHTML = '<div class="bf-err">文档加载失败：' + String(err.message || err) +
+              "<br /><code>" + STEPS[i].doc + "</code></div>";
+          });
+      }
+
+      /* 两处步骤点击联动（事件委托） */
+      bar.addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-i]");
+        if (b) selectStep(Number(b.getAttribute("data-i")));
+      });
+      side.addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-i]");
+        if (b) selectStep(Number(b.getAttribute("data-i")));
+      });
+      btnPrev.addEventListener("click", function () { if (cur > 0) selectStep(cur - 1); });
+      btnNext.addEventListener("click", function () { if (cur < STEPS.length - 1) selectStep(cur + 1); });
+
+      /* 键盘顺序导航（可选便利） */
+      document.addEventListener("keydown", function (e) {
+        if (e.target && /input|textarea|select/i.test(e.target.tagName)) return;
+        if (e.key === "ArrowLeft" && cur > 0) selectStep(cur - 1);
+        if (e.key === "ArrowRight" && cur < STEPS.length - 1) selectStep(cur + 1);
+      });
+
+      /* 默认展示第 1 步 */
+      selectStep(0);
+    })();
+  </script>
+</body>
+</html>

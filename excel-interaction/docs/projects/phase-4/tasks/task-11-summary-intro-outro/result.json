@@ -1,0 +1,23 @@
+{
+  "idle_has_oneliner": true,
+  "idle_has_explain_sql": true,
+  "idle_caption": "VLOOKUP：拿一个值，去一个范围里查它在哪一行，取回那一行的另一列。｜就像写 SQL：SELECT 姓名 FROM 员工表 WHERE 工号 = 1003，按工号查姓名。",
+  "step_during_intro_beat": 0,
+  "intro_persistent_at_step2": true,
+  "folds_auto_step2": [
+    false,
+    true,
+    false,
+    false
+  ],
+  "done_has_outro": true,
+  "done_caption_has_outro": true,
+  "done_verified_ok": true,
+  "folds_practice": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "console_errors": []
+}

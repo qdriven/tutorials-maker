@@ -1,0 +1,220 @@
+{
+  "$comment": "L2 A 类场景课（A 类场景课（3 块 12 步，跨表+链式）；素材 docs/excel/05-workspace-lessons/07-power-query.md。）公式已过 HyperFormula 终验探针（aclass-gen 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "power-query",
+  "fn": "合并查询",
+  "title": "合并查询三连：XLOOKUP 跨表带价 → 计算列 → 有效标记",
+  "category": "场景实战",
+  "level": "中级",
+  "durationMin": 7,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/power-query.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "订单",
+        "cells": {
+          "A1": "订单号",
+          "B1": "SKU",
+          "C1": "数量",
+          "D1": "单价",
+          "E1": "销售额",
+          "F1": "有效标记",
+          "A2": "SO-1001",
+          "B2": "P-101",
+          "C2": 8,
+          "A3": "SO-1002",
+          "B3": "P-103",
+          "C3": 4,
+          "A4": "SO-1003",
+          "B4": "P-102",
+          "C4": 3
+        }
+      },
+      {
+        "name": "商品表",
+        "cells": {
+          "A1": "SKU",
+          "B1": "商品",
+          "C1": "类别",
+          "D1": "单价",
+          "E1": "库存",
+          "A2": "P-101",
+          "B2": "冷萃咖啡",
+          "C2": "饮品",
+          "D2": 120,
+          "E2": 36,
+          "A3": "P-102",
+          "B3": "精品茶",
+          "C3": "饮品",
+          "D3": 80,
+          "E3": 58,
+          "A4": "P-103",
+          "B4": "咖啡豆",
+          "C4": "原料",
+          "D4": 200,
+          "E4": 24,
+          "A5": "P-104",
+          "B5": "保温杯",
+          "C5": "周边",
+          "D5": 150,
+          "E5": 42,
+          "A6": "P-105",
+          "B6": "手冲壶",
+          "C6": "器具",
+          "D6": 260,
+          "E6": 12
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "D2",
+      "menu": "选中 D2",
+      "formula": "定位D2 结果格",
+      "expect": "D2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "D2",
+      "menu": "输入框输入公式",
+      "formula": "=XLOOKUP(B2,'商品表'!$A$2:$A$6,'商品表'!$D$2:$D$6,\"未匹配\")",
+      "expect": "D2 显示公式原文 =XLOOKUP(B2,'商品表'!$A$2:$A$6,'商品表'!$D$2:$D$6,\"未匹配\")"
+    },
+    {
+      "step": 3,
+      "cell": "D2",
+      "menu": "回车确认",
+      "formula": "=XLOOKUP(B2,'商品表'!$A$2:$A$6,'商品表'!$D$2:$D$6,\"未匹配\")",
+      "expect": "D2 显示 120（从商品表带出 P-101 单价）"
+    },
+    {
+      "step": 4,
+      "cell": "D2",
+      "menu": "选中 D2 查看编辑栏",
+      "formula": "=XLOOKUP(B2,'商品表'!$A$2:$A$6,'商品表'!$D$2:$D$6,\"未匹配\")",
+      "expect": "编辑栏回显 =XLOOKUP(B2,'商品表'!$A$2:$A$6,'商品表'!$D$2:$D$6,\"未匹配\")，D2 显示 120"
+    },
+    {
+      "step": 5,
+      "cell": "E2",
+      "menu": "选中 E2",
+      "formula": "定位E2 结果格",
+      "expect": "E2 被选中，输入框激活"
+    },
+    {
+      "step": 6,
+      "cell": "E2",
+      "menu": "输入框输入公式",
+      "formula": "=C2*D2",
+      "expect": "E2 显示公式原文 =C2*D2"
+    },
+    {
+      "step": 7,
+      "cell": "E2",
+      "menu": "回车确认",
+      "formula": "=C2*D2",
+      "expect": "E2 显示 960（8×120，计算列随源数据更新）"
+    },
+    {
+      "step": 8,
+      "cell": "E2",
+      "menu": "选中 E2 查看编辑栏",
+      "formula": "=C2*D2",
+      "expect": "编辑栏回显 =C2*D2，E2 显示 960"
+    },
+    {
+      "step": 9,
+      "cell": "F2",
+      "menu": "选中 F2",
+      "formula": "定位F2 结果格",
+      "expect": "F2 被选中，输入框激活"
+    },
+    {
+      "step": 10,
+      "cell": "F2",
+      "menu": "输入框输入公式",
+      "formula": "=IF(OR(C2<=0,D2<=0),0,1)",
+      "expect": "F2 显示公式原文 =IF(OR(C2<=0,D2<=0),0,1)"
+    },
+    {
+      "step": 11,
+      "cell": "F2",
+      "menu": "回车确认",
+      "formula": "=IF(OR(C2<=0,D2<=0),0,1)",
+      "expect": "F2 显示 1（数量 8、单价 120 都为正，行有效）"
+    },
+    {
+      "step": 12,
+      "cell": "F2",
+      "menu": "选中 F2 查看编辑栏",
+      "formula": "=IF(OR(C2<=0,D2<=0),0,1)",
+      "expect": "编辑栏回显 =IF(OR(C2<=0,D2<=0),0,1)，F2 显示 1"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "B2",
+      "meaning": "查找值：本行 SKU（相对引用，向下填充自动跟着走）",
+      "step": 2
+    },
+    {
+      "part": "'商品表'!$A$2:$A$6",
+      "meaning": "查找数组：商品表 SKU 列（$ 锁定，中文表名单引号）",
+      "step": 2
+    },
+    {
+      "part": "'商品表'!$D$2:$D$6",
+      "meaning": "返回数组：单价列——与查找数组分离，合并即带价",
+      "step": 2
+    },
+    {
+      "part": "C2",
+      "meaning": "数量：本行 8",
+      "step": 6
+    },
+    {
+      "part": "D2",
+      "meaning": "单价：第①块 XLOOKUP 带回的 120（链式依赖）",
+      "step": 6
+    },
+    {
+      "part": "C2<=0",
+      "meaning": "条件1：数量非正（退货行）",
+      "step": 10
+    },
+    {
+      "part": "D2<=0",
+      "meaning": "条件2：单价非正——OR 任一成立即判无效",
+      "step": 10
+    }
+  ],
+  "summary": {
+    "oneLiner": "合并查询三连：XLOOKUP 跨表把单价带进订单、计算列算销售额、IF+OR 打有效标记——用公式复现 Power Query 的 merge/custom/validate。",
+    "explain": "就像 SQL 三连：LEFT JOIN 商品表带价 → SELECT 数量*单价 新列 → WHERE 数量>0 校验。",
+    "outro": "总结：合并（跨表带值）→ 计算（新列派生）→ 校验（规则打标）——数据管道的三步最小闭环。"
+  },
+  "checks": [
+    {
+      "cell": "D2",
+      "formula": "=XLOOKUP(B2,'商品表'!$A$2:$A$6,'商品表'!$D$2:$D$6,\"未匹配\")",
+      "value": 120
+    },
+    {
+      "cell": "E2",
+      "formula": "=C2*D2",
+      "value": 960
+    },
+    {
+      "cell": "F2",
+      "formula": "=IF(OR(C2<=0,D2<=0),0,1)",
+      "value": 1
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "$comment": "L2 图表复合课（阶段 4）：SUM 公式块 + 条形图块（chart type=bar，单表）。chart-layer bar 渲染器已支持。公式已过探针（=SUM(B2:B6)→6690）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "maf-charts",
+  "fn": "排名条形图",
+  "title": "市场排名条形图：前五合计 → 排序画条形",
+  "category": "场景实战",
+  "level": "中级",
+  "durationMin": 6,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/maf-charts.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "市场数据",
+        "cells": {
+          "A1": "市场",
+          "B1": "销售额",
+          "A2": "华东",
+          "B2": 2000,
+          "A3": "华北",
+          "B3": 1600,
+          "A4": "华南",
+          "B4": 1590,
+          "A5": "西南",
+          "B5": 900,
+          "A6": "东北",
+          "B6": 600,
+          "A7": "前五合计",
+          "C1": "排名任务"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "C2",
+      "menu": "选中 C2",
+      "formula": "定位前五合计结果格",
+      "expect": "C2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "C2",
+      "menu": "输入框输入公式",
+      "formula": "=SUM(B2:B6)",
+      "expect": "C2 显示公式原文 =SUM(B2:B6)"
+    },
+    {
+      "step": 3,
+      "cell": "C2",
+      "menu": "回车确认",
+      "formula": "=SUM(B2:B6)",
+      "expect": "C2 显示 6690（五个市场一次加总）"
+    },
+    {
+      "step": 4,
+      "cell": "C2",
+      "menu": "选中 C2 查看编辑栏",
+      "formula": "=SUM(B2:B6)",
+      "expect": "编辑栏回显 =SUM(B2:B6)，C2 显示 6690"
+    },
+    {
+      "step": 5,
+      "cell": "A1:B6",
+      "menu": "选中数据区（含表头）",
+      "formula": "=SUM(B2:B6)",
+      "expect": "A1:B6 被选中（市场+销售额两列高亮）"
+    },
+    {
+      "step": 6,
+      "cell": "A1:B6",
+      "menu": "插入 → 条形图（已按销售额降序）",
+      "formula": "=SUM(B2:B6)",
+      "expect": "图表菜单展开，条形图入口可见"
+    },
+    {
+      "step": 7,
+      "action": "chart",
+      "cell": "A1:B6",
+      "menu": "点击条形图",
+      "formula": "市场(横轴)→销售额(纵轴)",
+      "expect": "画布渲染条形图：华东最长 2000，东北最短 600，排名一目了然"
+    },
+    {
+      "step": 8,
+      "action": "chart",
+      "cell": "A1:B6",
+      "menu": "读图",
+      "formula": "市场(横轴)→销售额(纵轴)",
+      "expect": "读图结论标注：华东居首 2000，西南东北明显落后"
+    }
+  ],
+  "chart": {
+    "type": "bar",
+    "title": "市场销售排名",
+    "xAxis": "A2:A6",
+    "series": [
+      {
+        "name": "销售额",
+        "values": "B2:B6"
+      }
+    ]
+  },
+  "formulaArgs": [
+    {
+      "part": "B2:B6",
+      "meaning": "求和区域：五个市场的销售额（前五合计）",
+      "step": 2
+    }
+  ],
+  "summary": {
+    "oneLiner": "排名条形图：先 SUM 算前五合计，再把已排序的数据画成条形——排名一眼看清。",
+    "explain": "就像 SQL：SELECT 市场, SUM(销售额) GROUP BY 市场 ORDER BY 2 DESC，排好序再画横条。",
+    "outro": "总结：排名用条形图（类别名长也不怕）；数据先排序再画，长短直接编码名次。"
+  },
+  "checks": [
+    {
+      "cell": "C2",
+      "formula": "=SUM(B2:B6)",
+      "value": 6690
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

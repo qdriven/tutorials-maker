@@ -1,0 +1,102 @@
+{
+  "$comment": "图表课契约（批量转写）：从 excel-animation docs/excel/02-charts 条形图 篇转写（chart-batch 程序化生成）。模拟渲染边界见 templates/handsontable/README.md「图表模拟层」",
+  "id": "chart-bar",
+  "fn": "条形图",
+  "title": "条形图做排名：地区对销售额",
+  "category": "图表选型",
+  "level": "初级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/chart-bar.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "地区表",
+        "cells": {
+          "A1": "地区",
+          "B1": "销售额",
+          "A2": "华东",
+          "B2": 2000,
+          "A3": "华北",
+          "B3": 1600,
+          "A4": "华南",
+          "B4": 1590,
+          "A5": "西南",
+          "B5": 900,
+          "A6": "东北",
+          "B6": 600
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "A1:B6",
+      "menu": "选中数据区（含表头）",
+      "formula": "=B6",
+      "expect": "A1:B6 被选中（两列高亮）"
+    },
+    {
+      "step": 2,
+      "cell": "A1:B6",
+      "menu": "插入 → 条形图",
+      "formula": "=B6",
+      "expect": "图表菜单展开，条形图入口可见"
+    },
+    {
+      "step": 3,
+      "action": "chart",
+      "cell": "A1:B6",
+      "menu": "点击条形图",
+      "formula": "地区(横轴)=已排序类别，销售额(纵轴)=数值",
+      "expect": "画布渲染条形图：华东最长 2000，东北最短 600，排名从上到下一目了然。"
+    },
+    {
+      "step": 4,
+      "action": "chart",
+      "cell": "A1:B6",
+      "menu": "读图",
+      "formula": "地区(横轴)=已排序类别，销售额(纵轴)=数值",
+      "expect": "读图结论标注：华东最长 2000，东北最短 600，排名从上到下一目了然。"
+    }
+  ],
+  "chart": {
+    "type": "bar",
+    "title": "地区做排名",
+    "xAxis": "A2:A6",
+    "series": [
+      {
+        "name": "销售额",
+        "values": "B2:B6"
+      }
+    ]
+  },
+  "formulaArgs": [
+    {
+      "part": "地区(横轴)",
+      "meaning": "地区(横轴)=已排序类别"
+    },
+    {
+      "part": "销售额(纵轴)",
+      "meaning": "销售额(纵轴)=数值"
+    }
+  ],
+  "summary": {
+    "oneLiner": "条形图：做排名——横向条形从长到短排，类别多、名字长也看得清。",
+    "explain": "就像写 SQL：SELECT 地区, SUM(销售额) GROUP BY 地区 ORDER BY 2 DESC，排好序再画横条。",
+    "outro": "总结：排名用排序后的条形图；精确比较相近类别时它比柱形更清楚。"
+  },
+  "checks": [
+    {
+      "cell": "B6",
+      "formula": "=B6",
+      "value": 600
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

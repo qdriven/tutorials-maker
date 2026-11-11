@@ -1,0 +1,20 @@
+{
+  "name": "Excel 实机教程驱动",
+  "guid": "asc.{7D4B6B2E-3C1A-4E8F-9A21-5F0C8D7E6B13}",
+  "baseUrl": "",
+  "variations": [
+    {
+      "description": "由网页教程面板驱动 ONLYOFFICE 表格执行的隐藏插件",
+      "url": "index.html",
+      "icons": ["icon.png"],
+      "isViewer": false,
+      "EditorsSupport": ["cell"],
+      "isVisual": false,
+      "isModal": false,
+      "isInsideMode": false,
+      "initDataType": "none",
+      "initData": "",
+      "buttons": []
+    }
+  ]
+}

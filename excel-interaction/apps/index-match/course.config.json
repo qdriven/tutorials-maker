@@ -1,0 +1,104 @@
+{
+  "$comment": "recipe 契约：从 courses/seeds/index-match.md 提炼，转写自 excel-animation docs/excel 查找专题（探针已验证 INDEX(D,MATCH) 真算=150）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "index-match",
+  "fn": "INDEX＋MATCH",
+  "title": "INDEX＋MATCH 双剑合璧：按 SKU 查单价",
+  "category": "查找引用",
+  "level": "中级",
+  "durationMin": 5,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/index-match.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "商品表",
+        "cells": {
+          "A1": "SKU",
+          "B1": "商品",
+          "C1": "类别",
+          "D1": "单价",
+          "E1": "库存",
+          "F1": "查询单价",
+          "A2": "P-101",
+          "B2": "冷萃咖啡",
+          "C2": "饮品",
+          "D2": 120,
+          "E2": 36,
+          "A3": "P-102",
+          "B3": "精品茶",
+          "C3": "饮品",
+          "D3": 80,
+          "E3": 58,
+          "A4": "P-103",
+          "B4": "咖啡豆",
+          "C4": "原料",
+          "D4": 200,
+          "E4": 24,
+          "A5": "P-104",
+          "B5": "保温杯",
+          "C5": "周边",
+          "D5": 150,
+          "E5": 42,
+          "A6": "手冲壶单价"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "F2",
+      "menu": "选中 F2",
+      "formula": "定位查询结果单元格",
+      "expect": "F2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "F2",
+      "menu": "输入框输入公式",
+      "formula": "=INDEX(D2:D5,MATCH(\"P-104\",A2:A5,0))",
+      "expect": "F2 显示公式原文 =INDEX(D2:D5,MATCH(\"P-104\",A2:A5,0))"
+    },
+    {
+      "step": 3,
+      "cell": "F2",
+      "menu": "回车确认",
+      "formula": "=INDEX(D2:D5,MATCH(\"P-104\",A2:A5,0))",
+      "expect": "F2 显示 150"
+    },
+    {
+      "step": 4,
+      "cell": "F2",
+      "menu": "选中 F2 查看编辑栏",
+      "formula": "=INDEX(D2:D5,MATCH(\"P-104\",A2:A5,0))",
+      "expect": "编辑栏回显 =INDEX(D2:D5,MATCH(\"P-104\",A2:A5,0))，F2 显示 150"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "D2:D5",
+      "meaning": "返回区域：INDEX 从这里取值（要哪列指哪列，可向左查）"
+    },
+    {
+      "part": "MATCH(\"P-104\",A2:A5,0)",
+      "meaning": "内层定位：在 SKU 列找 P-104 的位置序号（0=精确匹配）"
+    }
+  ],
+  "summary": {
+    "oneLiner": "INDEX＋MATCH：MATCH 找到在第几行，INDEX 取那一行的值——向左向右都自由。",
+    "explain": "就像写 SQL：SELECT 单价 FROM 商品表 WHERE SKU = 'P-104'，但行列解耦、列序不再重要。",
+    "outro": "总结：MATCH 定位、INDEX 取值；查找列与返回列各自独立，插列删列都不怕。"
+  },
+  "checks": [
+    {
+      "cell": "F2",
+      "formula": "=INDEX(D2:D5,MATCH(\"P-104\",A2:A5,0))",
+      "value": 150
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

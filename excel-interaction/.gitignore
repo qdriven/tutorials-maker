@@ -1,0 +1,17 @@
+# 产物：媒体输出（视频/配音/帧/录制计划），只保留说明文件
+out/*
+!out/README.md
+
+# chartref 产物（docbuilder 确定性再生，不入库）
+scripts/chartref/*.xlsx
+
+# LibreOffice 探针 profile（运行时生成，路径超长不入库）
+scripts/recorder/.probe-profile*/
+scripts/recorder/probe4-shot.png
+scripts/recorder/probe4.log
+
+scripts/recorder/__pycache__/
+scripts/recorder/uno-chart-probe.json
+
+# 诊断截图（运行时产物）
+scripts/recorder/debug-oo.png

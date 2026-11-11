@@ -1,0 +1,656 @@
+{
+  "$comment": "展示层清单（demo/doc/app 三型登记）。path 以域根为站点根；app 的 iframe src 必须显式 index.html（目录 URL 会 404）。app 条目由 new.mjs 自动 upsert、demo 条目由 render-video.mjs 落 src/standalone/public/showcase/ 后 upsert；scripts/showcase/check-tutorials.mjs 校验。",
+  "items": [
+    {
+      "id": "vlookup-basic",
+      "type": "app",
+      "title": "VLOOKUP 查找匹配：按工号自动查姓名",
+      "description": "VLOOKUP：拿一个值，去一个范围里查它在哪一行，取回那一行的另一列。",
+      "path": "/apps/vlookup-basic/index.html"
+    },
+    {
+      "id": "vlookup-basic-video",
+      "type": "demo",
+      "title": "VLOOKUP 查找匹配：按工号自动查姓名 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/vlookup-basic.mp4"
+    },
+    {
+      "id": "contract-schema",
+      "type": "doc",
+      "title": "契约 schema · course.json",
+      "description": "课程契约字段定义（data/guide/formulaArgs/summary/checks/narration）——单源双产物的事实源。",
+      "path": "/skill/excel-tutorial-maker/references/contract-schema.md"
+    },
+    {
+      "id": "project-index",
+      "type": "doc",
+      "title": "项目文档索引",
+      "description": "docs/index.md：构建方式、模块功能描述、phase 0–8 执行记录入口。",
+      "path": "/docs/index.md"
+    },
+    {
+      "id": "sum-basic",
+      "type": "app",
+      "title": "SUM 求和：把一片区域加总",
+      "description": "SUM：把一片区域里的数字全部加起来，得到一个总数。",
+      "path": "/apps/sum-basic/index.html"
+    },
+    {
+      "id": "sum-basic-video",
+      "type": "demo",
+      "title": "SUM 求和：把一片区域加总 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/sum-basic.mp4"
+    },
+    {
+      "id": "sumifs",
+      "type": "app",
+      "title": "SUMIFS 按条件求和：只算华东＋线上",
+      "description": "SUMIFS：只把满足条件的行加起来——求和区域在前，条件区域和条件成对跟在后面。",
+      "path": "/apps/sumifs/index.html"
+    },
+    {
+      "id": "countifs",
+      "type": "app",
+      "title": "COUNTIFS 按条件计数：数出华北大额订单",
+      "description": "COUNTIFS：数出同时满足多个条件的行数——条件区域和条件成对写，几个条件写几对。",
+      "path": "/apps/countifs/index.html"
+    },
+    {
+      "id": "if-mark",
+      "type": "app",
+      "title": "IF 按条件标记：给销售额贴大额标签",
+      "description": "IF：判断一个条件，真就返回第一个值，假就返回第二个值——三段结构缺一不可。",
+      "path": "/apps/if-mark/index.html"
+    },
+    {
+      "id": "chart-line",
+      "type": "app",
+      "title": "折线图看趋势：销售额随月份怎么变",
+      "description": "折线图：看趋势——一个有序时间字段加一个数值系列，连线看方向和拐点。",
+      "path": "/apps/chart-line/index.html"
+    },
+    {
+      "id": "chart-column",
+      "type": "app",
+      "title": "簇状柱形图比类别：月份对销售金额",
+      "description": "簇状柱形图：比类别——几根柱子排在一起，谁高谁低一眼见分晓。",
+      "path": "/apps/chart-column/index.html"
+    },
+    {
+      "id": "chart-bar",
+      "type": "app",
+      "title": "条形图做排名：地区对销售额",
+      "description": "条形图：做排名——横向条形从长到短排，类别多、名字长也看得清。",
+      "path": "/apps/chart-bar/index.html"
+    },
+    {
+      "id": "chart-pie",
+      "type": "app",
+      "title": "饼图／环形图看占比：渠道对销售额",
+      "description": "饼图：看占比——单系列非负值，每块扇形占整个圆的百分比。",
+      "path": "/apps/chart-pie/index.html"
+    },
+    {
+      "id": "chart-scatter",
+      "type": "app",
+      "title": "XY 散点图找关系：折扣对毛利率",
+      "description": "散点图：找关系——两个数值变量各占一轴，看点是聚在一起还是散开。",
+      "path": "/apps/chart-scatter/index.html"
+    },
+    {
+      "id": "chart-stacked",
+      "type": "app",
+      "title": "堆积柱形图看构成变化：月份对销售金额",
+      "description": "堆积柱形图：看构成变化——每根柱子分两段，总量和构成一起看。",
+      "path": "/apps/chart-stacked/index.html"
+    },
+    {
+      "id": "chart-pie-video",
+      "type": "demo",
+      "title": "饼图／环形图看占比：渠道对销售额 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/chart-pie.mp4"
+    },
+    {
+      "id": "chart-column-video",
+      "type": "demo",
+      "title": "簇状柱形图比类别：月份对销售金额 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/chart-column.mp4"
+    },
+    {
+      "id": "chart-bar-video",
+      "type": "demo",
+      "title": "条形图做排名：地区对销售额 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/chart-bar.mp4"
+    },
+    {
+      "id": "chart-scatter-video",
+      "type": "demo",
+      "title": "XY 散点图找关系：折扣对毛利率 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/chart-scatter.mp4"
+    },
+    {
+      "id": "chart-stacked-video",
+      "type": "demo",
+      "title": "堆积柱形图看构成变化：月份对销售金额 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/chart-stacked.mp4"
+    },
+    {
+      "id": "chart-line-video",
+      "type": "demo",
+      "title": "折线图看趋势：销售额随月份怎么变 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/chart-line.mp4"
+    },
+    {
+      "id": "sumifs-video",
+      "type": "demo",
+      "title": "SUMIFS 按条件求和：只算华东＋线上 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/sumifs.mp4"
+    },
+    {
+      "id": "countifs-video",
+      "type": "demo",
+      "title": "COUNTIFS 按条件计数：数出华北大额订单 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/countifs.mp4"
+    },
+    {
+      "id": "if-mark-video",
+      "type": "demo",
+      "title": "IF 按条件标记：给销售额贴大额标签 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/if-mark.mp4"
+    },
+    {
+      "id": "xlookup",
+      "type": "app",
+      "title": "XLOOKUP 查找匹配：按 SKU 查商品名",
+      "description": "XLOOKUP：拿一个值去一列里找，取回同一行另一列的值——查不到就返回你写的兜底值。",
+      "path": "/apps/xlookup/index.html"
+    },
+    {
+      "id": "xlookup-video",
+      "type": "demo",
+      "title": "XLOOKUP 查找匹配：按 SKU 查商品名 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/xlookup.mp4"
+    },
+    {
+      "id": "trim-clean",
+      "type": "app",
+      "title": "TRIM＋CLEAN 清理文本：把带空格的地区洗干净",
+      "description": "TRIM＋CLEAN：去掉文本前后的空格和不可见字符——\" 华东 \"和\"华东\"从此是同一个值。",
+      "path": "/apps/trim-clean/index.html"
+    },
+    {
+      "id": "trim-clean-video",
+      "type": "demo",
+      "title": "TRIM＋CLEAN 清理文本：把带空格的地区洗干净 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/trim-clean.mp4"
+    },
+    {
+      "id": "index-match",
+      "type": "app",
+      "title": "INDEX＋MATCH 双剑合璧：按 SKU 查单价",
+      "description": "INDEX＋MATCH：MATCH 找到在第几行，INDEX 取那一行的值——向左向右都自由。",
+      "path": "/apps/index-match/index.html"
+    },
+    {
+      "id": "index-match-video",
+      "type": "demo",
+      "title": "INDEX＋MATCH 双剑合璧：按 SKU 查单价 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/index-match.mp4"
+    },
+    {
+      "id": "iferror",
+      "type": "app",
+      "title": "IFERROR 错误兜底：公式报错不再满屏 #N/A",
+      "description": "IFERROR：公式报错就返回你写的兜底值——除零、查不到，报表不再满屏 #。",
+      "path": "/apps/iferror/index.html"
+    },
+    {
+      "id": "iferror-video",
+      "type": "demo",
+      "title": "IFERROR 错误兜底：公式报错不再满屏 #N/A · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/iferror.mp4"
+    },
+    {
+      "id": "chart-histogram",
+      "type": "app",
+      "title": "直方图看分布：分箱对订单数",
+      "description": "直方图：看分布——连续数值按区间分箱，每箱一根柱，看数据集中在哪段。",
+      "path": "/apps/chart-histogram/index.html"
+    },
+    {
+      "id": "chart-combo",
+      "type": "app",
+      "title": "组合图量率同看：月份对销售额",
+      "description": "组合图：量率同看——柱形管数量（左轴），折线管比率（右轴），一张图两种口径。",
+      "path": "/apps/chart-combo/index.html"
+    },
+    {
+      "id": "chart-histogram-video",
+      "type": "demo",
+      "title": "直方图看分布：分箱对订单数 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/chart-histogram.mp4"
+    },
+    {
+      "id": "chart-combo-video",
+      "type": "demo",
+      "title": "组合图量率同看：月份对销售额 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/chart-combo.mp4"
+    },
+    {
+      "id": "average",
+      "type": "app",
+      "title": "AVERAGE 平均值：五笔销售的平均水平",
+      "description": "AVERAGE：把一片区域的数字加起来再除以个数，得到平均水平。",
+      "path": "/apps/average/index.html"
+    },
+    {
+      "id": "max",
+      "type": "app",
+      "title": "MAX 最大值：找出最高的那笔销售",
+      "description": "MAX：在一串数字里挑出最大的那个——极值一眼看到。",
+      "path": "/apps/max/index.html"
+    },
+    {
+      "id": "min",
+      "type": "app",
+      "title": "MIN 最小值：找出最低的那笔销售",
+      "description": "MIN：在一串数字里挑出最小的那个——谷值同样重要。",
+      "path": "/apps/min/index.html"
+    },
+    {
+      "id": "maxifs",
+      "type": "app",
+      "title": "MAXIFS 条件最大：华北最高的订单",
+      "description": "MAXIFS：先按条件筛行，再从剩下的数里取最大——条件版 MAX。",
+      "path": "/apps/maxifs/index.html"
+    },
+    {
+      "id": "averageif",
+      "type": "app",
+      "title": "AVERAGEIF 条件均值：华东订单的平均销售额",
+      "description": "AVERAGEIF：只把符合条件的行拿来求平均——条件版 AVERAGE。",
+      "path": "/apps/averageif/index.html"
+    },
+    {
+      "id": "left",
+      "type": "app",
+      "title": "LEFT 文本提取：从原始记录拆出姓名",
+      "description": "LEFT：从文本左边数几个字符取出来——定长字段拆分第一步。",
+      "path": "/apps/left/index.html"
+    },
+    {
+      "id": "substitute",
+      "type": "app",
+      "title": "SUBSTITUTE 文本替换：批量改编号前缀",
+      "description": "SUBSTITUTE：把文本里的一段字精确替换成另一段——批量改写不求人。",
+      "path": "/apps/substitute/index.html"
+    },
+    {
+      "id": "value",
+      "type": "app",
+      "title": "VALUE 文本转数：文本金额变成可算的数",
+      "description": "VALUE：把看起来像数字的文本转成真数字——文本不转，SUM 都不认。",
+      "path": "/apps/value/index.html"
+    },
+    {
+      "id": "round",
+      "type": "app",
+      "title": "ROUND 四舍五入：小数保留一位",
+      "description": "ROUND：四舍五入到指定位数——报表数字的最后一步。",
+      "path": "/apps/round/index.html"
+    },
+    {
+      "id": "and",
+      "type": "app",
+      "title": "AND 组合判断：两个条件同时成立",
+      "description": "AND：所有条件都为真才返回 TRUE——一票否决的组合判断。",
+      "path": "/apps/and/index.html"
+    },
+    {
+      "id": "average-video",
+      "type": "demo",
+      "title": "AVERAGE 平均值：五笔销售的平均水平 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/average.mp4"
+    },
+    {
+      "id": "max-video",
+      "type": "demo",
+      "title": "MAX 最大值：找出最高的那笔销售 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/max.mp4"
+    },
+    {
+      "id": "min-video",
+      "type": "demo",
+      "title": "MIN 最小值：找出最低的那笔销售 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/min.mp4"
+    },
+    {
+      "id": "maxifs-video",
+      "type": "demo",
+      "title": "MAXIFS 条件最大：华北最高的订单 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/maxifs.mp4"
+    },
+    {
+      "id": "averageif-video",
+      "type": "demo",
+      "title": "AVERAGEIF 条件均值：华东订单的平均销售额 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/averageif.mp4"
+    },
+    {
+      "id": "left-video",
+      "type": "demo",
+      "title": "LEFT 文本提取：从原始记录拆出姓名 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/left.mp4"
+    },
+    {
+      "id": "substitute-video",
+      "type": "demo",
+      "title": "SUBSTITUTE 文本替换：批量改编号前缀 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/substitute.mp4"
+    },
+    {
+      "id": "value-video",
+      "type": "demo",
+      "title": "VALUE 文本转数：文本金额变成可算的数 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/value.mp4"
+    },
+    {
+      "id": "round-video",
+      "type": "demo",
+      "title": "ROUND 四舍五入：小数保留一位 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/round.mp4"
+    },
+    {
+      "id": "and-video",
+      "type": "demo",
+      "title": "AND 组合判断：两个条件同时成立 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/and.mp4"
+    },
+    {
+      "id": "dave-clean",
+      "type": "app",
+      "title": "订单清洗三连：洗文本 → 查重复 → 抽查复核",
+      "description": "清洗三连：先 TRIM+CLEAN 洗文本，再 COUNTIF 查重复，最后 XLOOKUP 抽查一条——每步都留可核对的产出。",
+      "path": "/apps/dave-clean/index.html"
+    },
+    {
+      "id": "dave-clean-video",
+      "type": "demo",
+      "title": "订单清洗三连：洗文本 → 查重复 → 抽查复核 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/dave-clean.mp4"
+    },
+    {
+      "id": "dirty-data",
+      "type": "app",
+      "title": "脏数据清洗四连：转数 → 洗空格 → 改编号 → 打标签",
+      "description": "脏数据四连：VALUE 转数、TRIM+CLEAN 洗空格、SUBSTITUTE 改编号、IF 打标签——每步产出喂下一步。",
+      "path": "/apps/dirty-data/index.html"
+    },
+    {
+      "id": "customer-rfm",
+      "type": "app",
+      "title": "客户 RFM 分层：频次 → 金额 → 最近月 → 合成标签",
+      "description": "RFM 分层：COUNTIFS 数频次、SUMIFS 加金额、MAXIFS 取最近、AND 合成标签——三维度逐步成型。",
+      "path": "/apps/customer-rfm/index.html"
+    },
+    {
+      "id": "dirty-data-video",
+      "type": "demo",
+      "title": "脏数据清洗四连：转数 → 洗空格 → 改编号 → 打标签 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/dirty-data.mp4"
+    },
+    {
+      "id": "customer-rfm-video",
+      "type": "demo",
+      "title": "客户 RFM 分层：频次 → 金额 → 最近月 → 合成标签 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/customer-rfm.mp4"
+    },
+    {
+      "id": "portfolio-dashboard",
+      "type": "app",
+      "title": "跨表看板三连：直引利润表 → 区域合计 → 链式判定",
+      "description": "跨表看板三连：单引号跨表直引、跨表区域 SUM、链式 IF 引用本表产出——看板与明细分表管理。",
+      "path": "/apps/portfolio-dashboard/index.html"
+    },
+    {
+      "id": "luke-charts",
+      "type": "app",
+      "title": "跨表趋势图：月度表求和 → 副表数据画折线",
+      "description": "跨表趋势图：先用跨表 SUM 算半年合计，再让副表（月度）的数据直接画进折线图。",
+      "path": "/apps/luke-charts/index.html"
+    },
+    {
+      "id": "portfolio-dashboard-video",
+      "type": "demo",
+      "title": "跨表看板三连：直引利润表 → 区域合计 → 链式判定 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/portfolio-dashboard.mp4"
+    },
+    {
+      "id": "luke-charts-video",
+      "type": "demo",
+      "title": "跨表趋势图：月度表求和 → 副表数据画折线 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/luke-charts.mp4"
+    },
+    {
+      "id": "maf-charts",
+      "type": "app",
+      "title": "市场排名条形图：前五合计 → 排序画条形",
+      "description": "排名条形图：先 SUM 算前五合计，再把已排序的数据画成条形——排名一眼看清。",
+      "path": "/apps/maf-charts/index.html"
+    },
+    {
+      "id": "retail-ops",
+      "type": "app",
+      "title": "零售真实数据清洗链：判有效 → 洗编码 → 汇总 → 计数",
+      "description": "零售清洗链：IF+AND 判有效、UPPER+TRIM 洗编码、SUMIFS 按标记汇总、COUNTIFS 同口径计数——UCI 真实数据 10 行子集。",
+      "path": "/apps/retail-ops/index.html"
+    },
+    {
+      "id": "apple-finance",
+      "type": "app",
+      "title": "Apple 三表勾稽：跨表毛利复算 → 资产负债差 → ABS 判定",
+      "description": "三表勾稽：跨表减法复算毛利、三表相减验平衡、IF+ABS 自动判定——Apple FY2025 真实财报数字。",
+      "path": "/apps/apple-finance/index.html"
+    },
+    {
+      "id": "free-excel",
+      "type": "app",
+      "title": "六步实战压缩：洗编码 → 判渠道 → 条件汇总 → 跨表趋势图",
+      "description": "六步实战压缩：UPPER+TRIM 洗编码、IF+OR 判渠道、SUMIFS 条件汇总、跨表折线看趋势——一份数据走完全流程。",
+      "path": "/apps/free-excel/index.html"
+    },
+    {
+      "id": "retail-ops-video",
+      "type": "demo",
+      "title": "零售真实数据清洗链：判有效 → 洗编码 → 汇总 → 计数 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/retail-ops.mp4"
+    },
+    {
+      "id": "apple-finance-video",
+      "type": "demo",
+      "title": "Apple 三表勾稽：跨表毛利复算 → 资产负债差 → ABS 判定 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/apple-finance.mp4"
+    },
+    {
+      "id": "free-excel-video",
+      "type": "demo",
+      "title": "六步实战压缩：洗编码 → 判渠道 → 条件汇总 → 跨表趋势图 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/free-excel.mp4"
+    },
+    {
+      "id": "maf-charts-video",
+      "type": "demo",
+      "title": "市场排名条形图：前五合计 → 排序画条形 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/maf-charts.mp4"
+    },
+    {
+      "id": "power-query",
+      "type": "app",
+      "title": "合并查询三连：XLOOKUP 跨表带价 → 计算列 → 有效标记",
+      "description": "合并查询三连：XLOOKUP 跨表把单价带进订单、计算列算销售额、IF+OR 打有效标记——用公式复现 Power Query 的 merge/custom/validate。",
+      "path": "/apps/power-query/index.html"
+    },
+    {
+      "id": "eda-outliers",
+      "type": "app",
+      "title": "数据探索四查：平均 → 极值 → 空值 → 异常复核",
+      "description": "数据探索四查：AVERAGE 看集中、MAX 找极值、COUNTBLANK 数空行、IF 按规则标异常——动手分析前的四个标准动作。",
+      "path": "/apps/eda-outliers/index.html"
+    },
+    {
+      "id": "plans",
+      "type": "app",
+      "title": "套餐建模四步：三档费用公式 → MIN+INDEX 挑最优",
+      "description": "套餐建模：固定费+MAX(0,超额)×单价写成三档公式，MIN 找最低、INDEX+MATCH 挑名字——用量一改全表重算。",
+      "path": "/apps/plans/index.html"
+    },
+    {
+      "id": "two-way-lookup",
+      "type": "app",
+      "title": "二维查找三步：双 MATCH 交叉 → XLOOKUP 变体 → 阈值判断",
+      "description": "二维查找三步：双 MATCH 定行列交叉取值、XLOOKUP 整行变体同解、IF 引用结果做阈值判断。",
+      "path": "/apps/two-way-lookup/index.html"
+    },
+    {
+      "id": "inventory-reorder",
+      "type": "app",
+      "title": "库存补货模型三步：补货点 → 建议量 → 状态",
+      "description": "补货模型三步：日均×(周期+安全天)算补货点、MAX(0,缺口)算建议量、IF 出状态——规则写成可更新公式。",
+      "path": "/apps/inventory-reorder/index.html"
+    },
+    {
+      "id": "supply-quality",
+      "type": "app",
+      "title": "供应链质量四算：加权缺陷率 → 单位成本 → 简单平均 → 口径差",
+      "description": "加权口径四算：SUM/SUM 算整体缺陷率与单位成本、AVERAGE 做简单对照、相减看口径差——比率必须按量加权。",
+      "path": "/apps/supply-quality/index.html"
+    },
+    {
+      "id": "text-date",
+      "type": "app",
+      "title": "文本拆分三件套：LEFT 定名 → MID 取号 → RIGHT 截区",
+      "description": "文本拆分三件套：FIND 定位分隔符、LEFT/MID/RIGHT 按位截取——'张三|手机|上海'一条记录拆成三个可筛选字段。",
+      "path": "/apps/text-date/index.html"
+    },
+    {
+      "id": "power-query-video",
+      "type": "demo",
+      "title": "合并查询三连：XLOOKUP 跨表带价 → 计算列 → 有效标记 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/power-query.mp4"
+    },
+    {
+      "id": "eda-outliers-video",
+      "type": "demo",
+      "title": "数据探索四查：平均 → 极值 → 空值 → 异常复核 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/eda-outliers.mp4"
+    },
+    {
+      "id": "plans-video",
+      "type": "demo",
+      "title": "套餐建模四步：三档费用公式 → MIN+INDEX 挑最优 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/plans.mp4"
+    },
+    {
+      "id": "two-way-lookup-video",
+      "type": "demo",
+      "title": "二维查找三步：双 MATCH 交叉 → XLOOKUP 变体 → 阈值判断 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/two-way-lookup.mp4"
+    },
+    {
+      "id": "inventory-reorder-video",
+      "type": "demo",
+      "title": "库存补货模型三步：补货点 → 建议量 → 状态 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/inventory-reorder.mp4"
+    },
+    {
+      "id": "supply-quality-video",
+      "type": "demo",
+      "title": "供应链质量四算：加权缺陷率 → 单位成本 → 简单平均 → 口径差 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/supply-quality.mp4"
+    },
+    {
+      "id": "text-date-video",
+      "type": "demo",
+      "title": "文本拆分三件套：LEFT 定名 → MID 取号 → RIGHT 截区 · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/text-date.mp4"
+    },
+    {
+      "id": "oo-test",
+      "type": "app",
+      "title": "onlyoffice 四 API 实测课（SUM）",
+      "description": "SUM：把一片区域里的数字全部加起来，得到一个总数。",
+      "path": "/apps/oo-test/index.html"
+    },
+    {
+      "id": "oo-test-video",
+      "type": "demo",
+      "title": "onlyoffice 四 API 实测课（SUM） · 讲解视频",
+      "description": "无废话讲解视频：TTS 口播整轨 + 分步动画 + 步骤讲解卡（渲染式出片）。",
+      "path": "/src/standalone/public/showcase/oo-test.mp4"
+    },
+    {
+      "id": "site-tour",
+      "type": "demo",
+      "title": "网站介绍 · 90 秒全站导览（镜头版）",
+      "description": "playwright 自动导览三页核心流程 + 推拉摇移镜头 + TTS 旁白字幕",
+      "path": "/src/standalone/public/showcase/site-tour.mp4"
+    },
+    {
+      "id": "site-tour-xiaoyi",
+      "type": "demo",
+      "title": "网站介绍 · 配音试听 A（晓伊·女声亲切）",
+      "description": "zh-CN-XiaoyiNeural 音色版 90 秒全站导览",
+      "path": "/src/standalone/public/showcase/site-tour-xiaoyi.mp4"
+    },
+    {
+      "id": "site-tour-yunxia",
+      "type": "demo",
+      "title": "网站介绍 · 配音试听 B（云夏·男声少年感）",
+      "description": "zh-CN-YunxiaNeural 音色版 90 秒全站导览",
+      "path": "/src/standalone/public/showcase/site-tour-yunxia.mp4"
+    }
+  ]
+}

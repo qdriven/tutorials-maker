@@ -1,0 +1,295 @@
+{
+  "$comment": "L2 压轴课（真实数据子集（10 行，整数 GBP 口径，负数量行 Valid=0/E=0）；原始 20000 行见 docs/excel/data/real/。）公式已过 HyperFormula 终验探针（capstone-gen 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "retail-ops",
+  "fn": "零售清洗链",
+  "title": "零售真实数据清洗链：判有效 → 洗编码 → 汇总 → 计数",
+  "category": "场景实战",
+  "level": "高级",
+  "durationMin": 8,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/retail-ops.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "订单",
+        "cells": {
+          "A1": "InvoiceNo",
+          "B1": "StockCode",
+          "C1": "Quantity",
+          "D1": "UnitPrice",
+          "E1": "LineSales",
+          "F1": "Valid",
+          "G1": "Country",
+          "H1": "清洗链",
+          "A2": 546306,
+          "B2": "21733",
+          "C2": 2,
+          "D2": 3,
+          "E2": 6,
+          "F2": 1,
+          "G2": "United Kingdom",
+          "H2": "① 判首行有效",
+          "A3": 557055,
+          "B3": "23203",
+          "C3": 20,
+          "D3": 2,
+          "E3": 40,
+          "F3": 1,
+          "G3": "Germany",
+          "H3": "② 洗第5行编码",
+          "A4": 572516,
+          "B4": "22336",
+          "C4": -71,
+          "D4": 1,
+          "E4": 0,
+          "F4": 0,
+          "G4": "United Kingdom",
+          "H4": "③ 有效行汇总",
+          "A5": 556484,
+          "B5": " 21670",
+          "C5": 1,
+          "D5": 1,
+          "E5": 1,
+          "F5": 1,
+          "G5": "United Kingdom",
+          "H5": "④ 有效行计数",
+          "A6": 579187,
+          "B6": "90200d",
+          "C6": 1,
+          "D6": 4,
+          "E6": 4,
+          "F6": 1,
+          "G6": "United Kingdom",
+          "A7": 559552,
+          "B7": "22068",
+          "C7": 2,
+          "D7": 2,
+          "E7": 4,
+          "F7": 1,
+          "G7": "France",
+          "A8": 574356,
+          "B8": "20723",
+          "C8": 48,
+          "D8": 2,
+          "E8": 96,
+          "F8": 1,
+          "G8": "United Kingdom",
+          "A9": 580727,
+          "B9": "22423",
+          "C9": 10,
+          "D9": 6,
+          "E9": 60,
+          "F9": 1,
+          "G9": "Germany",
+          "A10": 569594,
+          "B10": "21733",
+          "C10": -40,
+          "D10": 3,
+          "E10": 0,
+          "F10": 0,
+          "G10": "United Kingdom",
+          "A11": 573126,
+          "B11": "22633",
+          "C11": 6,
+          "D11": 5,
+          "E11": 30,
+          "F11": 1,
+          "G11": "France"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "H2",
+      "menu": "选中 H2",
+      "formula": "定位H2 结果格",
+      "expect": "H2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "H2",
+      "menu": "输入框输入公式",
+      "formula": "=IF(AND(C2>0,D2>0),1,0)",
+      "expect": "H2 显示公式原文 =IF(AND(C2>0,D2>0),1,0)"
+    },
+    {
+      "step": 3,
+      "cell": "H2",
+      "menu": "回车确认",
+      "formula": "=IF(AND(C2>0,D2>0),1,0)",
+      "expect": "H2 显示 1（数量2>0 且单价3>0，首行有效）"
+    },
+    {
+      "step": 4,
+      "cell": "H2",
+      "menu": "选中 H2 查看编辑栏",
+      "formula": "=IF(AND(C2>0,D2>0),1,0)",
+      "expect": "编辑栏回显 =IF(AND(C2>0,D2>0),1,0)，H2 显示 1"
+    },
+    {
+      "step": 5,
+      "cell": "H3",
+      "menu": "选中 H3",
+      "formula": "定位H3 结果格",
+      "expect": "H3 被选中，输入框激活"
+    },
+    {
+      "step": 6,
+      "cell": "H3",
+      "menu": "输入框输入公式",
+      "formula": "=UPPER(TRIM(B6))",
+      "expect": "H3 显示公式原文 =UPPER(TRIM(B6))"
+    },
+    {
+      "step": 7,
+      "cell": "H3",
+      "menu": "回车确认",
+      "formula": "=UPPER(TRIM(B6))",
+      "expect": "H3 显示 90200D（小写编码统一为大写）"
+    },
+    {
+      "step": 8,
+      "cell": "H3",
+      "menu": "选中 H3 查看编辑栏",
+      "formula": "=UPPER(TRIM(B6))",
+      "expect": "编辑栏回显 =UPPER(TRIM(B6))，H3 显示 90200D"
+    },
+    {
+      "step": 9,
+      "cell": "H4",
+      "menu": "选中 H4",
+      "formula": "定位H4 结果格",
+      "expect": "H4 被选中，输入框激活"
+    },
+    {
+      "step": 10,
+      "cell": "H4",
+      "menu": "输入框输入公式",
+      "formula": "=SUMIFS(E2:E11,F2:F11,1)",
+      "expect": "H4 显示公式原文 =SUMIFS(E2:E11,F2:F11,1)"
+    },
+    {
+      "step": 11,
+      "cell": "H4",
+      "menu": "回车确认",
+      "formula": "=SUMIFS(E2:E11,F2:F11,1)",
+      "expect": "H4 显示 241（8 个有效行合计，排除 2 个负数量行）"
+    },
+    {
+      "step": 12,
+      "cell": "H4",
+      "menu": "选中 H4 查看编辑栏",
+      "formula": "=SUMIFS(E2:E11,F2:F11,1)",
+      "expect": "编辑栏回显 =SUMIFS(E2:E11,F2:F11,1)，H4 显示 241"
+    },
+    {
+      "step": 13,
+      "cell": "H5",
+      "menu": "选中 H5",
+      "formula": "定位H5 结果格",
+      "expect": "H5 被选中，输入框激活"
+    },
+    {
+      "step": 14,
+      "cell": "H5",
+      "menu": "输入框输入公式",
+      "formula": "=COUNTIFS(F2:F11,1)",
+      "expect": "H5 显示公式原文 =COUNTIFS(F2:F11,1)"
+    },
+    {
+      "step": 15,
+      "cell": "H5",
+      "menu": "回车确认",
+      "formula": "=COUNTIFS(F2:F11,1)",
+      "expect": "H5 显示 8（10 行里 8 行有效，2 行退货）"
+    },
+    {
+      "step": 16,
+      "cell": "H5",
+      "menu": "选中 H5 查看编辑栏",
+      "formula": "=COUNTIFS(F2:F11,1)",
+      "expect": "编辑栏回显 =COUNTIFS(F2:F11,1)，H5 显示 8"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "C2>0",
+      "meaning": "条件1：数量为正（-71 的退货行不过）",
+      "step": 2
+    },
+    {
+      "part": "D2>0",
+      "meaning": "条件2：单价为正——AND 全真才判有效",
+      "step": 2
+    },
+    {
+      "part": "TRIM(B6)",
+      "meaning": "内层：去空格（B6 原文 90200d 小写）",
+      "step": 6
+    },
+    {
+      "part": "UPPER(",
+      "meaning": "外层：统一大写——商品编码规范化",
+      "step": 6
+    },
+    {
+      "part": "E2:E11",
+      "meaning": "求和区域：行销售额（负数量行已预置 0）",
+      "step": 10
+    },
+    {
+      "part": "F2:F11",
+      "meaning": "条件区域：Valid 标记列（就是按①的逻辑逐行算的）",
+      "step": 10
+    },
+    {
+      "part": "1",
+      "meaning": "条件：只加有效行——退货/异常行被排除",
+      "step": 10
+    },
+    {
+      "part": "F2:F11",
+      "meaning": "计数区域：Valid 列",
+      "step": 14
+    },
+    {
+      "part": "1",
+      "meaning": "条件：数出有效行数——与汇总同口径",
+      "step": 14
+    }
+  ],
+  "summary": {
+    "oneLiner": "零售清洗链：IF+AND 判有效、UPPER+TRIM 洗编码、SUMIFS 按标记汇总、COUNTIFS 同口径计数——UCI 真实数据 10 行子集。",
+    "explain": "就像真实 ETL：先打有效标记（Valid 列），再让汇总与计数都吃这个标记——口径一处定义、处处复用。",
+    "outro": "总结：真实数据先判有效性再汇总；汇总与计数共用同一标记列，口径才不会两张皮。"
+  },
+  "checks": [
+    {
+      "cell": "H2",
+      "formula": "=IF(AND(C2>0,D2>0),1,0)",
+      "value": 1
+    },
+    {
+      "cell": "H3",
+      "formula": "=UPPER(TRIM(B6))",
+      "value": "90200D"
+    },
+    {
+      "cell": "H4",
+      "formula": "=SUMIFS(E2:E11,F2:F11,1)",
+      "value": 241
+    },
+    {
+      "cell": "H5",
+      "formula": "=COUNTIFS(F2:F11,1)",
+      "value": 8
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

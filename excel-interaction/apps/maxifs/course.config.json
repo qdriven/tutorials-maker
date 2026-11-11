@@ -1,0 +1,106 @@
+{
+  "$comment": "函数课契约（批量三转写）：素材取自 excel-animation docs/excel，公式已过 HyperFormula 终验探针（func-batch 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "maxifs",
+  "fn": "MAXIFS",
+  "title": "MAXIFS 条件最大：华北最高的订单",
+  "category": "条件统计",
+  "level": "中级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/maxifs.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "订单表",
+        "cells": {
+          "A1": "订单号",
+          "B1": "地区",
+          "C1": "渠道",
+          "D1": "销售额",
+          "E1": "结果",
+          "A2": "SO-1001",
+          "B2": "华东",
+          "C2": "线上",
+          "D2": 960,
+          "A3": "SO-1002",
+          "B3": "华北",
+          "C3": "门店",
+          "D3": 400,
+          "A4": "SO-1003",
+          "B4": "华东",
+          "C4": "线上",
+          "D4": 800,
+          "A5": "SO-1004",
+          "B5": "华南",
+          "C5": "线上",
+          "D5": 840,
+          "A6": "SO-1005",
+          "B6": "华北",
+          "C6": "门店",
+          "D6": 1200
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "E2",
+      "menu": "选中 E2",
+      "formula": "定位结果单元格",
+      "expect": "E2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "E2",
+      "menu": "输入框输入公式",
+      "formula": "=MAXIFS(D2:D6,B2:B6,\"华北\")",
+      "expect": "E2 显示公式原文 =MAXIFS(D2:D6,B2:B6,\"华北\")"
+    },
+    {
+      "step": 3,
+      "cell": "E2",
+      "menu": "回车确认",
+      "formula": "=MAXIFS(D2:D6,B2:B6,\"华北\")",
+      "expect": "E2 显示 1200"
+    },
+    {
+      "step": 4,
+      "cell": "E2",
+      "menu": "选中 E2 查看编辑栏",
+      "formula": "=MAXIFS(D2:D6,B2:B6,\"华北\")",
+      "expect": "编辑栏回显 =MAXIFS(D2:D6,B2:B6,\"华北\")，E2 显示 1200"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "D2:D6",
+      "meaning": "求值区域：从中取最大值的数"
+    },
+    {
+      "part": "B2:B6",
+      "meaning": "条件区域：按地区筛行，与求值区域同高"
+    },
+    {
+      "part": "\"华北\"",
+      "meaning": "条件：只看华北的行"
+    }
+  ],
+  "summary": {
+    "oneLiner": "MAXIFS：先按条件筛行，再从剩下的数里取最大——条件版 MAX。",
+    "explain": "就像写 SQL：SELECT MAX(销售额) FROM 订单 WHERE 地区='华北'。",
+    "outro": "总结：MAXIFS = 条件 + 极值；条件成对写，和 SUMIFS 同一套骨架。"
+  },
+  "checks": [
+    {
+      "cell": "E2",
+      "formula": "=MAXIFS(D2:D6,B2:B6,\"华北\")",
+      "value": 1200
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

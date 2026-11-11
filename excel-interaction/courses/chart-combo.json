@@ -1,0 +1,119 @@
+{
+  "$comment": "图表课契约（批量转写）：从 excel-animation docs/excel/02-charts 组合图 篇转写（chart-batch 程序化生成）。模拟渲染边界见 templates/handsontable/README.md「图表模拟层」",
+  "id": "chart-combo",
+  "fn": "组合图",
+  "title": "组合图量率同看：月份对销售额",
+  "category": "图表选型",
+  "level": "初级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/chart-combo.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "月份表",
+        "cells": {
+          "A1": "月份",
+          "B1": "销售额",
+          "C1": "利润率",
+          "A2": "1 月",
+          "B2": 980,
+          "C2": 31,
+          "A3": "2 月",
+          "B3": 1120,
+          "C3": 30,
+          "A4": "3 月",
+          "B4": 1050,
+          "C4": 28,
+          "A5": "4 月",
+          "B5": 1360,
+          "C5": 27,
+          "A6": "5 月",
+          "B6": 1640,
+          "C6": 25,
+          "A7": "6 月",
+          "B7": 2190,
+          "C7": 23
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "A1:C7",
+      "menu": "选中数据区（含表头）",
+      "formula": "=B7",
+      "expect": "A1:C7 被选中（数据区高亮）"
+    },
+    {
+      "step": 2,
+      "cell": "A1:C7",
+      "menu": "插入 → 组合图",
+      "formula": "=B7",
+      "expect": "图表菜单展开，组合图入口可见"
+    },
+    {
+      "step": 3,
+      "action": "chart",
+      "cell": "A1:C7",
+      "menu": "点击组合图",
+      "formula": "月份(横轴)=有序类别，销售额(左轴)=柱形，利润率(右轴)=折线",
+      "expect": "画布渲染组合图：销售额逐月上升（980→2190），利润率却从 31% 降到 23%——量增率降。"
+    },
+    {
+      "step": 4,
+      "action": "chart",
+      "cell": "A1:C7",
+      "menu": "读图",
+      "formula": "月份(横轴)=有序类别，销售额(左轴)=柱形，利润率(右轴)=折线",
+      "expect": "读图结论标注：销售额逐月上升（980→2190），利润率却从 31% 降到 23%——量增率降。"
+    }
+  ],
+  "chart": {
+    "type": "combo",
+    "title": "月份量率同看",
+    "xAxis": "A2:A7",
+    "series": [
+      {
+        "name": "销售额",
+        "values": "B2:B7"
+      },
+      {
+        "name": "利润率",
+        "values": "C2:C7"
+      }
+    ]
+  },
+  "formulaArgs": [
+    {
+      "part": "月份(横轴)",
+      "meaning": "月份(横轴)=有序类别"
+    },
+    {
+      "part": "销售额(左轴)",
+      "meaning": "销售额(左轴)=柱形"
+    },
+    {
+      "part": "利润率(右轴)",
+      "meaning": "利润率(右轴)=折线"
+    }
+  ],
+  "summary": {
+    "oneLiner": "组合图：量率同看——柱形管数量（左轴），折线管比率（右轴），一张图两种口径。",
+    "explain": "就像写 SQL：SELECT 月份, SUM(金额), AVG(率) GROUP BY 月份，金额画柱、比率画线。",
+    "outro": "总结：双口径一图看——柱是规模、线是效率；双轴别造虚假相关，先看各自口径。"
+  },
+  "checks": [
+    {
+      "cell": "B7",
+      "formula": "=B7",
+      "value": 2190
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

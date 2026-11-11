@@ -1,0 +1,98 @@
+{
+  "$comment": "图表课契约（批量转写）：从 excel-animation docs/excel/02-charts 堆积柱形图 篇转写（chart-batch 程序化生成）。模拟渲染边界见 templates/handsontable/README.md「图表模拟层」",
+  "id": "chart-stacked",
+  "fn": "堆积柱形图",
+  "title": "堆积柱形图看构成变化：月份对销售金额",
+  "category": "图表选型",
+  "level": "初级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/chart-stacked.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "月份表",
+        "cells": {
+          "A1": "月份",
+          "B1": "销售金额",
+          "A2": "四月",
+          "B2": 880,
+          "A3": "五月",
+          "B3": 1040,
+          "A4": "六月",
+          "B4": 1310
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "A1:B4",
+      "menu": "选中数据区（含表头）",
+      "formula": "=B4",
+      "expect": "A1:B4 被选中（两列高亮）"
+    },
+    {
+      "step": 2,
+      "cell": "A1:B4",
+      "menu": "插入 → 堆积柱形图",
+      "formula": "=B4",
+      "expect": "图表菜单展开，堆积柱形图入口可见"
+    },
+    {
+      "step": 3,
+      "action": "chart",
+      "cell": "A1:B4",
+      "menu": "点击堆积柱形图",
+      "formula": "月份(横轴)=有序类别，线上/门店(分段)=构成系列",
+      "expect": "画布渲染堆积柱形图：总量五月最高；线上占比逐月上升。"
+    },
+    {
+      "step": 4,
+      "action": "chart",
+      "cell": "A1:B4",
+      "menu": "读图",
+      "formula": "月份(横轴)=有序类别，线上/门店(分段)=构成系列",
+      "expect": "读图结论标注：总量五月最高；线上占比逐月上升。"
+    }
+  ],
+  "chart": {
+    "type": "bar",
+    "title": "月份看构成变化",
+    "xAxis": "A2:A4",
+    "series": [
+      {
+        "name": "销售金额",
+        "values": "B2:B4"
+      }
+    ]
+  },
+  "formulaArgs": [
+    {
+      "part": "月份(横轴)",
+      "meaning": "月份(横轴)=有序类别"
+    },
+    {
+      "part": "线上/门店(分段)",
+      "meaning": "线上/门店(分段)=构成系列"
+    }
+  ],
+  "summary": {
+    "oneLiner": "堆积柱形图：看构成变化——每根柱子分两段，总量和构成一起看。",
+    "explain": "就像写 SQL：SELECT 月份, 渠道, SUM(金额) GROUP BY 月份, 渠道，按渠道堆叠分段。",
+    "outro": "总结：看构成怎么变用堆积柱形；非底层系列没有共同基线，比较构成别比较总数。"
+  },
+  "checks": [
+    {
+      "cell": "B4",
+      "formula": "=B4",
+      "value": 1310
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

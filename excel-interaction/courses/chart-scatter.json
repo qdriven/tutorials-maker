@@ -1,0 +1,108 @@
+{
+  "$comment": "图表课契约（批量转写）：从 excel-animation docs/excel/02-charts XY 散点图 篇转写（chart-batch 程序化生成）。模拟渲染边界见 templates/handsontable/README.md「图表模拟层」",
+  "id": "chart-scatter",
+  "fn": "XY 散点图",
+  "title": "XY 散点图找关系：折扣对毛利率",
+  "category": "图表选型",
+  "level": "初级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/chart-scatter.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "折扣表",
+        "cells": {
+          "A1": "折扣",
+          "B1": "毛利率",
+          "A2": "0.9",
+          "B2": 62,
+          "A3": "0.85",
+          "B3": 58,
+          "A4": "0.8",
+          "B4": 61,
+          "A5": "0.75",
+          "B5": 57,
+          "A6": "0.7",
+          "B6": 55,
+          "A7": "0.65",
+          "B7": 52,
+          "A8": "0.6",
+          "B8": 54,
+          "A9": "0.55",
+          "B9": 50
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "A1:B9",
+      "menu": "选中数据区（含表头）",
+      "formula": "=B9",
+      "expect": "A1:B9 被选中（两列高亮）"
+    },
+    {
+      "step": 2,
+      "cell": "A1:B9",
+      "menu": "插入 → XY 散点图",
+      "formula": "=B9",
+      "expect": "图表菜单展开，XY 散点图入口可见"
+    },
+    {
+      "step": 3,
+      "action": "chart",
+      "cell": "A1:B9",
+      "menu": "点击XY 散点图",
+      "formula": "折扣(横轴)=数值变量1，毛利率(纵轴)=数值变量2",
+      "expect": "画布渲染XY 散点图：折扣越高毛利率越低，负相关趋势明显。"
+    },
+    {
+      "step": 4,
+      "action": "chart",
+      "cell": "A1:B9",
+      "menu": "读图",
+      "formula": "折扣(横轴)=数值变量1，毛利率(纵轴)=数值变量2",
+      "expect": "读图结论标注：折扣越高毛利率越低，负相关趋势明显。"
+    }
+  ],
+  "chart": {
+    "type": "line",
+    "title": "折扣找关系",
+    "xAxis": "A2:A9",
+    "series": [
+      {
+        "name": "毛利率",
+        "values": "B2:B9"
+      }
+    ]
+  },
+  "formulaArgs": [
+    {
+      "part": "折扣(横轴)",
+      "meaning": "折扣(横轴)=数值变量1"
+    },
+    {
+      "part": "毛利率(纵轴)",
+      "meaning": "毛利率(纵轴)=数值变量2"
+    }
+  ],
+  "summary": {
+    "oneLiner": "散点图：找关系——两个数值变量各占一轴，看点是聚在一起还是散开。",
+    "explain": "就像写 SQL：SELECT 折扣, 毛利率 FROM 订单，每行一个点，看两列怎么共变。",
+    "outro": "总结：找两列数值的关系用散点；相关不等于因果。"
+  },
+  "checks": [
+    {
+      "cell": "B9",
+      "formula": "=B9",
+      "value": 50
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

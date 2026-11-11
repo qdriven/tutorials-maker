@@ -1,0 +1,14 @@
+{
+  "A_editor_live": "=SUM(123,456)",
+  "A_value": 579,
+  "B_editor_live": "=VLOOKUP(D2,A2:B5,2,0)",
+  "B_value": "王五",
+  "C_editor_live": "销售部，市场部",
+  "C_value": "销售部，市场部",
+  "D_editor_live": "=\"价格，单位\"",
+  "D_value": "价格，单位",
+  "E_formula": "=SUM(1,2)",
+  "E_value": 3,
+  "regression_caption": "✓ 验收通过：E2 显示 王五，公式真算真回读，与契约一致",
+  "console_errors": []
+}

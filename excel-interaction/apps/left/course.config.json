@@ -1,0 +1,80 @@
+{
+  "$comment": "函数课契约（批量三转写）：素材取自 excel-animation docs/excel，公式已过 HyperFormula 终验探针（func-batch 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "left",
+  "fn": "LEFT",
+  "title": "LEFT 文本提取：从原始记录拆出姓名",
+  "category": "文本清理",
+  "level": "初级",
+  "durationMin": 3,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/left.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "客户资料",
+        "cells": {
+          "A1": "原始记录",
+          "B1": "姓名",
+          "A2": "张三|13800138000|上海"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "B2",
+      "menu": "选中 B2",
+      "formula": "定位结果单元格",
+      "expect": "B2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "B2",
+      "menu": "输入框输入公式",
+      "formula": "=LEFT(A2,2)",
+      "expect": "B2 显示公式原文 =LEFT(A2,2)"
+    },
+    {
+      "step": 3,
+      "cell": "B2",
+      "menu": "回车确认",
+      "formula": "=LEFT(A2,2)",
+      "expect": "B2 显示 张三"
+    },
+    {
+      "step": 4,
+      "cell": "B2",
+      "menu": "选中 B2 查看编辑栏",
+      "formula": "=LEFT(A2,2)",
+      "expect": "编辑栏回显 =LEFT(A2,2)，B2 显示 张三"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "A2",
+      "meaning": "源文本：要拆的原始记录"
+    },
+    {
+      "part": "2",
+      "meaning": "取前 2 个字符：中文姓名定长 2"
+    }
+  ],
+  "summary": {
+    "oneLiner": "LEFT：从文本左边数几个字符取出来——定长字段拆分第一步。",
+    "explain": "就像 SQL：SUBSTR('张三|138...',1,2)，按位置截取。",
+    "outro": "总结：LEFT 从左取、RIGHT 从右取、MID 从中间取；位置数错一个字符就错。"
+  },
+  "checks": [
+    {
+      "cell": "B2",
+      "formula": "=LEFT(A2,2)",
+      "value": "张三"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

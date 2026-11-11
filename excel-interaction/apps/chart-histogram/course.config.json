@@ -1,0 +1,102 @@
+{
+  "$comment": "图表课契约（批量转写）：从 excel-animation docs/excel/02-charts 直方图 篇转写（chart-batch 程序化生成）。模拟渲染边界见 templates/handsontable/README.md「图表模拟层」",
+  "id": "chart-histogram",
+  "fn": "直方图",
+  "title": "直方图看分布：分箱对订单数",
+  "category": "图表选型",
+  "level": "初级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/chart-histogram.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "分箱表",
+        "cells": {
+          "A1": "分箱",
+          "B1": "订单数",
+          "A2": "0–400",
+          "B2": 4,
+          "A3": "400–800",
+          "B3": 9,
+          "A4": "800–1200",
+          "B4": 6,
+          "A5": "1200–1600",
+          "B5": 3,
+          "A6": "1600+",
+          "B6": 1
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "A1:B6",
+      "menu": "选中数据区（含表头）",
+      "formula": "=B6",
+      "expect": "A1:B6 被选中（两列高亮）"
+    },
+    {
+      "step": 2,
+      "cell": "A1:B6",
+      "menu": "插入 → 直方图",
+      "formula": "=B6",
+      "expect": "图表菜单展开，直方图入口可见"
+    },
+    {
+      "step": 3,
+      "action": "chart",
+      "cell": "A1:B6",
+      "menu": "点击直方图",
+      "formula": "分箱(横轴)=连续区间分桶，订单数(纵轴)=频数",
+      "expect": "画布渲染直方图：多数订单集中在 400–800 段（9 笔），大额订单较少。"
+    },
+    {
+      "step": 4,
+      "action": "chart",
+      "cell": "A1:B6",
+      "menu": "读图",
+      "formula": "分箱(横轴)=连续区间分桶，订单数(纵轴)=频数",
+      "expect": "读图结论标注：多数订单集中在 400–800 段（9 笔），大额订单较少。"
+    }
+  ],
+  "chart": {
+    "type": "histogram",
+    "title": "分箱看分布",
+    "xAxis": "A2:A6",
+    "series": [
+      {
+        "name": "订单数",
+        "values": "B2:B6"
+      }
+    ]
+  },
+  "formulaArgs": [
+    {
+      "part": "分箱(横轴)",
+      "meaning": "分箱(横轴)=连续区间分桶"
+    },
+    {
+      "part": "订单数(纵轴)",
+      "meaning": "订单数(纵轴)=频数"
+    }
+  ],
+  "summary": {
+    "oneLiner": "直方图：看分布——连续数值按区间分箱，每箱一根柱，看数据集中在哪段。",
+    "explain": "就像写 SQL：SELECT 分箱, COUNT(*) GROUP BY 分箱，按区间统计频数再画柱。",
+    "outro": "总结：分布用直方图；分箱宽度会改变解读，箱宽是口径的一部分。"
+  },
+  "checks": [
+    {
+      "cell": "B6",
+      "formula": "=B6",
+      "value": 1
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

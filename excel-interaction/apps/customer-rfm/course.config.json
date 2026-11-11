@@ -1,0 +1,242 @@
+{
+  "$comment": "L2 复合课（N 步契约）：本课 4 公式 16 步；数据为教学模型（5 行 3 列客户消费记录）。 公式已过 HyperFormula 终验探针（l2-gen 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "customer-rfm",
+  "fn": "RFM 分层",
+  "title": "客户 RFM 分层：频次 → 金额 → 最近月 → 合成标签",
+  "category": "场景实战",
+  "level": "中级",
+  "durationMin": 8,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/customer-rfm.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "客户表",
+        "cells": {
+          "A1": "客户",
+          "B1": "消费月",
+          "C1": "金额",
+          "D1": "RFM 任务",
+          "E1": "结果",
+          "A2": "张三",
+          "B2": 4,
+          "C2": 300,
+          "D2": "F 频次（张三订单数）",
+          "A3": "张三",
+          "B3": 5,
+          "C3": 500,
+          "D3": "M 金额（张三总消费）",
+          "A4": "李四",
+          "B4": 4,
+          "C4": 800,
+          "D4": "R 最近（张三最后消费月）",
+          "A5": "李四",
+          "B5": 5,
+          "C5": 200,
+          "D5": "标签（频次≥2 且金额≥500）",
+          "A6": "李四",
+          "B6": 6,
+          "C6": 600
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "E2",
+      "menu": "选中 E2",
+      "formula": "定位E2 结果格",
+      "expect": "E2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "E2",
+      "menu": "输入框输入公式",
+      "formula": "=COUNTIFS(A2:A6,\"张三\")",
+      "expect": "E2 显示公式原文 =COUNTIFS(A2:A6,\"张三\")"
+    },
+    {
+      "step": 3,
+      "cell": "E2",
+      "menu": "回车确认",
+      "formula": "=COUNTIFS(A2:A6,\"张三\")",
+      "expect": "E2 显示 2（张三有 2 笔订单）"
+    },
+    {
+      "step": 4,
+      "cell": "E2",
+      "menu": "选中 E2 查看编辑栏",
+      "formula": "=COUNTIFS(A2:A6,\"张三\")",
+      "expect": "编辑栏回显 =COUNTIFS(A2:A6,\"张三\")，E2 显示 2"
+    },
+    {
+      "step": 5,
+      "cell": "E3",
+      "menu": "选中 E3",
+      "formula": "定位E3 结果格",
+      "expect": "E3 被选中，输入框激活"
+    },
+    {
+      "step": 6,
+      "cell": "E3",
+      "menu": "输入框输入公式",
+      "formula": "=SUMIFS(C2:C6,A2:A6,\"张三\")",
+      "expect": "E3 显示公式原文 =SUMIFS(C2:C6,A2:A6,\"张三\")"
+    },
+    {
+      "step": 7,
+      "cell": "E3",
+      "menu": "回车确认",
+      "formula": "=SUMIFS(C2:C6,A2:A6,\"张三\")",
+      "expect": "E3 显示 800（300+500）"
+    },
+    {
+      "step": 8,
+      "cell": "E3",
+      "menu": "选中 E3 查看编辑栏",
+      "formula": "=SUMIFS(C2:C6,A2:A6,\"张三\")",
+      "expect": "编辑栏回显 =SUMIFS(C2:C6,A2:A6,\"张三\")，E3 显示 800"
+    },
+    {
+      "step": 9,
+      "cell": "E4",
+      "menu": "选中 E4",
+      "formula": "定位E4 结果格",
+      "expect": "E4 被选中，输入框激活"
+    },
+    {
+      "step": 10,
+      "cell": "E4",
+      "menu": "输入框输入公式",
+      "formula": "=MAXIFS(B2:B6,A2:A6,\"张三\")",
+      "expect": "E4 显示公式原文 =MAXIFS(B2:B6,A2:A6,\"张三\")"
+    },
+    {
+      "step": 11,
+      "cell": "E4",
+      "menu": "回车确认",
+      "formula": "=MAXIFS(B2:B6,A2:A6,\"张三\")",
+      "expect": "E4 显示 5（张三最后消费在 5 月）"
+    },
+    {
+      "step": 12,
+      "cell": "E4",
+      "menu": "选中 E4 查看编辑栏",
+      "formula": "=MAXIFS(B2:B6,A2:A6,\"张三\")",
+      "expect": "编辑栏回显 =MAXIFS(B2:B6,A2:A6,\"张三\")，E4 显示 5"
+    },
+    {
+      "step": 13,
+      "cell": "E5",
+      "menu": "选中 E5",
+      "formula": "定位E5 结果格",
+      "expect": "E5 被选中，输入框激活"
+    },
+    {
+      "step": 14,
+      "cell": "E5",
+      "menu": "输入框输入公式",
+      "formula": "=AND(E2>=2,E3>=500)",
+      "expect": "E5 显示公式原文 =AND(E2>=2,E3>=500)"
+    },
+    {
+      "step": 15,
+      "cell": "E5",
+      "menu": "回车确认",
+      "formula": "=AND(E2>=2,E3>=500)",
+      "expect": "E5 显示 true（2≥2 且 800≥500，可打高价值标签）"
+    },
+    {
+      "step": 16,
+      "cell": "E5",
+      "menu": "选中 E5 查看编辑栏",
+      "formula": "=AND(E2>=2,E3>=500)",
+      "expect": "编辑栏回显 =AND(E2>=2,E3>=500)，E5 显示 true"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "A2:A6",
+      "meaning": "条件区域：客户列覆盖全部记录",
+      "step": 2
+    },
+    {
+      "part": "\"张三\"",
+      "meaning": "条件：只数张三的行",
+      "step": 2
+    },
+    {
+      "part": "C2:C6",
+      "meaning": "求和区域：金额列（放第一参数）",
+      "step": 6
+    },
+    {
+      "part": "A2:A6",
+      "meaning": "条件区域：客户列",
+      "step": 6
+    },
+    {
+      "part": "\"张三\"",
+      "meaning": "条件：只加张三的行",
+      "step": 6
+    },
+    {
+      "part": "B2:B6",
+      "meaning": "求值区域：消费月列，取最大=最近",
+      "step": 10
+    },
+    {
+      "part": "A2:A6",
+      "meaning": "条件区域：客户列",
+      "step": 10
+    },
+    {
+      "part": "\"张三\"",
+      "meaning": "条件：只看张三的行",
+      "step": 10
+    },
+    {
+      "part": "E2>=2",
+      "meaning": "条件1：频次达标（引用第①步产出）",
+      "step": 14
+    },
+    {
+      "part": "E3>=500",
+      "meaning": "条件2：金额达标（引用第②步产出）——AND 全真才真",
+      "step": 14
+    }
+  ],
+  "summary": {
+    "oneLiner": "RFM 分层：COUNTIFS 数频次、SUMIFS 加金额、MAXIFS 取最近、AND 合成标签——三维度逐步成型。",
+    "explain": "就像 SQL：按客户 GROUP BY 后 COUNT/SUM/MAX 三个聚合，最后 CASE WHEN 打分层标签。",
+    "outro": "总结：RFM 就是三个聚合加一个判断——每个维度独立算，标签引用维度结果合成。"
+  },
+  "checks": [
+    {
+      "cell": "E2",
+      "formula": "=COUNTIFS(A2:A6,\"张三\")",
+      "value": 2
+    },
+    {
+      "cell": "E3",
+      "formula": "=SUMIFS(C2:C6,A2:A6,\"张三\")",
+      "value": 800
+    },
+    {
+      "cell": "E4",
+      "formula": "=MAXIFS(B2:B6,A2:A6,\"张三\")",
+      "value": 5
+    },
+    {
+      "cell": "E5",
+      "formula": "=AND(E2>=2,E3>=500)",
+      "value": true
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

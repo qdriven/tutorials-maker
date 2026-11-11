@@ -1,0 +1,80 @@
+{
+  "$comment": "函数课契约（批量三转写）：素材取自 excel-animation docs/excel，公式已过 HyperFormula 终验探针（func-batch 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "round",
+  "fn": "ROUND",
+  "title": "ROUND 四舍五入：小数保留一位",
+  "category": "求和统计",
+  "level": "初级",
+  "durationMin": 3,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/round.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "数据表",
+        "cells": {
+          "A1": "原始值",
+          "B1": "保留1位",
+          "A2": 1234.567
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "B2",
+      "menu": "选中 B2",
+      "formula": "定位结果单元格",
+      "expect": "B2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "B2",
+      "menu": "输入框输入公式",
+      "formula": "=ROUND(A2,1)",
+      "expect": "B2 显示公式原文 =ROUND(A2,1)"
+    },
+    {
+      "step": 3,
+      "cell": "B2",
+      "menu": "回车确认",
+      "formula": "=ROUND(A2,1)",
+      "expect": "B2 显示 1234.6"
+    },
+    {
+      "step": 4,
+      "cell": "B2",
+      "menu": "选中 B2 查看编辑栏",
+      "formula": "=ROUND(A2,1)",
+      "expect": "编辑栏回显 =ROUND(A2,1)，B2 显示 1234.6"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "A2",
+      "meaning": "原始数值：要修约的数"
+    },
+    {
+      "part": "1",
+      "meaning": "小数位数：保留 1 位"
+    }
+  ],
+  "summary": {
+    "oneLiner": "ROUND：四舍五入到指定位数——报表数字的最后一步。",
+    "explain": "就像 SQL：ROUND(1234.567,1) → 1234.6，展示口径统一。",
+    "outro": "总结：ROUND(数, 位数)；先算后修约，别拿修约过的数继续算。"
+  },
+  "checks": [
+    {
+      "cell": "B2",
+      "formula": "=ROUND(A2,1)",
+      "value": 1234.6
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}

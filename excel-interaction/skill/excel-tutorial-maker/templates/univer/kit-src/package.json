@@ -1,0 +1,11 @@
+{
+  "name": "univer-kit-src",
+  "private": true,
+  "version": "0.0.0",
+  "description": "构建源项目：重新打包 skill/excel-tutorial-maker/templates/univer/dist/univer-kit.js（独立 npm 项目，不进 workspace——仓库 pnpm-lock 永不为出片引擎引入依赖）",
+  "dependencies": {
+    "@univerjs/preset-sheets-core": "^1.3.1",
+    "@univerjs/presets": "^1.3.1",
+    "esbuild": "^0.24.0"
+  }
+}

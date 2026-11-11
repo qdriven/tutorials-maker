@@ -1,0 +1,206 @@
+{
+  "$comment": "L2 压轴课（真实财报数据（Apple FY2025 10-K 子集，USD millions）；全量三表见 docs/excel/data/real/apple-*.csv。）公式已过 HyperFormula 终验探针（capstone-gen 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "apple-finance",
+  "fn": "三表勾稽",
+  "title": "Apple 三表勾稽：跨表毛利复算 → 资产负债差 → ABS 判定",
+  "category": "场景实战",
+  "level": "高级",
+  "durationMin": 7,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/apple-finance.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "核对",
+        "cells": {
+          "A1": "核对项",
+          "B1": "结果",
+          "A2": "毛利复算（利润表）",
+          "A3": "资产负债差",
+          "A4": "勾稽判定"
+        }
+      },
+      {
+        "name": "利润表",
+        "cells": {
+          "A1": "科目",
+          "B1": "FY2025",
+          "A2": "总收入",
+          "B2": 416161,
+          "A3": "销售成本",
+          "B3": 220960,
+          "A4": "净利润",
+          "B4": 112010
+        }
+      },
+      {
+        "name": "资产负债表",
+        "cells": {
+          "A1": "项目",
+          "B1": "金额",
+          "A2": "资产总计",
+          "B2": 359241,
+          "A3": "负债合计",
+          "B3": 285508,
+          "A4": "股东权益",
+          "B4": 73733
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "B2",
+      "menu": "选中 B2",
+      "formula": "定位B2 结果格",
+      "expect": "B2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "B2",
+      "menu": "输入框输入公式",
+      "formula": "='利润表'!B2-'利润表'!B3",
+      "expect": "B2 显示公式原文 ='利润表'!B2-'利润表'!B3"
+    },
+    {
+      "step": 3,
+      "cell": "B2",
+      "menu": "回车确认",
+      "formula": "='利润表'!B2-'利润表'!B3",
+      "expect": "B2 显示 195201（416161−220960，与 Apple 10-K 毛利一致）"
+    },
+    {
+      "step": 4,
+      "cell": "B2",
+      "menu": "选中 B2 查看编辑栏",
+      "formula": "='利润表'!B2-'利润表'!B3",
+      "expect": "编辑栏回显 ='利润表'!B2-'利润表'!B3，B2 显示 195201"
+    },
+    {
+      "step": 5,
+      "cell": "B3",
+      "menu": "选中 B3",
+      "formula": "定位B3 结果格",
+      "expect": "B3 被选中，输入框激活"
+    },
+    {
+      "step": 6,
+      "cell": "B3",
+      "menu": "输入框输入公式",
+      "formula": "='资产负债表'!B2-'资产负债表'!B3-'资产负债表'!B4",
+      "expect": "B3 显示公式原文 ='资产负债表'!B2-'资产负债表'!B3-'资产负债表'!B4"
+    },
+    {
+      "step": 7,
+      "cell": "B3",
+      "menu": "回车确认",
+      "formula": "='资产负债表'!B2-'资产负债表'!B3-'资产负债表'!B4",
+      "expect": "B3 显示 0（359241−285508−73733=0，资产负债平衡）"
+    },
+    {
+      "step": 8,
+      "cell": "B3",
+      "menu": "选中 B3 查看编辑栏",
+      "formula": "='资产负债表'!B2-'资产负债表'!B3-'资产负债表'!B4",
+      "expect": "编辑栏回显 ='资产负债表'!B2-'资产负债表'!B3-'资产负债表'!B4，B3 显示 0"
+    },
+    {
+      "step": 9,
+      "cell": "B4",
+      "menu": "选中 B4",
+      "formula": "定位B4 结果格",
+      "expect": "B4 被选中，输入框激活"
+    },
+    {
+      "step": 10,
+      "cell": "B4",
+      "menu": "输入框输入公式",
+      "formula": "=IF(ABS(B3)<1,\"平衡\",\"失衡\")",
+      "expect": "B4 显示公式原文 =IF(ABS(B3)<1,\"平衡\",\"失衡\")"
+    },
+    {
+      "step": 11,
+      "cell": "B4",
+      "menu": "回车确认",
+      "formula": "=IF(ABS(B3)<1,\"平衡\",\"失衡\")",
+      "expect": "B4 显示 平衡（B3=0，引用第②块产出自动判定）"
+    },
+    {
+      "step": 12,
+      "cell": "B4",
+      "menu": "选中 B4 查看编辑栏",
+      "formula": "=IF(ABS(B3)<1,\"平衡\",\"失衡\")",
+      "expect": "编辑栏回显 =IF(ABS(B3)<1,\"平衡\",\"失衡\")，B4 显示 平衡"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "'利润表'!B2",
+      "meaning": "跨表直引：总收入 416,161（USD millions）",
+      "step": 2
+    },
+    {
+      "part": "'利润表'!B3",
+      "meaning": "跨表直引：销售成本 220,960——相减得毛利",
+      "step": 2
+    },
+    {
+      "part": "'资产负债表'!B2",
+      "meaning": "资产总计 359,241",
+      "step": 6
+    },
+    {
+      "part": "'资产负债表'!B3",
+      "meaning": "负债合计 285,508",
+      "step": 6
+    },
+    {
+      "part": "'资产负债表'!B4",
+      "meaning": "股东权益 73,733——资产−负债−权益应为 0",
+      "step": 6
+    },
+    {
+      "part": "ABS(B3)",
+      "meaning": "绝对值：差额不管正负都取 magnitude",
+      "step": 10
+    },
+    {
+      "part": "<1",
+      "meaning": "容差：|差|<1（USD millions 取整误差内）判平衡",
+      "step": 10
+    },
+    {
+      "part": "\"平衡\"",
+      "meaning": "条件为真的返回值——勾稽通过",
+      "step": 10
+    }
+  ],
+  "summary": {
+    "oneLiner": "三表勾稽：跨表减法复算毛利、三表相减验平衡、IF+ABS 自动判定——Apple FY2025 真实财报数字。",
+    "explain": "就像审计复核：每个数都要能从原始报表重新算出来，差额为 0 才叫勾稽通过。",
+    "outro": "总结：跨表取数复算、差额归零验证、ABS 容差判定——三表勾稽的完整链条。"
+  },
+  "checks": [
+    {
+      "cell": "B2",
+      "formula": "='利润表'!B2-'利润表'!B3",
+      "value": 195201
+    },
+    {
+      "cell": "B3",
+      "formula": "='资产负债表'!B2-'资产负债表'!B3-'资产负债表'!B4",
+      "value": 0
+    },
+    {
+      "cell": "B4",
+      "formula": "=IF(ABS(B3)<1,\"平衡\",\"失衡\")",
+      "value": "平衡"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

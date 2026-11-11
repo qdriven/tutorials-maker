@@ -1,0 +1,28 @@
+{
+  "name": "@innate/excel-interaction",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "无废话 Excel 教程（Excel Interaction）——契约驱动：一份课程契约同时产出交互动画课与 30 秒无废话讲解视频。",
+  "scripts": {
+    "check:env": "node scripts/check.mjs",
+    "install:env": "node scripts/install.mjs",
+    "generate": "node scripts/tutorial/new.mjs",
+    "verify:manifest": "node scripts/tutorial/check-manifest.mjs",
+    "verify:showcase": "node scripts/showcase/check-tutorials.mjs",
+    "recipes": "node scripts/landing/build-recipes.mjs",
+    "check:recipes": "node scripts/landing/check-recipes.mjs",
+    "batch:charts": "node scripts/batch/chart-batch.mjs --skip-video",
+    "batch:charts:full": "node scripts/batch/chart-batch.mjs",
+    "serve": "node scripts/serve/serve.mjs",
+    "showcase": "node scripts/serve/serve.mjs --dir . --port 4174",
+    "plan": "node scripts/recorder/build-plan.mjs",
+    "video": "node scripts/recorder/render-video.mjs",
+    "qc": "node scripts/recorder/qc.mjs",
+    "verify": "node scripts/check.mjs && node scripts/tutorial/check-manifest.mjs && node scripts/showcase/check-tutorials.mjs && node scripts/landing/check-recipes.mjs"
+  },
+  "devDependencies": {
+    "handsontable": "^18.1.2",
+    "hyperformula": "^3.5.0"
+  }
+}

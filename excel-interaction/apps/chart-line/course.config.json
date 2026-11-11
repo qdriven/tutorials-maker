@@ -1,0 +1,105 @@
+{
+  "$comment": "图表课契约（试点）：从 courses/seeds/chart-line.md 提炼，转写自 excel-animation docs/excel/02-charts/01-line.md。图表课形态：guide 第 4 步 action=chart 触发画布模拟渲染（ChartLayer），checks 断言数据序列正确（模拟渲染边界见模板 README「图表模拟层」）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "chart-line",
+  "title": "折线图看趋势：销售额随月份怎么变",
+  "category": "图表选型",
+  "level": "初级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/chart-line.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "月度收入",
+        "cells": {
+          "A1": "月份",
+          "B1": "销售额",
+          "A2": "1月",
+          "B2": 980,
+          "A3": "2月",
+          "B3": 1120,
+          "A4": "3月",
+          "B4": 1050,
+          "A5": "4月",
+          "B5": 1360,
+          "A6": "5月",
+          "B6": 1640,
+          "A7": "6月",
+          "B7": 2190
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "A1:B7",
+      "menu": "选中数据区（含表头）",
+      "formula": "=B7",
+      "expect": "A1:B7 被选中（月份 + 销售额两列高亮）"
+    },
+    {
+      "step": 2,
+      "cell": "A1:B7",
+      "menu": "插入 → 折线图（带数据标记）",
+      "formula": "=B7",
+      "expect": "图表菜单展开，折线图入口可见"
+    },
+    {
+      "step": 3,
+      "action": "chart",
+      "cell": "A1:B7",
+      "menu": "点击折线图",
+      "formula": "月份(横轴)→销售额(纵轴)",
+      "expect": "画布渲染折线图：横轴 1月→6月，纵轴 980→2190，末点值 2190 标注"
+    },
+    {
+      "step": 4,
+      "action": "chart",
+      "cell": "A1:B7",
+      "menu": "读图",
+      "formula": "月份(横轴)→销售额(纵轴)",
+      "expect": "读图结论标注：6 月达到 2190，连续第三个月上升"
+    }
+  ],
+  "chart": {
+    "type": "line",
+    "title": "月度销售额趋势",
+    "xAxis": "A2:A7",
+    "series": [
+      {
+        "name": "销售额",
+        "values": "B2:B7"
+      }
+    ]
+  },
+  "formulaArgs": [
+    {
+      "part": "月份(横轴)",
+      "meaning": "有序时间字段作横轴：1月→6月，行序即时间序"
+    },
+    {
+      "part": "销售额(纵轴)",
+      "meaning": "数值系列作纵轴：唯一系列，自动成为折线"
+    }
+  ],
+  "summary": {
+    "oneLiner": "折线图：看趋势——一个有序时间字段加一个数值系列，连线看方向和拐点。",
+    "explain": "就像写 SQL：SELECT 月份, SUM(销售额) GROUP BY 月份 ORDER BY 月份，按时间排好再连线。",
+    "outro": "总结：随时间看变化用折线；类别没有顺序时不要硬连成线。"
+  },
+  "checks": [
+    {
+      "cell": "B7",
+      "formula": "=B7",
+      "value": 2190,
+      "$comment": "图表课断言：数据锚点(末值 2190)。图表本体为模拟渲染,真对象基线由 Document Builder 产出(scripts/chartref/,issue 跟踪)"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  },
+  "fn": "折线图"
+}

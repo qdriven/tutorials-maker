@@ -1,0 +1,234 @@
+{
+  "$comment": "L2 复合课（N 步契约）：本课 4 公式 16 步，每步产出是下一步的输入——真实清洗流程的最小复刻。 公式已过 HyperFormula 终验探针（l2-gen 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "dirty-data",
+  "fn": "脏数据清洗",
+  "title": "脏数据清洗四连：转数 → 洗空格 → 改编号 → 打标签",
+  "category": "场景实战",
+  "level": "中级",
+  "durationMin": 8,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/dirty-data.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "脏数据",
+        "cells": {
+          "A1": "订单号",
+          "B1": "金额(文本)",
+          "C1": "地区",
+          "D1": "编号",
+          "E1": "清洗任务",
+          "F1": "结果",
+          "A2": "SO-1001",
+          "B2": "1200",
+          "C2": " 华东 ",
+          "D2": "SO-1001",
+          "E2": "① 文本金额转数",
+          "A3": "SO-1002",
+          "B3": "800",
+          "C3": "华北",
+          "D3": "SO-1002",
+          "E3": "② 地区清空格",
+          "A4": "SO-1003",
+          "B4": "1760",
+          "C4": " 华南 ",
+          "D4": "SO-1003",
+          "E4": "③ 编号改前缀",
+          "A5": "SO-1004",
+          "B5": "960",
+          "C5": "华东",
+          "D5": "SO-1004",
+          "E5": "④ 按金额打标签"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "F2",
+      "menu": "选中 F2",
+      "formula": "定位F2 结果格",
+      "expect": "F2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "F2",
+      "menu": "输入框输入公式",
+      "formula": "=VALUE(B2)",
+      "expect": "F2 显示公式原文 =VALUE(B2)"
+    },
+    {
+      "step": 3,
+      "cell": "F2",
+      "menu": "回车确认",
+      "formula": "=VALUE(B2)",
+      "expect": "F2 显示 1200（文本变真数，SUM 才认）"
+    },
+    {
+      "step": 4,
+      "cell": "F2",
+      "menu": "选中 F2 查看编辑栏",
+      "formula": "=VALUE(B2)",
+      "expect": "编辑栏回显 =VALUE(B2)，F2 显示 1200"
+    },
+    {
+      "step": 5,
+      "cell": "F3",
+      "menu": "选中 F3",
+      "formula": "定位F3 结果格",
+      "expect": "F3 被选中，输入框激活"
+    },
+    {
+      "step": 6,
+      "cell": "F3",
+      "menu": "输入框输入公式",
+      "formula": "=TRIM(CLEAN(C2))",
+      "expect": "F3 显示公式原文 =TRIM(CLEAN(C2))"
+    },
+    {
+      "step": 7,
+      "cell": "F3",
+      "menu": "回车确认",
+      "formula": "=TRIM(CLEAN(C2))",
+      "expect": "F3 显示 华东（空格洗净，可匹配可汇总）"
+    },
+    {
+      "step": 8,
+      "cell": "F3",
+      "menu": "选中 F3 查看编辑栏",
+      "formula": "=TRIM(CLEAN(C2))",
+      "expect": "编辑栏回显 =TRIM(CLEAN(C2))，F3 显示 华东"
+    },
+    {
+      "step": 9,
+      "cell": "F4",
+      "menu": "选中 F4",
+      "formula": "定位F4 结果格",
+      "expect": "F4 被选中，输入框激活"
+    },
+    {
+      "step": 10,
+      "cell": "F4",
+      "menu": "输入框输入公式",
+      "formula": "=SUBSTITUTE(D2,\"SO-\",\"订单\")",
+      "expect": "F4 显示公式原文 =SUBSTITUTE(D2,\"SO-\",\"订单\")"
+    },
+    {
+      "step": 11,
+      "cell": "F4",
+      "menu": "回车确认",
+      "formula": "=SUBSTITUTE(D2,\"SO-\",\"订单\")",
+      "expect": "F4 显示 订单1001（前缀批量改写）"
+    },
+    {
+      "step": 12,
+      "cell": "F4",
+      "menu": "选中 F4 查看编辑栏",
+      "formula": "=SUBSTITUTE(D2,\"SO-\",\"订单\")",
+      "expect": "编辑栏回显 =SUBSTITUTE(D2,\"SO-\",\"订单\")，F4 显示 订单1001"
+    },
+    {
+      "step": 13,
+      "cell": "F5",
+      "menu": "选中 F5",
+      "formula": "定位F5 结果格",
+      "expect": "F5 被选中，输入框激活"
+    },
+    {
+      "step": 14,
+      "cell": "F5",
+      "menu": "输入框输入公式",
+      "formula": "=IF(F2>=1000,\"大额\",\"常规\")",
+      "expect": "F5 显示公式原文 =IF(F2>=1000,\"大额\",\"常规\")"
+    },
+    {
+      "step": 15,
+      "cell": "F5",
+      "menu": "回车确认",
+      "formula": "=IF(F2>=1000,\"大额\",\"常规\")",
+      "expect": "F5 显示 大额（1200≥1000，用的是第①步产出）"
+    },
+    {
+      "step": 16,
+      "cell": "F5",
+      "menu": "选中 F5 查看编辑栏",
+      "formula": "=IF(F2>=1000,\"大额\",\"常规\")",
+      "expect": "编辑栏回显 =IF(F2>=1000,\"大额\",\"常规\")，F5 显示 大额"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "B2",
+      "meaning": "文本形式的数字：看着像数，其实是文本（左对齐）",
+      "step": 2
+    },
+    {
+      "part": "CLEAN(C2)",
+      "meaning": "内层：去掉不可打印字符",
+      "step": 6
+    },
+    {
+      "part": "TRIM(",
+      "meaning": "外层：去掉首尾空格——CLEAN 在内 TRIM 在外",
+      "step": 6
+    },
+    {
+      "part": "D2",
+      "meaning": "原文本：要改写的原始编号",
+      "step": 10
+    },
+    {
+      "part": "\"SO-\"",
+      "meaning": "旧文本：要被替换掉的部分",
+      "step": 10
+    },
+    {
+      "part": "\"订单\"",
+      "meaning": "新文本：替换成的内容",
+      "step": 10
+    },
+    {
+      "part": "F2>=1000",
+      "meaning": "判断条件：引用第①步的转数结果（链式依赖）",
+      "step": 14
+    },
+    {
+      "part": "\"大额\"",
+      "meaning": "条件为真的返回值",
+      "step": 14
+    }
+  ],
+  "summary": {
+    "oneLiner": "脏数据四连：VALUE 转数、TRIM+CLEAN 洗空格、SUBSTITUTE 改编号、IF 打标签——每步产出喂下一步。",
+    "explain": "就像数据清洗流水线：类型修正 → 文本规范 → 编号统一 → 业务标记，链式依赖一步不能少。",
+    "outro": "总结：真实数据四种病一次治——转数、洗格、改号、打标；链式流程每步产出都能验。"
+  },
+  "checks": [
+    {
+      "cell": "F2",
+      "formula": "=VALUE(B2)",
+      "value": 1200
+    },
+    {
+      "cell": "F3",
+      "formula": "=TRIM(CLEAN(C2))",
+      "value": "华东"
+    },
+    {
+      "cell": "F4",
+      "formula": "=SUBSTITUTE(D2,\"SO-\",\"订单\")",
+      "value": "订单1001"
+    },
+    {
+      "cell": "F5",
+      "formula": "=IF(F2>=1000,\"大额\",\"常规\")",
+      "value": "大额"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

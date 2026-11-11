@@ -1,0 +1,235 @@
+{
+  "$comment": "L2 A 类场景课（A 类场景课（4 块 16 步，链式：费用→最优）；素材 docs/excel/05-workspace-lessons/09-plans.md。）公式已过 HyperFormula 终验探针（aclass-gen 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "plans",
+  "fn": "套餐建模",
+  "title": "套餐建模四步：三档费用公式 → MIN+INDEX 挑最优",
+  "category": "场景实战",
+  "level": "高级",
+  "durationMin": 8,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/plans.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "套餐比较",
+        "cells": {
+          "A1": "套餐",
+          "B1": "固定费",
+          "C1": "包含GB",
+          "D1": "超额单价/GB",
+          "A2": "A",
+          "B2": 29,
+          "C2": 5,
+          "D2": 3,
+          "A3": "B",
+          "B3": 49,
+          "C3": 20,
+          "D3": 2,
+          "A4": "C",
+          "B4": 79,
+          "C4": 50,
+          "D4": 1,
+          "A6": "每月用量GB",
+          "B6": 25,
+          "A7": "A 套餐费用",
+          "A8": "B 套餐费用",
+          "A9": "C 套餐费用",
+          "A10": "最低费用套餐"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "B7",
+      "menu": "选中 B7",
+      "formula": "定位B7 结果格",
+      "expect": "B7 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "B7",
+      "menu": "输入框输入公式",
+      "formula": "=B2+MAX(0,$B$6-C2)*D2",
+      "expect": "B7 显示公式原文 =B2+MAX(0,$B$6-C2)*D2"
+    },
+    {
+      "step": 3,
+      "cell": "B7",
+      "menu": "回车确认",
+      "formula": "=B2+MAX(0,$B$6-C2)*D2",
+      "expect": "B7 显示 89（29 + max(0,25−5)×3 = 29+60）"
+    },
+    {
+      "step": 4,
+      "cell": "B7",
+      "menu": "选中 B7 查看编辑栏",
+      "formula": "=B2+MAX(0,$B$6-C2)*D2",
+      "expect": "编辑栏回显 =B2+MAX(0,$B$6-C2)*D2，B7 显示 89"
+    },
+    {
+      "step": 5,
+      "cell": "B8",
+      "menu": "选中 B8",
+      "formula": "定位B8 结果格",
+      "expect": "B8 被选中，输入框激活"
+    },
+    {
+      "step": 6,
+      "cell": "B8",
+      "menu": "输入框输入公式",
+      "formula": "=B3+MAX(0,$B$6-C3)*D3",
+      "expect": "B8 显示公式原文 =B3+MAX(0,$B$6-C3)*D3"
+    },
+    {
+      "step": 7,
+      "cell": "B8",
+      "menu": "回车确认",
+      "formula": "=B3+MAX(0,$B$6-C3)*D3",
+      "expect": "B8 显示 59（49 + max(0,25−20)×2 = 49+10）"
+    },
+    {
+      "step": 8,
+      "cell": "B8",
+      "menu": "选中 B8 查看编辑栏",
+      "formula": "=B3+MAX(0,$B$6-C3)*D3",
+      "expect": "编辑栏回显 =B3+MAX(0,$B$6-C3)*D3，B8 显示 59"
+    },
+    {
+      "step": 9,
+      "cell": "B9",
+      "menu": "选中 B9",
+      "formula": "定位B9 结果格",
+      "expect": "B9 被选中，输入框激活"
+    },
+    {
+      "step": 10,
+      "cell": "B9",
+      "menu": "输入框输入公式",
+      "formula": "=B4+MAX(0,$B$6-C4)*D4",
+      "expect": "B9 显示公式原文 =B4+MAX(0,$B$6-C4)*D4"
+    },
+    {
+      "step": 11,
+      "cell": "B9",
+      "menu": "回车确认",
+      "formula": "=B4+MAX(0,$B$6-C4)*D4",
+      "expect": "B9 显示 79（没超量，只付固定费 79——MAX 兜底生效）"
+    },
+    {
+      "step": 12,
+      "cell": "B9",
+      "menu": "选中 B9 查看编辑栏",
+      "formula": "=B4+MAX(0,$B$6-C4)*D4",
+      "expect": "编辑栏回显 =B4+MAX(0,$B$6-C4)*D4，B9 显示 79"
+    },
+    {
+      "step": 13,
+      "cell": "B10",
+      "menu": "选中 B10",
+      "formula": "定位B10 结果格",
+      "expect": "B10 被选中，输入框激活"
+    },
+    {
+      "step": 14,
+      "cell": "B10",
+      "menu": "输入框输入公式",
+      "formula": "=INDEX(A2:A4,MATCH(MIN(B7:B9),B7:B9,0))",
+      "expect": "B10 显示公式原文 =INDEX(A2:A4,MATCH(MIN(B7:B9),B7:B9,0))"
+    },
+    {
+      "step": 15,
+      "cell": "B10",
+      "menu": "回车确认",
+      "formula": "=INDEX(A2:A4,MATCH(MIN(B7:B9),B7:B9,0))",
+      "expect": "B10 显示 B（59 最低，INDEX+MATCH 返回套餐名 B）"
+    },
+    {
+      "step": 16,
+      "cell": "B10",
+      "menu": "选中 B10 查看编辑栏",
+      "formula": "=INDEX(A2:A4,MATCH(MIN(B7:B9),B7:B9,0))",
+      "expect": "编辑栏回显 =INDEX(A2:A4,MATCH(MIN(B7:B9),B7:B9,0))，B10 显示 B"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "B2",
+      "meaning": "固定费 29（套餐 A 行）",
+      "step": 2
+    },
+    {
+      "part": "MAX(0,$B$6-C2)",
+      "meaning": "超额量：25−5=20；没超时 MAX 兜 0，不出现负超额费",
+      "step": 2
+    },
+    {
+      "part": "$B$6",
+      "meaning": "用量 25——绝对引用，三档公式共用同一个用量格",
+      "step": 2
+    },
+    {
+      "part": "B3",
+      "meaning": "固定费 49（套餐 B 行，相对引用逐行下移）",
+      "step": 6
+    },
+    {
+      "part": "C3",
+      "meaning": "包含 20GB——25−20=5GB 超额",
+      "step": 6
+    },
+    {
+      "part": "C4",
+      "meaning": "包含 50GB——25<50 没超，MAX(0,−25)=0 只付固定费",
+      "step": 10
+    },
+    {
+      "part": "MIN(B7:B9)",
+      "meaning": "三档费用里找最小值 59",
+      "step": 14
+    },
+    {
+      "part": "MATCH(MIN(B7:B9),B7:B9,0)",
+      "meaning": "定位最小值在第几档（0=精确匹配）",
+      "step": 14
+    },
+    {
+      "part": "A2:A4",
+      "meaning": "返回区域：套餐名——INDEX 按位置取名字",
+      "step": 14
+    }
+  ],
+  "summary": {
+    "oneLiner": "套餐建模：固定费+MAX(0,超额)×单价写成三档公式，MIN 找最低、INDEX+MATCH 挑名字——用量一改全表重算。",
+    "explain": "就像定价引擎：cost = base + max(0, usage - quota) * overage_rate，再 argmin 出最优方案。",
+    "outro": "总结：先让公式算三档成本，再让 INDEX+MATCH 从结果里挑名字——不能凭感觉选方案。"
+  },
+  "checks": [
+    {
+      "cell": "B7",
+      "formula": "=B2+MAX(0,$B$6-C2)*D2",
+      "value": 89
+    },
+    {
+      "cell": "B8",
+      "formula": "=B3+MAX(0,$B$6-C3)*D3",
+      "value": 59
+    },
+    {
+      "cell": "B9",
+      "formula": "=B4+MAX(0,$B$6-C4)*D4",
+      "value": 79
+    },
+    {
+      "cell": "B10",
+      "formula": "=INDEX(A2:A4,MATCH(MIN(B7:B9),B7:B9,0))",
+      "value": "B"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

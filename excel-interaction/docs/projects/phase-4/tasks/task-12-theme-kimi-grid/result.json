@@ -1,0 +1,43 @@
+{
+  "kimi_probe": {
+    "htAccent": "rgb(72, 105, 155)",
+    "htBg": "rgb(254, 253, 246)",
+    "htHeaderBg": "rgb(239, 239, 223)",
+    "htHeaderRowActiveBg": "rgb(255, 202, 52)",
+    "bodyBg": "rgb(248, 248, 234)",
+    "captionBg": "rgb(54, 62, 64)"
+  },
+  "kimi_head_row": {
+    "present": true,
+    "bg": "rgb(255, 202, 52)",
+    "fw": "700",
+    "ta": "center",
+    "text": "工号"
+  },
+  "folds_practice": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "reset_clears_practice": true,
+  "done_caption": "✓ 验收通过：E2 显示 王五｜公式 =VLOOKUP(D2,A2:B5,2,0)（与契约一致，公式真算真回读）｜总结：用关键字段的值，在范围里找到匹配的那一行，取回那一行的其他字段。",
+  "done_panel_head": "✓ 演示完成",
+  "done_has_outro_box": true,
+  "green_probe": {
+    "htAccent": "rgb(33, 115, 70)",
+    "htBg": "rgb(255, 255, 255)",
+    "htHeaderBg": "rgb(233, 238, 235)",
+    "htHeaderRowActiveBg": "rgb(200, 134, 42)",
+    "bodyBg": "rgb(242, 244, 243)",
+    "captionBg": "rgb(47, 59, 52)"
+  },
+  "green_head_row": {
+    "present": true,
+    "bg": "rgb(200, 134, 42)",
+    "fw": "700",
+    "ta": "center",
+    "text": "工号"
+  },
+  "console_errors": []
+}

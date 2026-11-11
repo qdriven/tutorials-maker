@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>excel-interaction 制作时间线 · 2026-11-08 → 11-10</title>
+<style>
+  :root {
+    --bg: #0f1420; --panel: #161d2e; --line: #2a3550;
+    --accent: #4fd1c5; --accent2: #f6ad55; --accent3: #90cdf4;
+    --text: #e2e8f0; --muted: #8b98b8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.7 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+  }
+  header { padding: 40px 24px 8px; max-width: 1000px; margin: 0 auto; }
+  h1 { margin: 0 0 6px; font-size: 28px; }
+  .sub { color: var(--muted); }
+  .stats { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0 0; }
+  .stat {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 16px; min-width: 120px;
+  }
+  .stat b { display: block; font-size: 22px; color: var(--accent); }
+  .stat span { font-size: 12px; color: var(--muted); }
+  main { max-width: 1000px; margin: 0 auto; padding: 24px; }
+  .day { position: relative; margin: 34px 0 8px; padding-left: 26px; }
+  .day::before {
+    content: ""; position: absolute; left: 5px; top: 6px; bottom: -100%;
+    width: 2px; background: linear-gradient(var(--line), transparent);
+  }
+  .day h2 {
+    margin: 0; font-size: 18px; color: var(--accent2);
+    background: var(--bg); display: inline-block; padding-right: 10px;
+  }
+  .day h2 small { color: var(--muted); font-weight: normal; margin-left: 8px; }
+  .item {
+    position: relative; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px 16px; margin: 14px 0 14px 8px;
+  }
+  .item::before {
+    content: ""; position: absolute; left: -25px; top: 18px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+  }
+  .item.warn::before { background: var(--accent2); }
+  .item.done::before { background: #68d391; }
+  .item h3 { margin: 0 0 4px; font-size: 15px; }
+  .item h3 code { font-size: 12px; color: var(--accent3); background: #0c111b; padding: 1px 6px; border-radius: 4px; }
+  .item p { margin: 4px 0 0; color: var(--muted); font-size: 13.5px; }
+  .tag {
+    display: inline-block; font-size: 11px; border: 1px solid var(--line);
+    border-radius: 999px; padding: 0 8px; margin-left: 8px; color: var(--muted);
+    vertical-align: middle;
+  }
+  footer { max-width: 1000px; margin: 0 auto; padding: 20px 24px 48px; color: var(--muted); font-size: 13px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  @media (max-width: 640px) { .stats .stat { min-width: 45%; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>excel-interaction · 制作时间线</h1>
+  <div class="sub">无废话 Excel 教程——契约驱动的实机教程工厂 · 三天 52 条执行流水（2026-11-08 → 2026-11-10）</div>
+  <div class="stats">
+    <div class="stat"><b>44</b><span>课程契约 courses/</span></div>
+    <div class="stat"><b>44</b><span>交互动画课 apps/</span></div>
+    <div class="stat"><b>47</b><span>成品视频 mp4</span></div>
+    <div class="stat"><b>52</b><span>index-log 流水</span></div>
+    <div class="stat"><b>36/36</b><span>全量回归</span></div>
+    <div class="stat"><b>3</b><span>表格引擎</span></div>
+  </div>
+</header>
+
+<main>
+  <div class="day">
+    <h2>Day 1 · 2026-11-08 <small>打地基 → 试点出课 → 反馈闭环</small></h2>
+
+    <div class="item">
+      <h3>#1–#2 方法论先行 <span class="tag">项目级</span></h3>
+      <p>环境探测拿一手数据（node 24 / ffmpeg 8 / edge-tts / LibreOffice 不在 PATH）；
+         先写 build-method.md：task 三件套 + index-log append-only + verify 数字说话，再动手写功能。</p>
+    </div>
+
+    <div class="item warn">
+      <h3>#3–#7 初始化脚本 · 修 3 个 Windows 坑 <span class="tag">phase-0</span></h3>
+      <p>check.mjs / install.mjs：.cmd 垫片 spawn EINVAL、商店执行别名假阴性、探针不查退出码——
+         自检三轮迭代，必需工具 6/6 exit 0。</p>
+    </div>
+
+    <div class="item">
+      <h3>#8–#11 骨架 → 技能层 → 契约层 → 流水线 <span class="tag">phase-1…4</span></h3>
+      <p>五层目录结构、excel-tutorial-maker skill + handsontable 模板、试点课契约、
+         generate/plan/video/qc 脚本——phase-4+5 合并里程碑，试点课可交互查看。</p>
+    </div>
+
+    <div class="item warn">
+      <h3>#12–#15, #17–#22 用户反馈闭环 ×10 <span class="tag">交互打磨</span></h3>
+      <p>Excel 级交互、中文 IME 全角公式转换、formulaArgs 参数逐位说明、验收框逐步/折叠展示、
+         练习态防剧透、一句话总结、主题改格数同款、参数进口播——全部改契约与共享 lesson.js。</p>
+    </div>
+
+    <div class="item">
+      <h3>#16, #26, #28 出片管线打通 <span class="tag">phase-6</span></h3>
+      <p>TTS（edge/sapi）+ 渲染式出片 + 步骤讲解入片 + &lt;30s 收紧——试点课三式出片，
+         口播驱动节奏 holdMs = max(minHold, speech + gap)。</p>
+    </div>
+
+    <div class="item">
+      <h3>#23–#25, #27, #29 展示层 + 第二门课 <span class="tag">phase-7/8</span></h3>
+      <p>showcase 页 + 清单登记校验、sidebar 完整教程、去「如何构建」只留教程；
+         第二门课 SUM 验证契约通用性。</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <h2>Day 2 · 2026-11-09 <small>扩展引擎 → 清遗留 → 收口 main</small></h2>
+
+    <div class="item">
+      <h3>#30–#34 节奏与高亮打磨 <span class="tag">出片质量</span></h3>
+      <p>每步节奏 -2s、快速预览组件、抓窗式 intro/outro 段派发、逐参数高亮拆段 paramBlocks、
+         鼠标编排——遗留 #1/#2/#4 清账。</p>
+    </div>
+
+    <div class="item done">
+      <h3>#35 三引擎模板齐 <span class="tag">phase-4</span></h3>
+      <p>univer（多表真算，异步落值兜底）+ onlyoffice（全档：FILTER/XLOOKUP/透视/图表）；
+         新引擎 = 只写一个 engine.js 实现最小 API。</p>
+    </div>
+
+    <div class="item">
+      <h3>#36–#39 遗留 issue 化 + out/ 盘点 + standalone 先行 <span class="tag">收口</span></h3>
+      <p>issues #14–#19 建立、out/ 235M→17M 清理（试验删/结果留）、流水线构成文档落档、
+         分支收口合并 main（PR #13）。</p>
+    </div>
+  </div>
+
+  <div class="day">
+    <h2>Day 3 · 2026-11-10 <small>L2 复合课 → 批量铺量 → 站点化</small></h2>
+
+    <div class="item done">
+      <h3>#40–#42 L2 冲刺：9 门复合/压轴课 <span class="tag">L2 sprint</span></h3>
+      <p>N 步契约地基 → dave-clean 试点 → P3 三问走查通过解锁批量 → 9 门 L2 课
+         + 跨表引擎 + 合集页，全量回归 36/36。</p>
+    </div>
+
+    <div class="item done">
+      <h3>#43 A 类 7 场景批量转正 <span class="tag">批量</span></h3>
+      <p>aclass-gen.mjs 程序化 7 门（power-query / eda-outliers / plans / two-way-lookup /
+         inventory-reorder / supply-quality / text-date），探针 25 项先行全过，出片 50–76s qc 全过。</p>
+    </div>
+
+    <div class="item done">
+      <h3>#44 抓窗式 LibreOffice 批量出片 <span class="tag">批量</span></h3>
+      <p>uno-driver 三能力探针实证（区域选择/插图/改图表类型）+ batch-capture.mjs 批量驱动，
+         10 门真机录屏全过，横条/竖柱方向逐支抽帧验证。</p>
+    </div>
+
+    <div class="item">
+      <h3>#45–#46 引擎遗留闭环 <span class="tag">issue #15/#14</span></h3>
+      <p>univer 画布金底表头带（kit.js 自绘主题）；onlyoffice docserver 四 API 端到端实测 8/8。</p>
+    </div>
+
+    <div class="item">
+      <h3>#48–#52 站点化与文档收尾 <span class="tag">展示层</span></h3>
+      <p>目录组件统一（card/list + 分页 + 搜索）、三页互达 + 卡片墙、共享资产去重 apps/_shared、
+         90s 有声全站导览视频、scripts 全量索引文档。</p>
+    </div>
+
+    <div class="item warn">
+      <h3>#47 SQL × Excel 对照工作台 <span class="tag">planned</span></h3>
+      <p>可行性分析与计划入档——下一阶段候选方向。</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  原始证据：<a href="../../excel-interaction/docs/projects/index-log.md">index-log（52 条）</a> ·
+  <a href="../../excel-interaction/docs/build-method.md">build-method</a> ·
+  <a href="../../excel-interaction/docs/pipeline.md">pipeline</a> ·
+  <a href="excel-interaction.md">制作复盘（第一视角）</a> ·
+  <a href="excel-interaction-slides.html">Slides</a>
+</footer>
+</body>
+</html>

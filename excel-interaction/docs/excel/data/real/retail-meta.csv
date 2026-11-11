@@ -1,0 +1,14 @@
+指标,数值
+rawRows,20000
+validRows,19560
+invalidRows,440
+invoices,8966
+revenue,380271.22
+missingCustomerRows,5078
+cancelRows,350
+nonPositiveQuantityRows,398
+nonPositivePriceRows,90
+dateStart,2010-12-01
+dateEnd,2011-12-09
+productRevenue,366107.95
+sampleSha256,219f7f5ec2c2927068b7c510ed01bad8323528c6647732dc0613330f4f90d2f0

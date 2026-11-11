@@ -1,0 +1,226 @@
+{
+  "$comment": "L2 A 类场景课（A 类场景课（4 块 16 步，链式：加权→对照→口径差）；素材 docs/excel/05-workspace-lessons/17-supply-quality.md。）公式已过 HyperFormula 终验探针（aclass-gen 程序化生成）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "supply-quality",
+  "fn": "加权口径",
+  "title": "供应链质量四算：加权缺陷率 → 单位成本 → 简单平均 → 口径差",
+  "category": "场景实战",
+  "level": "高级",
+  "durationMin": 8,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/supply-quality.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "供应商",
+        "cells": {
+          "A1": "供应商",
+          "B1": "生产量",
+          "C1": "缺陷数",
+          "D1": "出货量",
+          "E1": "运输成本",
+          "F1": "缺陷率",
+          "A2": "美妆一号",
+          "B2": 1000,
+          "C2": 20,
+          "D2": 800,
+          "E2": 4000,
+          "F2": 0.02,
+          "A3": "美妆二号",
+          "B3": 2000,
+          "C3": 80,
+          "D3": 1600,
+          "E3": 9600,
+          "F3": 0.04,
+          "A4": "美妆三号",
+          "B4": 1500,
+          "C4": 15,
+          "D4": 1200,
+          "E4": 4500,
+          "F4": 0.01,
+          "A6": "整体缺陷率（加权）",
+          "A7": "单位运输成本",
+          "A8": "简单平均缺陷率",
+          "A9": "加权−简单口径差"
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "B6",
+      "menu": "选中 B6",
+      "formula": "定位B6 结果格",
+      "expect": "B6 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "B6",
+      "menu": "输入框输入公式",
+      "formula": "=ROUND(SUM(C2:C4)/SUM(B2:B4),4)",
+      "expect": "B6 显示公式原文 =ROUND(SUM(C2:C4)/SUM(B2:B4),4)"
+    },
+    {
+      "step": 3,
+      "cell": "B6",
+      "menu": "回车确认",
+      "formula": "=ROUND(SUM(C2:C4)/SUM(B2:B4),4)",
+      "expect": "B6 显示 0.0256（115÷4500≈2.56%，整体缺陷率）"
+    },
+    {
+      "step": 4,
+      "cell": "B6",
+      "menu": "选中 B6 查看编辑栏",
+      "formula": "=ROUND(SUM(C2:C4)/SUM(B2:B4),4)",
+      "expect": "编辑栏回显 =ROUND(SUM(C2:C4)/SUM(B2:B4),4)，B6 显示 0.0256"
+    },
+    {
+      "step": 5,
+      "cell": "B7",
+      "menu": "选中 B7",
+      "formula": "定位B7 结果格",
+      "expect": "B7 被选中，输入框激活"
+    },
+    {
+      "step": 6,
+      "cell": "B7",
+      "menu": "输入框输入公式",
+      "formula": "=ROUND(SUM(E2:E4)/SUM(D2:D4),4)",
+      "expect": "B7 显示公式原文 =ROUND(SUM(E2:E4)/SUM(D2:D4),4)"
+    },
+    {
+      "step": 7,
+      "cell": "B7",
+      "menu": "回车确认",
+      "formula": "=ROUND(SUM(E2:E4)/SUM(D2:D4),4)",
+      "expect": "B7 显示 5.0278（18100÷3600 元/件）"
+    },
+    {
+      "step": 8,
+      "cell": "B7",
+      "menu": "选中 B7 查看编辑栏",
+      "formula": "=ROUND(SUM(E2:E4)/SUM(D2:D4),4)",
+      "expect": "编辑栏回显 =ROUND(SUM(E2:E4)/SUM(D2:D4),4)，B7 显示 5.0278"
+    },
+    {
+      "step": 9,
+      "cell": "B8",
+      "menu": "选中 B8",
+      "formula": "定位B8 结果格",
+      "expect": "B8 被选中，输入框激活"
+    },
+    {
+      "step": 10,
+      "cell": "B8",
+      "menu": "输入框输入公式",
+      "formula": "=ROUND(AVERAGE(F2:F4),4)",
+      "expect": "B8 显示公式原文 =ROUND(AVERAGE(F2:F4),4)"
+    },
+    {
+      "step": 11,
+      "cell": "B8",
+      "menu": "回车确认",
+      "formula": "=ROUND(AVERAGE(F2:F4),4)",
+      "expect": "B8 显示 0.0233（简单平均，供与加权对照）"
+    },
+    {
+      "step": 12,
+      "cell": "B8",
+      "menu": "选中 B8 查看编辑栏",
+      "formula": "=ROUND(AVERAGE(F2:F4),4)",
+      "expect": "编辑栏回显 =ROUND(AVERAGE(F2:F4),4)，B8 显示 0.0233"
+    },
+    {
+      "step": 13,
+      "cell": "B9",
+      "menu": "选中 B9",
+      "formula": "定位B9 结果格",
+      "expect": "B9 被选中，输入框激活"
+    },
+    {
+      "step": 14,
+      "cell": "B9",
+      "menu": "输入框输入公式",
+      "formula": "=ROUND(B6-B8,4)",
+      "expect": "B9 显示公式原文 =ROUND(B6-B8,4)"
+    },
+    {
+      "step": 15,
+      "cell": "B9",
+      "menu": "回车确认",
+      "formula": "=ROUND(B6-B8,4)",
+      "expect": "B9 显示 0.0023（两种口径差 0.23 个百分点——大供应商权重更高）"
+    },
+    {
+      "step": 16,
+      "cell": "B9",
+      "menu": "选中 B9 查看编辑栏",
+      "formula": "=ROUND(B6-B8,4)",
+      "expect": "编辑栏回显 =ROUND(B6-B8,4)，B9 显示 0.0023"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "SUM(C2:C4)",
+      "meaning": "缺陷总数 115（先加总分子）",
+      "step": 2
+    },
+    {
+      "part": "SUM(B2:B4)",
+      "meaning": "生产总量 4500（先加总分母）——加权口径：不能直接平均三个百分比",
+      "step": 2
+    },
+    {
+      "part": "SUM(E2:E4)",
+      "meaning": "运输总成本 18100",
+      "step": 6
+    },
+    {
+      "part": "SUM(D2:D4)",
+      "meaning": "出货总量 3600——总成本÷总量=每件运费",
+      "step": 6
+    },
+    {
+      "part": "AVERAGE(F2:F4)",
+      "meaning": "三家缺陷率的简单平均（0.02/0.04/0.01）——对照口径",
+      "step": 10
+    },
+    {
+      "part": "B6-B8",
+      "meaning": "加权 0.0256 − 简单 0.0233（引用第①③块产出）",
+      "step": 14
+    }
+  ],
+  "summary": {
+    "oneLiner": "加权口径四算：SUM/SUM 算整体缺陷率与单位成本、AVERAGE 做简单对照、相减看口径差——比率必须按量加权。",
+    "explain": "就像 SQL：SUM(col)/SUM(col) 聚合比 vs AVG(ratio) 行均比——分组聚合前不能平均比率。",
+    "outro": "总结：比率类指标先加总分子分母再相除；简单平均只做对照——口径差本身就是分析结论。"
+  },
+  "checks": [
+    {
+      "cell": "B6",
+      "formula": "=ROUND(SUM(C2:C4)/SUM(B2:B4),4)",
+      "value": 0.0256
+    },
+    {
+      "cell": "B7",
+      "formula": "=ROUND(SUM(E2:E4)/SUM(D2:D4),4)",
+      "value": 5.0278
+    },
+    {
+      "cell": "B8",
+      "formula": "=ROUND(AVERAGE(F2:F4),4)",
+      "value": 0.0233
+    },
+    {
+      "cell": "B9",
+      "formula": "=ROUND(B6-B8,4)",
+      "value": 0.0023
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

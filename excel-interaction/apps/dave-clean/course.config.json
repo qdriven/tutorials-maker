@@ -1,0 +1,206 @@
+{
+  "$comment": "L2 复合课试点（N 步契约首个用户）：3 公式 12 步，转写自 excel-animation docs/excel/05-workspace-lessons/04-dave-clean.md。单表形态（跨表版待阶段 3）；公式已过 HyperFormula 探针（TRIM(CLEAN)→华东、COUNTIF>1→true、XLOOKUP→800）。formulaArgs 带 step 绑定到各自输入步。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "dave-clean",
+  "fn": "清洗三连",
+  "title": "订单清洗三连：洗文本 → 查重复 → 抽查复核",
+  "category": "场景实战",
+  "level": "中级",
+  "durationMin": 8,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/dave-clean.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "订单表",
+        "cells": {
+          "A1": "订单号",
+          "B1": "地区",
+          "C1": "渠道",
+          "D1": "销售额",
+          "E1": "清洗任务",
+          "F1": "结果",
+          "A2": "SO-1001",
+          "B2": " 华东 ",
+          "C2": "线上",
+          "D2": 960,
+          "E2": "① 洗第一条地区",
+          "A3": "SO-1002",
+          "B3": "华北",
+          "C3": "门店",
+          "D3": 400,
+          "E3": "② 查重复订单号",
+          "A4": "SO-1003",
+          "B4": "华东",
+          "C4": "线上",
+          "D4": 800,
+          "E4": "③ 抽查 SO-1003 销售额",
+          "A5": "SO-1004",
+          "B5": "华南",
+          "C5": "线上",
+          "D5": 840,
+          "A6": "SO-1004",
+          "B6": "华南",
+          "C6": "线上",
+          "D6": 840,
+          "A7": "SO-1005",
+          "B7": "华北",
+          "C7": "门店",
+          "D7": 1200,
+          "A8": "SO-1006",
+          "B8": "华东 ",
+          "C8": "门店",
+          "D8": 240,
+          "A9": "SO-1007",
+          "B9": "华南",
+          "C9": "线上",
+          "D9": 750
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "F2",
+      "menu": "选中 F2",
+      "formula": "定位洗文本结果格",
+      "expect": "F2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "F2",
+      "menu": "输入框输入公式",
+      "formula": "=TRIM(CLEAN(B2))",
+      "expect": "F2 显示公式原文 =TRIM(CLEAN(B2))"
+    },
+    {
+      "step": 3,
+      "cell": "F2",
+      "menu": "回车确认",
+      "formula": "=TRIM(CLEAN(B2))",
+      "expect": "F2 显示 华东（空格已洗净）"
+    },
+    {
+      "step": 4,
+      "cell": "F2",
+      "menu": "选中 F2 查看编辑栏",
+      "formula": "=TRIM(CLEAN(B2))",
+      "expect": "编辑栏回显 =TRIM(CLEAN(B2))，F2 显示 华东"
+    },
+    {
+      "step": 5,
+      "cell": "F3",
+      "menu": "选中 F3",
+      "formula": "定位查重结果格",
+      "expect": "F3 被选中，输入框激活"
+    },
+    {
+      "step": 6,
+      "cell": "F3",
+      "menu": "输入框输入公式",
+      "formula": "=COUNTIF(A2:A9,A5)>1",
+      "expect": "F3 显示公式原文 =COUNTIF(A2:A9,A5)>1"
+    },
+    {
+      "step": 7,
+      "cell": "F3",
+      "menu": "回车确认",
+      "formula": "=COUNTIF(A2:A9,A5)>1",
+      "expect": "F3 显示 TRUE（SO-1004 出现 2 次，有重复行）"
+    },
+    {
+      "step": 8,
+      "cell": "F3",
+      "menu": "选中 F3 查看编辑栏",
+      "formula": "=COUNTIF(A2:A9,A5)>1",
+      "expect": "编辑栏回显 =COUNTIF(A2:A9,A5)>1，F3 显示 TRUE"
+    },
+    {
+      "step": 9,
+      "cell": "F4",
+      "menu": "选中 F4",
+      "formula": "定位抽查结果格",
+      "expect": "F4 被选中，输入框激活"
+    },
+    {
+      "step": 10,
+      "cell": "F4",
+      "menu": "输入框输入公式",
+      "formula": "=XLOOKUP(\"SO-1003\",A2:A9,D2:D9,\"未匹配\")",
+      "expect": "F4 显示公式原文 =XLOOKUP(\"SO-1003\",A2:A9,D2:D9,\"未匹配\")"
+    },
+    {
+      "step": 11,
+      "cell": "F4",
+      "menu": "回车确认",
+      "formula": "=XLOOKUP(\"SO-1003\",A2:A9,D2:D9,\"未匹配\")",
+      "expect": "F4 显示 800（抽查记录还在，清洗没破坏数据）"
+    },
+    {
+      "step": 12,
+      "cell": "F4",
+      "menu": "选中 F4 查看编辑栏",
+      "formula": "=XLOOKUP(\"SO-1003\",A2:A9,D2:D9,\"未匹配\")",
+      "expect": "编辑栏回显 =XLOOKUP(\"SO-1003\",A2:A9,D2:D9,\"未匹配\")，F4 显示 800"
+    }
+  ],
+  "formulaArgs": [
+    {
+      "part": "CLEAN(B2)",
+      "meaning": "内层：去掉不可打印字符（网页复制常见）",
+      "step": 2
+    },
+    {
+      "part": "TRIM(",
+      "meaning": "外层：去掉首尾空格——CLEAN 在内 TRIM 在外",
+      "step": 2
+    },
+    {
+      "part": "A2:A9",
+      "meaning": "计数区域：覆盖完整明细不漏行",
+      "step": 6
+    },
+    {
+      "part": "A5",
+      "meaning": "计数对象：被查的订单号（SO-1004）——出现>1 次即有重复",
+      "step": 6
+    },
+    {
+      "part": "\"SO-1003\"",
+      "meaning": "抽查值：要验证的订单号",
+      "step": 10
+    },
+    {
+      "part": "D2:D9",
+      "meaning": "返回数组：取回该行销售额——查到即证明数据完好",
+      "step": 10
+    }
+  ],
+  "summary": {
+    "oneLiner": "清洗三连：先 TRIM+CLEAN 洗文本，再 COUNTIF 查重复，最后 XLOOKUP 抽查一条——每步都留可核对的产出。",
+    "explain": "就像数据管道的三道质检：洗字符 → 查重复 → 抽样复核，任何一环断裂下游全错。",
+    "outro": "总结：真实流程是链式的——洗完要查重，查完要复核；每步产出都能验，链才可信。"
+  },
+  "checks": [
+    {
+      "cell": "F2",
+      "formula": "=TRIM(CLEAN(B2))",
+      "value": "华东"
+    },
+    {
+      "cell": "F3",
+      "formula": "=COUNTIF(A2:A9,A5)>1",
+      "value": true
+    },
+    {
+      "cell": "F4",
+      "formula": "=XLOOKUP(\"SO-1003\",A2:A9,D2:D9,\"未匹配\")",
+      "value": 800
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 600
+  }
+}

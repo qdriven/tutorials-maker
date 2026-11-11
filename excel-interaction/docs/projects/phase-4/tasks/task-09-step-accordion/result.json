@@ -1,0 +1,78 @@
+{
+  "folds_after_step2": [
+    {
+      "step": "1",
+      "open": false
+    },
+    {
+      "step": "2",
+      "open": true
+    },
+    {
+      "step": "3",
+      "open": false
+    },
+    {
+      "step": "4",
+      "open": false
+    }
+  ],
+  "items_count": 4,
+  "after_click_step3": [
+    {
+      "step": "1",
+      "open": false
+    },
+    {
+      "step": "2",
+      "open": true
+    },
+    {
+      "step": "3",
+      "open": true
+    },
+    {
+      "step": "4",
+      "open": false
+    }
+  ],
+  "after_click_step2": [
+    {
+      "step": "1",
+      "open": false
+    },
+    {
+      "step": "2",
+      "open": false
+    },
+    {
+      "step": "3",
+      "open": true
+    },
+    {
+      "step": "4",
+      "open": false
+    }
+  ],
+  "folds_practice": [
+    {
+      "step": "1",
+      "open": true
+    },
+    {
+      "step": "2",
+      "open": true
+    },
+    {
+      "step": "3",
+      "open": true
+    },
+    {
+      "step": "4",
+      "open": true
+    }
+  ],
+  "practice_has_goal": true,
+  "practice_verify_caption": "✓ 验收通过：E2 显示 王五，公式真算真回读，与契约一致",
+  "console_errors": []
+}

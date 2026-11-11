@@ -1,0 +1,12 @@
+key,item,sourceLabel,fy2024,fy2025,note,total
+net_sales,净销售额,Net sales,391035,416161,完整财年；含产品与服务,false
+cost_of_sales,销售成本,Cost of sales,210352,220960,报表以正数列示成本,false
+gross_margin,毛利润,Gross margin,180683,195201,净销售额－销售成本,true
+rd,研发费用,Research and development,31370,34550,,false
+sga,销售、一般及管理费用,"Selling, general and administrative",26097,27601,,false
+total_opex,营业费用合计,Total operating expenses,57467,62151,研发＋销售、一般及管理费用,true
+operating_income,营业利润,Operating income,123216,133050,毛利润－营业费用,true
+other_nonop,其他收入／（费用）净额,"Other income/(expense), net",269,-321,负数表示净费用,false
+pretax_income,税前利润,Income before provision for income taxes,123485,132729,营业利润＋其他净额,true
+tax,所得税费用,Provision for income taxes,29749,20719,,false
+net_income,净利润,Net income,93736,112010,同时出现在现金流量表起点,true

@@ -1,0 +1,82 @@
+{
+  "id": "univer-xsum",
+  "title": "跨表求和：明细表合计进汇总表",
+  "engine": "univer",
+  "theme": "kimi",
+  "summary": {
+    "oneLiner": "SUM 可以跨工作表：合计格引用另一张表的区域。",
+    "explain": "明细表铺原始数据，汇总表只放合计——公式用 表名!区域 记法跨表取数。",
+    "outro": "总结：表名!区域 的引用记法，让汇总表与明细表解耦。"
+  },
+  "narration": {
+    "gapMs": 200
+  },
+  "formulaArgs": [
+    {
+      "part": "明细!B2:B4",
+      "meaning": "跨表区域：明细表 B2 到 B4 的销售额"
+    }
+  ],
+  "guide": [
+    {
+      "step": 1,
+      "cell": "B2",
+      "menu": "选中 B2",
+      "formula": "定位合计单元格",
+      "expect": "B2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "B2",
+      "menu": "输入框输入公式",
+      "formula": "=SUM(明细!B2:B4)",
+      "expect": "B2 显示公式原文 =SUM(明细!B2:B4)"
+    },
+    {
+      "step": 3,
+      "cell": "B2",
+      "menu": "回车确认",
+      "formula": "=SUM(明细!B2:B4)",
+      "expect": "B2 显示 3600"
+    },
+    {
+      "step": 4,
+      "cell": "B2",
+      "menu": "选中 B2 查看编辑栏",
+      "formula": "=SUM(明细!B2:B4)",
+      "expect": "编辑栏显示公式原文"
+    }
+  ],
+  "checks": [
+    {
+      "cell": "B2",
+      "formula": "=SUM(明细!B2:B4)",
+      "value": 3600
+    }
+  ],
+  "data": {
+    "sheets": [
+      {
+        "name": "汇总",
+        "cells": {
+          "A1": "项目",
+          "B1": "金额",
+          "A2": "合计"
+        }
+      },
+      {
+        "name": "明细",
+        "cells": {
+          "A1": "月份",
+          "B1": "销售额",
+          "A2": "1月",
+          "B2": 1200,
+          "A3": "2月",
+          "B3": 1500,
+          "A4": "3月",
+          "B4": 900
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "$comment": "recipe 契约：从 courses/seeds/xlookup.md 提炼，转写自 excel-animation docs/excel/03-formulas/lookup-vlookup-xlookup.md（HyperFormula 探针已验证 XLOOKUP 真算与第 4 参数兜底）。字段语义见 skill/excel-tutorial-maker/references/contract-schema.md",
+  "id": "xlookup",
+  "fn": "XLOOKUP",
+  "title": "XLOOKUP 查找匹配：按 SKU 查商品名",
+  "category": "查找引用",
+  "level": "初级",
+  "durationMin": 4,
+  "theme": "kimi",
+  "engine": "handsontable",
+  "seed": "seeds/xlookup.md",
+  "data": {
+    "sheets": [
+      {
+        "name": "商品表",
+        "cells": {
+          "A1": "SKU",
+          "B1": "商品",
+          "C1": "类别",
+          "D1": "单价",
+          "E1": "库存",
+          "F1": "查询结果",
+          "A2": "P-101",
+          "B2": "冷萃咖啡",
+          "C2": "饮品",
+          "D2": 120,
+          "E2": 36,
+          "A3": "P-102",
+          "B3": "精品茶",
+          "C3": "饮品",
+          "D3": 80,
+          "E3": 58,
+          "A4": "P-103",
+          "B4": "咖啡豆",
+          "C4": "原料",
+          "D4": 200,
+          "E4": 24,
+          "A5": "P-104",
+          "B5": "保温杯",
+          "C5": "周边",
+          "D5": 150,
+          "E5": 42,
+          "A6": "P-105",
+          "B6": "手冲壶",
+          "C6": "器具",
+          "D6": 260,
+          "E6": 12
+        }
+      }
+    ]
+  },
+  "guide": [
+    {
+      "step": 1,
+      "cell": "F2",
+      "menu": "选中 F2",
+      "formula": "定位查询结果单元格",
+      "expect": "F2 被选中，输入框激活"
+    },
+    {
+      "step": 2,
+      "cell": "F2",
+      "menu": "输入框输入公式",
+      "formula": "=XLOOKUP(\"P-103\",A2:A6,B2:B6,\"未匹配\")",
+      "expect": "F2 显示公式原文 =XLOOKUP(\"P-103\",A2:A6,B2:B6,\"未匹配\")"
+    },
+    {
+      "step": 3,
+      "cell": "F2",
+      "menu": "回车确认",
+      "formula": "=XLOOKUP(\"P-103\",A2:A6,B2:B6,\"未匹配\")",
+      "expect": "F2 显示 咖啡豆"
+    },
+    {
+      "step": 4,
+      "cell": "F2",
+      "menu": "选中 F2 查看编辑栏",
+      "formula": "=XLOOKUP(\"P-103\",A2:A6,B2:B6,\"未匹配\")",
+      "expect": "编辑栏回显 =XLOOKUP(\"P-103\",A2:A6,B2:B6,\"未匹配\")，F2 显示 咖啡豆"
+    }
+  ],
+  "formulaArgs": [
+    { "part": "\"P-103\"", "meaning": "查找值：要找的 SKU（文本要加引号）" },
+    { "part": "A2:A6", "meaning": "查找数组：在哪一列找（只选这一列）" },
+    { "part": "B2:B6", "meaning": "返回数组：取回哪一列——与查找数组独立，可向左查" },
+    { "part": "\"未匹配\"", "meaning": "未匹配值：查不到时返回它，不用再包 IFERROR" }
+  ],
+  "summary": {
+    "oneLiner": "XLOOKUP：拿一个值去一列里找，取回同一行另一列的值——查不到就返回你写的兜底值。",
+    "explain": "就像写 SQL：SELECT 商品 FROM 商品表 WHERE SKU = 'P-103'，查不到返回默认值。",
+    "outro": "总结：查找列、返回列各写各的，能向左查；第 4 参数写兜底，不再满屏 #N/A。"
+  },
+  "checks": [
+    {
+      "cell": "F2",
+      "formula": "=XLOOKUP(\"P-103\",A2:A6,B2:B6,\"未匹配\")",
+      "value": "咖啡豆"
+    }
+  ],
+  "narration": {
+    "style": "brief",
+    "gapMs": 200
+  }
+}
