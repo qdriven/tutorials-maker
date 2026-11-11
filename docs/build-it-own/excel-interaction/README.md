@@ -175,4 +175,5 @@ SQL × Excel 对照工作台已做可行性分析入档（planned）。详见
 
 **导航**：[项目 README](../../../excel-interaction/README.md) · [文档中心](../../../excel-interaction/docs/README.md) ·
 [执行流水](../../../excel-interaction/docs/projects/index-log.md) · [scripts 用法](../../../excel-interaction/scripts/README.md) ·
-[时间线](timeline.html) · [Slides](slides.html)
+[时间线](timeline.html) · [Slides](slides.html) ·
+[AI 目标实践做法](../ai-goal-practice.md)

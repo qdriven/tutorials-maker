@@ -19,6 +19,11 @@
 
 新项目照此开目录：`docs/build-it-own/<项目名>/{README.md, timeline.html, slides.html}`。
 
+## 方法论（跨项目）
+
+- [ai-goal-practice.md](ai-goal-practice.md) —— 给 AI 一个目标、让 AI 尝试不同方式的实践做法，
+  以 excel-interaction 三天 52 条流水为案例：六步流程、锁死/放开边界、目标陈述模板
+
 ## 约定
 
 1. **第一视角**：写「我为什么这么做、当时遇到了什么、最后做成了什么」，不写营销腔。
